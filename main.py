@@ -9,14 +9,16 @@ with open("tracksIndexes.json", "r") as tracksIndexesJSON:
     tracksIndexes = json.load(tracksIndexesJSON)
 #print("Loaded tracksIndexes: " + str(tracksIndexes))
 
-print("Here's what we've got: ")
-for key, value in tracks.items():
-        print("[" + str(tracksIndexes.index(key)) + "] " + str(key) + ": " + str(value))
-
 while True:
     mode = input("What do you want to do? (add/remove): ")
     if mode == "add" or mode == "remove":
         while True: # Loop adding tracks until user exits.
+            
+            # Prints the current data.
+            print("Here's what we've got: ")
+            for key, value in tracks.items():
+                print("[" + str(tracksIndexes.index(key)) + "] " + str(key) + ": " + str(value))
+
             userInput = input("What do you want to " + str(mode) + "? (type \"mode\" to change mode) ")
             if userInput == "mode":
                 break
@@ -83,11 +85,6 @@ while True:
                 elif mode == "remove":
                     print("I'm not tracking that, so I can't remove it.")
                     continue
-            
-            # Prints the current data.
-            print("Here's what we've got: ")
-            for key, value in tracks.items():
-                print("[" + str(tracksIndexes.index(key)) + "] " + str(key) + ": " + str(value))
 
             # Saves the data back to the JSON files.
             with open("tracks.json", "w") as tracksJSON:

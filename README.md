@@ -14,8 +14,6 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Move the data spitter to a better spot cuz it sucks where it is now (use the program you'll see)
-
 Make things into functions because that's clean and nice
 
 Feature: add/sub by number. Like increase this one by 3.
