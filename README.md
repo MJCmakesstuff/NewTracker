@@ -14,7 +14,9 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Make things into functions because that's clean and nice
+Make error messages more obvious. 
+
+Manage json file stuff. Like what to do if they're not there, or in the wrong format?
 
 Feature: add/sub by number. Like increase this one by 3.
 
