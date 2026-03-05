@@ -24,8 +24,7 @@ while True:
                 track = funcs.checkInput(userInput)
 
             if funcs.errorHandler(track) != "all clear":
-                print(funcs.errorHandler(track))
-                funcs.enterToContinue()
+                funcs.errorMessage(funcs.errorHandler(track))
                 continue
             
             # If input is integer, tries to pull the corresponding item from tracksIndexes and set it as track.
@@ -34,8 +33,7 @@ while True:
                 try:
                     track = tracksIndexes[track]
                 except:
-                    print("That doesn't exist yet.")
-                    funcs.enterToContinue()
+                    funcs.errorMessage("That doesn't exist yet.")
                     continue
             
             # If the track exists, add 1.
@@ -53,8 +51,7 @@ while True:
                     tracks[track] = 1
                     tracksIndexes.append(track)
                 elif mode == "remove":
-                    print("That doesn't exist yet.")
-                    funcs.enterToContinue()
+                    funcs.errorMessage("That doesn't exist yet.")
                     continue
 
             # Saves the data back to the JSON files.
@@ -65,8 +62,7 @@ while True:
                 json.dump(tracksIndexes, tracksIndexesJSON, indent = 4)
 
     else:
-        print("That doesn't exist yet.")
-        funcs.enterToContinue()
+        funcs.errorMessage("That doesn't exist yet.")
 
 
 

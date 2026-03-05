@@ -1,5 +1,10 @@
 CHANGELOG
 
+03/04/2026 (second commit of the day, yikes haha)
+- Made a function to handle the error message and enter to continue
+- Removed the now obsolute enterToContinue function
+- Completed todo: Improve error function
+
 03/04/2026
 - Added a function to press enter to continue, added to any error spots
 - Changed some error messages

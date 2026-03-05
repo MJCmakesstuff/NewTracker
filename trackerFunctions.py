@@ -53,12 +53,11 @@ def errorHandler(returnValue):
     else:
         return "all clear"
 
-# Enter to continue
-def enterToContinue():
+# Error message thing
+def errorMessage(message):
+    print(message)
     time.sleep(1)
     input("Press Enter to continue...")
-
-
 
 
 

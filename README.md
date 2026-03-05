@@ -14,8 +14,6 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Improve error function
-
 Manage json file stuff. Like what to do if they're not there, or in the wrong format?
 
 Feature: add/sub by number. Like increase this one by 3.
