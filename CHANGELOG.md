@@ -1,6 +1,12 @@
 CHANGELOG
 
-~~~ 02/28/2026 ~~~
+03/04/2026
+- Added a function to press enter to continue, added to any error spots
+- Changed some error messages
+- Completed todo: "Make error messages more obvious."
+- Added todo: "Improve error function"
+
+02/28/2026
 - Added changelog
 - Added todo: address edge cases for storage files
 - Made the following into functions rather than calling them repeatedly:

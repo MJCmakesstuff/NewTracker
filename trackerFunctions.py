@@ -1,3 +1,5 @@
+import time
+
 ### FUNCTIONS ### 
 
 # Prints the current data.
@@ -50,4 +52,17 @@ def errorHandler(returnValue):
         return "You cannot enter a negative number."
     else:
         return "all clear"
-    
+
+# Enter to continue
+def enterToContinue():
+    time.sleep(1)
+    input("Press Enter to continue...")
+
+
+
+
+
+
+
+
+

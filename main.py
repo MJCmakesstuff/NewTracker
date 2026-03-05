@@ -1,4 +1,5 @@
 import json
+import time
 import trackerFunctions as funcs
 
 # Loads tracks and tracksIndexes from JSON files.
@@ -24,6 +25,7 @@ while True:
 
             if funcs.errorHandler(track) != "all clear":
                 print(funcs.errorHandler(track))
+                funcs.enterToContinue()
                 continue
             
             # If input is integer, tries to pull the corresponding item from tracksIndexes and set it as track.
@@ -32,7 +34,8 @@ while True:
                 try:
                     track = tracksIndexes[track]
                 except:
-                    print("We don't have antying with that number, sorry :(")
+                    print("That doesn't exist yet.")
+                    funcs.enterToContinue()
                     continue
             
             # If the track exists, add 1.
@@ -50,7 +53,8 @@ while True:
                     tracks[track] = 1
                     tracksIndexes.append(track)
                 elif mode == "remove":
-                    print("I'm not tracking that, so I can't remove it.")
+                    print("That doesn't exist yet.")
+                    funcs.enterToContinue()
                     continue
 
             # Saves the data back to the JSON files.
@@ -61,7 +65,8 @@ while True:
                 json.dump(tracksIndexes, tracksIndexesJSON, indent = 4)
 
     else:
-        print("Sorry, we don't have that option yet :(")
+        print("That doesn't exist yet.")
+        funcs.enterToContinue()
 
 
 
