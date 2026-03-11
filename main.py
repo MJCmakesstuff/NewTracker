@@ -1,13 +1,23 @@
 import json
 import time
 import trackerFunctions as funcs
+from pathlib import Path
+
+# Creates a "data" directory if it doesn't exist.
+data_dir = Path("data")
+data_dir.mkdir(exist_ok=True)
+
+# Sets data files to vars
+tracks_file = data_dir / "tracks.json"
+tracksIndexes_file = data_dir / "tracksIndexes.json"
 
 # Loads tracks and tracksIndexes from JSON files.
-with open("tracks.json", "r") as tracksJSON:
-    tracks = json.load(tracksJSON)
+tracks = funcs.loadData(tracks_file, {})
+tracksIndexes = funcs.loadData(tracksIndexes_file, [])
 
-with open("tracksIndexes.json", "r") as tracksIndexesJSON:
-    tracksIndexes = json.load(tracksIndexesJSON)
+# Saves the data (to prevent problems reading bad files)
+funcs.saveData(tracks, tracks_file)
+funcs.saveData(tracksIndexes, tracksIndexes_file)
 
 # Loop of Death
 while True:
@@ -55,11 +65,8 @@ while True:
                     continue
 
             # Saves the data back to the JSON files.
-            with open("tracks.json", "w") as tracksJSON:
-                json.dump(tracks, tracksJSON, indent = 4)
-
-            with open("tracksIndexes.json", "w") as tracksIndexesJSON:
-                json.dump(tracksIndexes, tracksIndexesJSON, indent = 4)
+            funcs.saveData(tracks, tracks_file)
+            funcs.saveData(tracksIndexes, tracksIndexes_file)
 
     else:
         funcs.errorMessage("That doesn't exist yet.")

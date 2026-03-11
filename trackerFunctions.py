@@ -1,3 +1,4 @@
+import json
 import time
 
 ### FUNCTIONS ### 
@@ -58,6 +59,26 @@ def errorMessage(message):
     print(message)
     time.sleep(1)
     input("Press Enter to continue...")
+
+
+# Loads data from a JSON file.
+def loadData(fileName, fallback):
+    try:
+        with open(fileName, "r") as file:
+            data = json.load(file)
+            if isinstance(data, type(fallback)):
+                return data
+            else:
+                return fallback
+    except (FileNotFoundError, json.JSONDecodeError):
+        return fallback
+
+
+# Saves data to a JSON file.
+def saveData(data, fileName):
+    with open(fileName, "w") as file:
+        json.dump(data, file, indent=4)
+
 
 
 

@@ -1,5 +1,14 @@
 CHANGELOG
 
+03/10/2026: Files and folders rework
+- Added function to read data from a file, implemented accordingly.
+- Added function to save data to a file, implemented accordingly.
+- Create a "data" directory, set the paths of the data files to variables and make changes accordingly.
+- Added a .gitignore for data and pesky .DS_Store
+- Added todo: "BUG: what do we do when trackIndexes and tracks do not match? Bad things..."
+- Added todo: "BUG (?): Python cache seems to ignore the .gitignore..."
+- Removed todo: "Manage json file stuff. Like what to do if they're not there, or in the wrong format?"
+
 03/04/2026 (second commit of the day, yikes haha)
 - Made a function to handle the error message and enter to continue
 - Removed the now obsolute enterToContinue function

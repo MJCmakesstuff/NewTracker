@@ -14,7 +14,9 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Manage json file stuff. Like what to do if they're not there, or in the wrong format?
+BUG: what do we do when trackIndexes and tracks do not match? Bad things...
+
+BUG (?): Python cache seems to ignore the .gitignore...
 
 Feature: add/sub by number. Like increase this one by 3.
 
