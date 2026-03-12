@@ -1,5 +1,13 @@
 CHANGELOG
 
+03/11/2026: Remove tracksIndexes.json and "fix" .gitignore
+- Fixed problems from mismatched tracks.json and tracksIndexes.json by obsolescing (?) tracksIndexes.json.
+- The "tracksIndexes" variable is now generated using the data from tracks.json, thus ensuring they are "in sync."
+- "Fixed" (or rather, modified in hopes of a solution) .gitignore.
+- Ran "git rm -r --cached __pycache__" in hopes of removing that folder from being tracked.
+- Completed todo: "BUG: what do we do when trackIndexes and tracks do not match? Bad things..."
+- (Hopefully) completed todo: "BUG (?): Python cache seems to ignore the .gitignore..."
+
 03/10/2026: Files and folders rework
 - Added function to read data from a file, implemented accordingly.
 - Added function to save data to a file, implemented accordingly.
