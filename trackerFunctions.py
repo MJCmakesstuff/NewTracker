@@ -60,7 +60,6 @@ def errorMessage(message):
     time.sleep(1)
     input("Press Enter to continue...")
 
-
 # Loads data from a JSON file.
 def loadData(fileName, fallback):
     try:
@@ -73,13 +72,43 @@ def loadData(fileName, fallback):
     except (FileNotFoundError, json.JSONDecodeError):
         return fallback
 
-
 # Saves data to a JSON file.
 def saveData(data, fileName):
     with open(fileName, "w") as file:
         json.dump(data, file, indent=4)
 
+# Checks if settings are valid
+def checkSetting(setting, validType, validValues):
+    if validType == "set":
+        if setting in validValues:
+            return True
+        else:
+            return False
+    if validType == "rules":
+        return ruleChecker(setting, validValues)
 
+# Checks if a value follows certain rules (given function input)
+def ruleChecker(value, rules):
+    for rule in rules:
+        if rule == "positive":
+            if not value > 0:
+                return False
+        elif rule == "integer":
+            if not isinstance(value, int):
+                return False
+            
+        # Continue adding more rules as needed
+    
+    return True
+
+# Fixes the settings file if any of the settings are invalid (and saves!)        
+def fixSettingsFile(settings):
+    for key, value in settings.items():
+        if checkSetting(value["value"], value["type"], value["rules"]):
+            continue
+        else:
+            value["value"] = value["default"]
+    saveData(settings, "settings.json")
 
 
 

@@ -14,6 +14,10 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
+- Resolve "instance" tracebacks with the ruleChecker function.
+
 Feature: add/sub by number. Like increase this one by 3.
+ideas
+- settings menu: for changing between mode and multiplier
 
 GUI?

@@ -1,5 +1,13 @@
 CHANGELOG
 
+NEXT COMMIT
+Subcommit #1 (03/13/2026): Settings Rework
+- Created a settings file to store the "mode" and "multiplier" settings.
+- Expanded the settings file to include a default value and information for checking if the setting is valid.
+- Created a function to check if a value is acceptable for a given setting by using the rules specified in settings.json. This function only checks if the value is in an accepted values list, and passes on to the function I'll describe next if the value should be checked against certain rules rather than a list of accepted values.
+- Created a function to check if an input follows certain rules. For example, "positive" or "integer". Should be easy to expand with more rules.
+- Created todo: "Resolve "instance" tracebacks with the ruleChecker function."
+
 03/11/2026: Remove tracksIndexes.json and "fix" .gitignore
 - Fixed problems from mismatched tracks.json and tracksIndexes.json by obsolescing (?) tracksIndexes.json.
 - The "tracksIndexes" variable is now generated using the data from tracks.json, thus ensuring they are "in sync."

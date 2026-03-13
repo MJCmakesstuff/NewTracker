@@ -1,0 +1,20 @@
+{
+    "mode": {
+        "value": "add",
+        "type": "set",
+        "rules": [
+            "add",
+            "subtract"
+        ],
+        "default": "add"
+    },
+    "multiplier": {
+        "value": 1,
+        "type": "rules",
+        "rules": [
+            "positive",
+            "integer"
+        ],
+        "default": 1
+    }
+}

@@ -10,12 +10,16 @@ data_dir.mkdir(exist_ok=True)
 # Sets data files to vars
 tracks_file = data_dir / "tracks.json"
 
-# Loads tracks and tracksIndexes from JSON files.
+# Loads tracks, tracksIndexes, and settings from JSON files.
 tracks = funcs.loadData(tracks_file, {})
 tracksIndexes = list(tracks.keys())
+settings = funcs.loadData("settings.json", {})
 
 # Saves the data (to prevent problems reading bad files)
 funcs.saveData(tracks, tracks_file)
+
+# Fixes the settings file if any of the settings are invalid.
+funcs.fixSettingsFile(settings)
 
 # Loop of Death
 while True:
