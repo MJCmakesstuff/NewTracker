@@ -3,6 +3,11 @@ import time
 import trackerFunctions as funcs
 from pathlib import Path
 
+i = 0
+while i < 5:
+    print()
+    i += 1
+
 # Creates a "data" directory if it doesn't exist.
 data_dir = Path("data")
 data_dir.mkdir(exist_ok=True)
@@ -20,17 +25,18 @@ funcs.saveData(tracks, tracks_file)
 
 # Fixes the settings file if any of the settings are invalid.
 funcs.fixSettingsFile(settings)
+funcs.printSettings(settings, {"ids": False})
 
 # Loop of Death
 while True:
-    mode = input("What do you want to do? (add/remove): ")
-    if mode == "add" or mode == "remove":
+    if settings["mode"]["value"] == "add" or settings["mode"]["value"] == "subtract":
         while True:
-            
+            print()
+            print("Here's what I'm tracking so far: ")
             funcs.printTracks(tracks, tracksIndexes)
 
-            userInput = input("What do you want to " + str(mode) + "? (type \"mode\" to change mode) ")
-            if userInput == "mode":
+            userInput = input("What do you want to " + str(settings["mode"]["value"]) + "? (type \"settings\" to change settings) ")
+            if userInput == "settings":
                 break
             else:
                 track = funcs.checkInput(userInput)
@@ -51,29 +57,55 @@ while True:
             # If the track exists, add 1.
             # Otherwise, create the track, and add it to the index list.
             if track in tracks:
-                if mode == "add":
+                if settings["mode"]["value"] == "add":
                     tracks[track] += 1
-                elif mode == "remove":
+                elif settings["mode"]["value"] == "subtract":
                     tracks[track] -= 1
                     if tracks[track] <= 0:
                         del tracks[track]
                         tracksIndexes.remove(track)
             else:
-                if mode == "add":
+                if settings["mode"]["value"] == "add":
                     tracks[track] = 1
                     tracksIndexes.append(track)
-                elif mode == "remove":
+                elif settings["mode"]["value"] == "subtract":
                     funcs.errorMessage("That doesn't exist yet.")
                     continue
 
             # Saves the data back to the JSON files.
             funcs.saveData(tracks, tracks_file)
 
+
+
     else:
         funcs.errorMessage("That doesn't exist yet.")
 
+    # Setting Changing Loop
+    while True:
+        funcs.printSettings(settings)
+        userInput = input("What setting do you want to change? (type \"done\" to finish) ")
+        if userInput == "done":
+            break
+        else:
+            setting = funcs.checkInput(userInput, "lower")
+            if funcs.errorHandler(setting) != "all clear":
+                funcs.errorMessage(funcs.errorHandler(setting))
+                continue
+        
+        if type(setting) == int:
+                try:
+                    setting = list(settings.keys())[setting]
+                except:
+                    funcs.errorMessage("That doesn't exist yet.")
+                    continue
 
-
-
-
-
+        if setting in settings:
+            newValue = input("What would you like to change " + str(setting) + " to? ")
+            if funcs.checkSetting(newValue, settings[setting]["type"], settings[setting]["rules"]):
+                settings[setting]["value"] = newValue
+                funcs.saveData(settings, "settings.json")
+            else:
+                continue
+        else:
+            funcs.errorMessage("That doesn't exist yet.")
+            continue

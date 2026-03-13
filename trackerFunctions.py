@@ -5,12 +5,12 @@ import time
 
 # Prints the current data.
 def printTracks(trackData, IDs):
-    print("Here's what we've got: ")
     for key, value in trackData.items():
         print("[" + str(IDs.index(key)) + "] " + str(key) + ": " + str(value))
+    print()
 
 # Deals with poor user input.
-def checkInput(userInput):
+def checkInput(userInput, case=None):
     # If input is empty, skip to next iteration.
     if userInput == "":
         return "empty"
@@ -40,7 +40,11 @@ def checkInput(userInput):
         return int(float(userInput))
         #print("Input successfuly converted to integer: " + str(track))
     except:
-        return userInput.title()
+        
+        if case == "lower":
+            return userInput.lower()
+        else:
+            return userInput.title()
         #print("Input could not be converted into integer, here's what we've got: " + str(track))
 
 # Deals with errors.
@@ -55,10 +59,12 @@ def errorHandler(returnValue):
         return "all clear"
 
 # Error message thing
-def errorMessage(message):
-    print(message)
+def errorMessage(message=""):
+    if message != "":
+        print(message)
     time.sleep(1)
     input("Press Enter to continue...")
+    print()
 
 # Loads data from a JSON file.
 def loadData(fileName, fallback):
@@ -83,6 +89,14 @@ def checkSetting(setting, validType, validValues):
         if setting in validValues:
             return True
         else:
+            print("That isn't a valid option for that setting.")
+            time.sleep(0.5)
+            print("Valid options are: ")
+            time.sleep(0.5)
+            for value in validValues:
+                print(value)
+                time.sleep(0.1)
+            errorMessage()
             return False
     if validType == "rules":
         return ruleChecker(setting, validValues)
@@ -90,12 +104,26 @@ def checkSetting(setting, validType, validValues):
 # Checks if a value follows certain rules (given function input)
 def ruleChecker(value, rules):
     for rule in rules:
-        if rule == "positive":
-            if not value > 0:
+        if rule == "integer":
+            try:
+                if int(value) == int(float(int(value))):
+                    value = int(value)
+                else:
+                    print("This setting must be an integer.")
+                    errorMessage()
+                    return False
+            except ValueError:
+                print("This setting must be an integer.")
+                errorMessage()
                 return False
-        elif rule == "integer":
             if not isinstance(value, int):
                 return False
+        elif rule == "positive":
+            if not value > 0:
+                print("This setting must be a positive number.")
+                errorMessage()
+                return False
+
             
         # Continue adding more rules as needed
     
@@ -110,7 +138,15 @@ def fixSettingsFile(settings):
             value["value"] = value["default"]
     saveData(settings, "settings.json")
 
-
+# Prints the current settings.
+def printSettings(settings, options={"ids": True}):
+    print("Here are the current settings: ")
+    for key, value in settings.items():
+        if options["ids"]:
+            print(f"[{list(settings.keys()).index(key)}] {key}: {value['value']}")
+        else:
+            print(f"{key}: {value['value']}")
+    print()
 
 
 

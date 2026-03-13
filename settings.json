@@ -9,11 +9,11 @@
         "default": "add"
     },
     "multiplier": {
-        "value": 1,
+        "value": "2",
         "type": "rules",
         "rules": [
-            "positive",
-            "integer"
+            "integer",
+            "positive"
         ],
         "default": 1
     }
