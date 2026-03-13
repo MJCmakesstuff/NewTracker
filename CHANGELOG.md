@@ -1,6 +1,7 @@
 CHANGELOG
 
-NEXT COMMIT
+03/13/2026: The Settings Update
+- Merged the following two subcommits to main branch.
 - NOTE: "mode" setting does not currently have a use.
 
 Subcommit #1 (03/13/2026): Settings Rework
