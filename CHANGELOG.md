@@ -1,5 +1,14 @@
 CHANGELOG
 
+03/14/2026: Update settings and enhance input handling for tracking features
+- Added todo: "Check if data is valid"
+- Added the ability to use the multiplier setting implemented in the previous commit.
+- Added todo: "Better description of what values settings can be"
+- Completed todo: "Feature: add/sub by number. Like increase this one by 3."
+- Added todo: "Add reset settings feature"
+
+
+
 03/13/2026: The Settings Update
 - Merged the following two subcommits to main branch.
 - NOTE: "mode" setting does not currently have a use.

@@ -35,7 +35,7 @@ while True:
             print("Here's what I'm tracking so far: ")
             funcs.printTracks(tracks, tracksIndexes)
 
-            userInput = input("What do you want to " + str(settings["mode"]["value"]) + "? (type \"settings\" to change settings) ")
+            userInput = input("What do you want to " + str(settings["mode"]["value"]) + " by " + str(settings["multiplier"]["value"]) + "? (type \"settings\" to change settings) ")
             if userInput == "settings":
                 break
             else:
@@ -58,15 +58,17 @@ while True:
             # Otherwise, create the track, and add it to the index list.
             if track in tracks:
                 if settings["mode"]["value"] == "add":
-                    tracks[track] += 1
+                    tracks[track] += int(settings["multiplier"]["value"])
                 elif settings["mode"]["value"] == "subtract":
-                    tracks[track] -= 1
+                    print("The track exists, here's what i'm trying to subtract by:")
+                    print(int(settings["multiplier"]["value"]))
+                    tracks[track] -= int(settings["multiplier"]["value"])
                     if tracks[track] <= 0:
                         del tracks[track]
                         tracksIndexes.remove(track)
             else:
                 if settings["mode"]["value"] == "add":
-                    tracks[track] = 1
+                    tracks[track] = int(settings["multiplier"]["value"])
                     tracksIndexes.append(track)
                 elif settings["mode"]["value"] == "subtract":
                     funcs.errorMessage("That doesn't exist yet.")

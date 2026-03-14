@@ -14,8 +14,12 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Feature: add/sub by number. Like increase this one by 3.
-ideas
-- settings menu: for changing between mode and multiplier
+Add reset settings feature
+
+Better description of what values settings can be
+
+Check if data is valid
+- For example, value is str while expecting int.
+- Use a for loop, iterating through data using the ruleChecker function.
 
 GUI?
