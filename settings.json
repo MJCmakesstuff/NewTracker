@@ -9,7 +9,7 @@
         "default": "add"
     },
     "multiplier": {
-        "value": "100",
+        "value": "2",
         "type": "rules",
         "rules": [
             "integer",

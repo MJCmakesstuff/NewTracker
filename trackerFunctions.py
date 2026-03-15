@@ -6,7 +6,9 @@ import time
 # Prints the current data.
 def printTracks(trackData, IDs):
     for key, value in trackData.items():
+        time.sleep(0.1)
         print("[" + str(IDs.index(key)) + "] " + str(key) + ": " + str(value))
+    time.sleep(0.1)
     print()
 
 # Deals with poor user input.
@@ -110,17 +112,35 @@ def ruleChecker(value, rules):
                     value = int(value)
                 else:
                     print("This setting must be an integer.")
+                    time.sleep(0.5)
+                    print("This setting must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
                     errorMessage()
                     return False
+            
             except ValueError:
                 print("This setting must be an integer.")
+                time.sleep(0.5)
+                print("This setting must be:")
+                for rule in rules:
+                    print(f" - {rule}")
+                    time.sleep(0.1)
                 errorMessage()
                 return False
+            
             if not isinstance(value, int):
                 return False
+        
         elif rule == "positive":
             if not value > 0:
                 print("This setting must be a positive number.")
+                time.sleep(0.5)
+                print("This setting must be:")
+                for rule in rules:
+                    print(f" - {rule}")
+                    time.sleep(0.1)
                 errorMessage()
                 return False
 
@@ -142,11 +162,25 @@ def fixSettingsFile(settings):
 def printSettings(settings, options={"ids": True}):
     print("Here are the current settings: ")
     for key, value in settings.items():
+        time.sleep(0.1)
         if options["ids"]:
             print(f"[{list(settings.keys()).index(key)}] {key}: {value['value']}")
         else:
             print(f"{key}: {value['value']}")
+    time.sleep(0.1)
     print()
+
+# Resets settings to their default values.
+def resetSettings(settings):
+    for key, value in settings.items():
+        value["value"] = value["default"]
+    saveData(settings, "settings.json")
+    print("Settings reset.")
+    print()
+    time.sleep(0.5)
+
+
+
 
 
 

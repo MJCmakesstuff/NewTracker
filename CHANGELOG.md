@@ -1,5 +1,16 @@
 CHANGELOG
 
+03/14/2026 #2: Enhance settings management and user feedback with new reset feature and improved descriptions
+- Added todo "Quit program, save or no save"
+- Added the ability to reset the settings to their default values.
+- Made the program more verbose and readable.
+- Improved descriptions of possible settings options for when an invalid value is entered.
+- (It's a lot of print() and time.sleep(0.1))
+- Completed todo: "Add reset settings feature"
+- Completed todo: "Better description of what values settings can be"
+
+
+
 03/14/2026: Update settings and enhance input handling for tracking features
 - Added todo: "Check if data is valid"
 - Added the ability to use the multiplier setting implemented in the previous commit.

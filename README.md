@@ -14,9 +14,7 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Add reset settings feature
-
-Better description of what values settings can be
+Quit program, save or no save
 
 Check if data is valid
 - For example, value is str while expecting int.

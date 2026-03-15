@@ -37,6 +37,10 @@ while True:
 
             userInput = input("What do you want to " + str(settings["mode"]["value"]) + " by " + str(settings["multiplier"]["value"]) + "? (type \"settings\" to change settings) ")
             if userInput == "settings":
+                print("Switching to settings window...")
+                time.sleep(0.5)
+                print()
+                time.sleep(0.1)
                 break
             else:
                 track = funcs.checkInput(userInput)
@@ -59,17 +63,36 @@ while True:
             if track in tracks:
                 if settings["mode"]["value"] == "add":
                     tracks[track] += int(settings["multiplier"]["value"])
+                    print("Added " + str(settings["multiplier"]["value"]) + " to " + str(track) + ". New value: " + str(tracks[track]))
+                    time.sleep(0.5)
+                    print()
+                    time.sleep(0.1)
+
                 elif settings["mode"]["value"] == "subtract":
-                    print("The track exists, here's what i'm trying to subtract by:")
-                    print(int(settings["multiplier"]["value"]))
                     tracks[track] -= int(settings["multiplier"]["value"])
                     if tracks[track] <= 0:
                         del tracks[track]
                         tracksIndexes.remove(track)
+                        print("Removed " + str(track) + ".")
+                        time.sleep(0.5)
+                        print()
+                        time.sleep(0.1)
+                    
+                    else:
+                        print("Subtracted " + str(settings["multiplier"]["value"]) + " from " + str(track) + ". New value: " + str(tracks[track]))
+                        time.sleep(0.5)
+                        print()
+                        time.sleep(0.1)
+
             else:
                 if settings["mode"]["value"] == "add":
                     tracks[track] = int(settings["multiplier"]["value"])
                     tracksIndexes.append(track)
+                    print("Created " + str(track) + " with value " + str(tracks[track]) + ".")
+                    time.sleep(0.5)
+                    print()
+                    time.sleep(0.1)
+
                 elif settings["mode"]["value"] == "subtract":
                     funcs.errorMessage("That doesn't exist yet.")
                     continue
@@ -85,9 +108,16 @@ while True:
     # Setting Changing Loop
     while True:
         funcs.printSettings(settings)
-        userInput = input("What setting do you want to change? (type \"done\" to finish) ")
+        userInput = input("What setting do you want to change? (type \"done\" to finish, or \"reset\" to reset to defaults) ")
         if userInput == "done":
+            print("Switching to main window...")
+            time.sleep(0.5)
+            print()
+            time.sleep(0.1)
             break
+        elif userInput == "reset":
+            funcs.resetSettings(settings)
+            continue
         else:
             setting = funcs.checkInput(userInput, "lower")
             if funcs.errorHandler(setting) != "all clear":
@@ -106,6 +136,11 @@ while True:
             if funcs.checkSetting(newValue, settings[setting]["type"], settings[setting]["rules"]):
                 settings[setting]["value"] = newValue
                 funcs.saveData(settings, "settings.json")
+                print("Changed " + str(setting) + " to " + str(newValue) + ".")
+                time.sleep(0.5)
+                print()
+                time.sleep(0.1)
+
             else:
                 continue
         else:
