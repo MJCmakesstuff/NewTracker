@@ -1,4 +1,5 @@
 import json
+import sys
 import time
 import trackerFunctions as funcs
 from pathlib import Path
@@ -7,6 +8,8 @@ i = 0
 while i < 5:
     print()
     i += 1
+
+print("Starting up...")
 
 # Creates a "data" directory if it doesn't exist.
 data_dir = Path("data")
@@ -17,15 +20,47 @@ tracks_file = data_dir / "tracks.json"
 
 # Loads tracks, tracksIndexes, and settings from JSON files.
 tracks = funcs.loadData(tracks_file, {})
-tracksIndexes = list(tracks.keys())
 settings = funcs.loadData("settings.json", {})
+
+if settings["settingsPersist"]["value"] == False:
+    print("Settings persistence is turned off. Resetting settings to defaults...")
+    funcs.resetSettings(settings)
+    funcs.saveData(settings, "settings.json")
 
 # Saves the data (to prevent problems reading bad files)
 funcs.saveData(tracks, tracks_file)
 
 # Fixes the settings file if any of the settings are invalid.
+print("Checking settings file...")
 funcs.fixSettingsFile(settings)
+print()
 funcs.printSettings(settings, {"ids": False})
+
+# Checks to make sure the data is valid.
+print("Checking data...")
+while True:
+    delKey = None
+    for key, value in tracks.items():
+        #print(f"Checking {key}: {value}")
+        #print()
+        delKey = None
+        if funcs.ruleChecker(key, ["non-empty", "string", "titleCase"], {"verbose": False}) and funcs.ruleChecker(value, ["non-empty", "integer", "positive", "strict-non-string"], {"convertToInt": False, "verbose": False}):
+            pass
+
+        else:
+            print("Invalid data found in tracks.json. Removing invalid data...")
+            delKey = key
+            break
+
+    if delKey is None:
+        break
+
+    else:
+        del tracks[delKey]
+        funcs.saveData(tracks, tracks_file)
+
+
+tracksIndexes = list(tracks.keys())
 
 # Loop of Death
 while True:
@@ -115,9 +150,11 @@ while True:
             print()
             time.sleep(0.1)
             break
+
         elif userInput == "reset":
             funcs.resetSettings(settings)
             continue
+
         else:
             setting = funcs.checkInput(userInput, "lower")
             if funcs.errorHandler(setting) != "all clear":
@@ -131,6 +168,7 @@ while True:
                     funcs.errorMessage("That doesn't exist yet.")
                     continue
 
+        # What to change to?
         if setting in settings:
             newValue = input("What would you like to change " + str(setting) + " to? ")
             if funcs.checkSetting(newValue, settings[setting]["type"], settings[setting]["rules"]):
@@ -143,6 +181,7 @@ while True:
 
             else:
                 continue
+            # HERE
         else:
             funcs.errorMessage("That doesn't exist yet.")
             continue

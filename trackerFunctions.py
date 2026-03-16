@@ -7,7 +7,7 @@ import time
 def printTracks(trackData, IDs):
     for key, value in trackData.items():
         time.sleep(0.1)
-        print("[" + str(IDs.index(key)) + "] " + str(key) + ": " + str(value))
+        print("[" + str(IDs.index(key)) + "] " + str(key) + ": " + str(int(value)))
     time.sleep(0.1)
     print()
 
@@ -78,6 +78,7 @@ def loadData(fileName, fallback):
             else:
                 return fallback
     except (FileNotFoundError, json.JSONDecodeError):
+        print(f"{fileName} doesn't exist or is corrupted. Creating a new one...")
         return fallback
 
 # Saves data to a JSON file.
@@ -104,49 +105,144 @@ def checkSetting(setting, validType, validValues):
         return ruleChecker(setting, validValues)
 
 # Checks if a value follows certain rules (given function input)
-def ruleChecker(value, rules):
+def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True}):
+    #print(f"Checking {value} against rules: {rules}...")
     for rule in rules:
         if rule == "integer":
+            #print(f"Checking if {value} is an integer...")
             try:
                 if int(value) == int(float(int(value))):
-                    value = int(value)
+                    #print(f"{value} is equal as integer and float.")
+                    if params["convertToInt"]:
+                        #print("Instructed to convert to ingeter, converting...")
+                        value = int(value)
+                        #print(f"Converted to integer: {value}")
+
+                    else:
+                        #print("Instructed to not convert to integer, skipping...")
+                        pass
                 else:
-                    print("This setting must be an integer.")
+                    #print(f"{value} is not equal as integer and float.")
+                    if params["verbose"]:
+                        print("This must be an integer.")
+                        time.sleep(0.5)
+                        print("This must be:")
+                        for rule in rules:
+                            print(f" - {rule}")
+                            time.sleep(0.1)
+                        errorMessage()
+                    return False
+            
+            except ValueError:
+                #print(f"{value} could not be converted to an integer or float.")
+                if params["verbose"]:
+                    print("This must be an integer.")
                     time.sleep(0.5)
-                    print("This setting must be:")
+                    print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
                         time.sleep(0.1)
                     errorMessage()
-                    return False
-            
-            except ValueError:
-                print("This setting must be an integer.")
-                time.sleep(0.5)
-                print("This setting must be:")
-                for rule in rules:
-                    print(f" - {rule}")
-                    time.sleep(0.1)
-                errorMessage()
                 return False
             
             if not isinstance(value, int):
+                #print(f"{value} is not an integer type.")
+                if params["verbose"]:
+                    print("This must be an integer.")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                    time.sleep(0.1)
+                    errorMessage()
                 return False
         
         elif rule == "positive":
             if not value > 0:
-                print("This setting must be a positive number.")
-                time.sleep(0.5)
-                print("This setting must be:")
-                for rule in rules:
-                    print(f" - {rule}")
-                    time.sleep(0.1)
-                errorMessage()
+                if params["verbose"]:
+                    print("This must be a positive number.")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
+                    errorMessage()
+                return False
+            
+        elif rule == "non-empty":
+            if value == "":
+                if params["verbose"]:
+                    print("This cannot be empty.")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
+                    errorMessage()
+                return False
+            
+        elif rule == "string":
+            try:
+                value = float(value)
+                if params["verbose"]:
+                    print("This must be a string.")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
+                    errorMessage()
+                return False
+            except ValueError:
+                try:
+                    value = str(value)
+                    if isinstance(value, str):
+                        #return True
+                        #Trying this instead...
+                        pass
+
+                except ValueError:
+                    if params["verbose"]:
+                        print("This must be a string.")
+                        time.sleep(0.5)
+                        print("This must be:")
+                        for rule in rules:
+                            print(f" - {rule}")
+                            time.sleep(0.1)
+                        errorMessage()
+                    return False
+
+        elif rule == "strict-non-string":
+            if isinstance(value, str):
+                if params["verbose"]:
+                    print("This cannot be a string.")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
+                    errorMessage()
+                
                 return False
 
-            
-        # Continue adding more rules as needed
-    
+        elif rule == "titleCase":
+            #print(f"Checking if {value} is in title case...")
+            #print(value)
+            #print(value.title())
+            if value != value.title():
+                if params["verbose"]:
+                    print("This must be in title case (first letter of each word capitalized).")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
+                    errorMessage()
+                return False
+            else:
+                #print(f"{value} is in title case.")
+                pass
+
     return True
 
 # Fixes the settings file if any of the settings are invalid (and saves!)        

@@ -1,5 +1,23 @@
 CHANGELOG
 
+03/16/2026: Enhance input validation and settings management with new rules and checks
+- Added todo: "Input validation for files (important): what do I do if the settings file doesn't exist?"
+- Added todo: "Classes (object-oriented design): I don't know what this means yet but someone said I should do it."
+- Added todo: "Eventually add unit tests. Again, whatever that means..."
+- Built code to check if the data in tracks.json is valid.
+- Added parameter input to the ruleChecker function. That way, I can have the function check if an input is an integer, and then based on the params decide whether to convert it to an integer (for example, 2.0), or just return True.
+- Added more checking abilities to the ruleChecker function: does input contain something other than an empty string? Is the input a string that isn't a number? Is the input strictly a string (yes, in the case of "2", but not 2).
+- Made loadData a bit more verbose
+- Tweaked the printTracks function to account for the case where a boolean is stored in tracks.json (Surprise! It's 1s and 0s!)
+- Added another parameter to ruleChecker: to print, or not to print. NOTE: there is a very real chance I broke something while making this change, and have not noticed it yet.
+- Completed todo: "Check if data is valid" This is always an ongoing thing, so if I notice I make a change that results in more of these problems I'll probably add it back to the todo.
+- Added a settingsPersist option. If false, the settings wipe on startup (settingsPersist resets to true).
+- Added todo: "Make it possible to change settingsPersist from settings window."
+- Probably more I forgot to write down. This was pretty hectic and all over the place in terms of bugfixing/tweaking.
+- SIDE NOTE: ruleChecker function now takes up 139 (mental math) lines. 2-3 more options for rules to check, and it'd be longer than main.py!
+
+
+
 03/14/2026 #2: Enhance settings management and user feedback with new reset feature and improved descriptions
 - Added todo "Quit program, save or no save"
 - Added the ability to reset the settings to their default values.
