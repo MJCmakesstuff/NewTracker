@@ -1,5 +1,17 @@
 CHANGELOG
 
+03/17/2026: Refactor settings management by implementing a schema, enhancing input validation, and migrating settings storage to a variable. Remove settings.json and update related functions for improved handling.
+- Added a settings schema in main.py to contain the settings, their default values, and allowed values.
+- settings.json now only stores settings values.
+- Modified main.py and resetSettings, fixSettingsFile, and printSettings in trackerFunctions.py to reflect these changes.
+- Fixed some printing issues resulting from the previous changes.
+- Rewrote functions involving the "params" input. Now, the default value is None, and at the beginning of the function the default params are specified and then merged with the inputted parameters (overwriting defaults).
+- Parts of the code that saved to settings.json now save to a variable called settings_file, so I can change it's location in one spot.
+- Moved settings.json to the data folder.
+- Completed todo: "Input validation for files (important): what do I do if the settings file doesn't exist?"
+
+
+
 03/17/2026: Enhance settings management by adding boolean input validation and conversion
 - Added a rule to ruleChecker to check if input is a boolean (ex. 1, yes, true all = True).
 - User can now change settingsPersist from the settings window.

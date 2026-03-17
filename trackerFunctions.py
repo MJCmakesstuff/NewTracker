@@ -87,25 +87,41 @@ def saveData(data, fileName):
         json.dump(data, file, indent=4)
 
 # Checks if settings are valid
-def checkSetting(setting, validType, validValues):
+def checkSetting(setting, validType, validValues, inParams=None):
+    defaultParams = {"verbose": True}
+    if inParams is None:
+        inParams = {}
+    params = {**defaultParams, **inParams}
+    
+    
+    #print(f"{setting} should be of type {validType} and follow these rules: {validValues}, params are: {params}")
     if validType == "set":
         if setting in validValues:
             return True
         else:
-            print("That isn't a valid option for that setting.")
-            time.sleep(0.5)
-            print("Valid options are: ")
-            time.sleep(0.5)
-            for value in validValues:
-                print(value)
-                time.sleep(0.1)
-            errorMessage()
+            #print(f"Verbose is set to {params["verbose"]}.")
+            if params["verbose"]:
+                #print("I AM RUNNING INSIDE CHECKSETTING")
+                #print(params["verbose"])
+                print("That isn't a valid option for that setting.")
+                time.sleep(0.5)
+                print("Valid options are: ")
+                time.sleep(0.5)
+                for value in validValues:
+                    print(value)
+                    time.sleep(0.1)
+                errorMessage()
             return False
     if validType == "rules":
-        return ruleChecker(setting, validValues)
+        return ruleChecker(setting, validValues, {"verbose": False})
 
 # Checks if a value follows certain rules (given function input)
-def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True, "convertToBool": True}):
+def ruleChecker(value, rules, inParams=None):
+    defaultParams = {"convertToInt": True, "verbose": True, "convertToBool": True}
+    if inParams is None:
+        inParams = {}
+    params = {**defaultParams, **inParams}
+    
     #print(f"Checking {value} against rules: {rules}...")
     for rule in rules:
         if rule == "integer":
@@ -260,13 +276,16 @@ def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True, "co
     return True
 
 # Fixes the settings file if any of the settings are invalid (and saves!)        
-def fixSettingsFile(settings):
-    for key, value in settings.items():
-        if checkSetting(value["value"], value["type"], value["rules"]):
+def fixSettingsFile(settings, schema, save_location):
+    for key, value in schema.items():
+        #print(f"Checking setting '{key}' with value '{settings[key]}' against rules: {value['rules']}...")
+        if checkSetting(settings[key], value["type"], value["rules"], {"verbose": False}):
             continue
         else:
-            value["value"] = value["default"]
-    saveData(settings, "settings.json")
+            time.sleep(0.1)
+            print(f"Invalid value for setting '{key}' found in settings.json. Resetting to default: {value['default']}...")
+            settings[key] = value["default"]
+    saveData(settings, save_location)
 
 # Prints the current settings.
 def printSettings(settings, options={"ids": True}):
@@ -274,17 +293,17 @@ def printSettings(settings, options={"ids": True}):
     for key, value in settings.items():
         time.sleep(0.1)
         if options["ids"]:
-            print(f"[{list(settings.keys()).index(key)}] {key}: {value['value']}")
+            print(f"[{list(settings.keys()).index(key)}] {key}: {value}")
         else:
-            print(f"{key}: {value['value']}")
+            print(f"{key}: {value}")
     time.sleep(0.1)
     print()
 
 # Resets settings to their default values.
-def resetSettings(settings):
-    for key, value in settings.items():
-        value["value"] = value["default"]
-    saveData(settings, "settings.json")
+def resetSettings(settings, schema, save_location):
+    for key, value in schema.items():
+        settings[key] = schema[key]["default"]
+    saveData(settings, save_location)
     print("Settings reset.")
     print()
     time.sleep(0.5)

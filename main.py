@@ -4,6 +4,32 @@ import time
 import trackerFunctions as funcs
 from pathlib import Path
 
+SETTINGSSCHEMA = {
+    "settingsPersist": {
+        "type": "rules",
+        "rules": [
+            "boolean"
+        ],
+        "default": True
+    },
+    "mode": {
+        "type": "set",
+        "rules": [
+            "add",
+            "subtract"
+        ],
+        "default": "add"
+    },
+    "multiplier": {
+        "type": "rules",
+        "rules": [
+            "integer",
+            "positive"
+        ],
+        "default": 1
+    }
+}
+
 i = 0
 while i < 5:
     print()
@@ -17,22 +43,34 @@ data_dir.mkdir(exist_ok=True)
 
 # Sets data files to vars
 tracks_file = data_dir / "tracks.json"
+settings_file = data_dir / "settings.json"
 
 # Loads tracks, tracksIndexes, and settings from JSON files.
 tracks = funcs.loadData(tracks_file, {})
-settings = funcs.loadData("settings.json", {})
 
-if settings["settingsPersist"]["value"] == False:
+# Loads settings
+loaded_settings = funcs.loadData(settings_file, {})
+settings = {}
+for key, value in SETTINGSSCHEMA.items():
+    if key in loaded_settings:
+        settings[key] = loaded_settings[key]
+    else:
+        settings[key] = value["default"]
+
+funcs.saveData(settings, settings_file)
+
+
+if settings["settingsPersist"] == False:
     print("Settings persistence is turned off. Resetting settings to defaults...")
-    funcs.resetSettings(settings)
-    funcs.saveData(settings, "settings.json")
+    funcs.resetSettings(settings, SETTINGSSCHEMA, settings_file)
+    funcs.saveData(settings, settings_file)
 
 # Saves the data (to prevent problems reading bad files)
 funcs.saveData(tracks, tracks_file)
 
 # Fixes the settings file if any of the settings are invalid.
 print("Checking settings file...")
-funcs.fixSettingsFile(settings)
+funcs.fixSettingsFile(settings, SETTINGSSCHEMA, settings_file)
 print()
 funcs.printSettings(settings, {"ids": False})
 
@@ -64,13 +102,13 @@ tracksIndexes = list(tracks.keys())
 
 # Loop of Death
 while True:
-    if settings["mode"]["value"] == "add" or settings["mode"]["value"] == "subtract":
+    if settings["mode"] == "add" or settings["mode"] == "subtract":
         while True:
             print()
             print("Here's what I'm tracking so far: ")
             funcs.printTracks(tracks, tracksIndexes)
 
-            userInput = input("What do you want to " + str(settings["mode"]["value"]) + " by " + str(settings["multiplier"]["value"]) + "? (type \"settings\" to change settings) ")
+            userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"settings\" to change settings) ")
             if userInput == "settings":
                 print("Switching to settings window...")
                 time.sleep(0.5)
@@ -96,15 +134,15 @@ while True:
             # If the track exists, add 1.
             # Otherwise, create the track, and add it to the index list.
             if track in tracks:
-                if settings["mode"]["value"] == "add":
-                    tracks[track] += int(settings["multiplier"]["value"])
-                    print("Added " + str(settings["multiplier"]["value"]) + " to " + str(track) + ". New value: " + str(tracks[track]))
+                if settings["mode"] == "add":
+                    tracks[track] += int(settings["multiplier"])
+                    print("Added " + str(settings["multiplier"]) + " to " + str(track) + ". New value: " + str(tracks[track]))
                     time.sleep(0.5)
                     print()
                     time.sleep(0.1)
 
-                elif settings["mode"]["value"] == "subtract":
-                    tracks[track] -= int(settings["multiplier"]["value"])
+                elif settings["mode"] == "subtract":
+                    tracks[track] -= int(settings["multiplier"])
                     if tracks[track] <= 0:
                         del tracks[track]
                         tracksIndexes.remove(track)
@@ -114,21 +152,21 @@ while True:
                         time.sleep(0.1)
                     
                     else:
-                        print("Subtracted " + str(settings["multiplier"]["value"]) + " from " + str(track) + ". New value: " + str(tracks[track]))
+                        print("Subtracted " + str(settings["multiplier"]) + " from " + str(track) + ". New value: " + str(tracks[track]))
                         time.sleep(0.5)
                         print()
                         time.sleep(0.1)
 
             else:
-                if settings["mode"]["value"] == "add":
-                    tracks[track] = int(settings["multiplier"]["value"])
+                if settings["mode"] == "add":
+                    tracks[track] = int(settings["multiplier"])
                     tracksIndexes.append(track)
                     print("Created " + str(track) + " with value " + str(tracks[track]) + ".")
                     time.sleep(0.5)
                     print()
                     time.sleep(0.1)
 
-                elif settings["mode"]["value"] == "subtract":
+                elif settings["mode"] == "subtract":
                     funcs.errorMessage("That doesn't exist yet.")
                     continue
 
@@ -152,7 +190,7 @@ while True:
             break
 
         elif userInput == "reset":
-            funcs.resetSettings(settings)
+            funcs.resetSettings(settings, SETTINGSSCHEMA, settings_file)
             continue
 
         else:
@@ -171,12 +209,12 @@ while True:
         # What to change to?
         if setting in settings:
             newValue = input("What would you like to change " + str(setting) + " to? ")
-            if funcs.checkSetting(newValue, settings[setting]["type"], settings[setting]["rules"]):
-                if settings[setting]["rules"] == ["boolean"]:
+            if funcs.checkSetting(newValue, SETTINGSSCHEMA[setting]["type"], SETTINGSSCHEMA[setting]["rules"]):
+                if SETTINGSSCHEMA[setting]["rules"] == ["boolean"]:
                     newValue = funcs.convertToBool(newValue)
-                    print(newValue, type(newValue))
-                settings[setting]["value"] = newValue
-                funcs.saveData(settings, "settings.json")
+                    #print(newValue, type(newValue))
+                settings[setting] = newValue
+                funcs.saveData(settings, settings_file)
                 print("Changed " + str(setting) + " to " + str(newValue) + ".")
                 time.sleep(0.5)
                 print()

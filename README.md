@@ -14,8 +14,6 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-Input validation for files (important): what do I do if the settings file doesn't exist?
-
 Classes (object-oriented design): I don't know what this means yet but someone said I should do it.
 
 Eventually add unit tests. Again, whatever that means...
