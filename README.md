@@ -14,10 +14,10 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
+What the heck does this mean and should I do something with regards to it? if __name__ == '__main__': sys.exit(main())
+
 Classes (object-oriented design): I don't know what this means yet but someone said I should do it.
 
 Eventually add unit tests. Again, whatever that means...
-
-Quit program, save or no save
 
 GUI

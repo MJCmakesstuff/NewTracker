@@ -100,6 +100,8 @@ while True:
 
 tracksIndexes = list(tracks.keys())
 
+print("Welcome to NewTracker! Hope you enjoy!!")
+
 # Loop of Death
 while True:
     if settings["mode"] == "add" or settings["mode"] == "subtract":
@@ -181,13 +183,17 @@ while True:
     # Setting Changing Loop
     while True:
         funcs.printSettings(settings)
-        userInput = input("What setting do you want to change? (type \"done\" to finish, or \"reset\" to reset to defaults) ")
+        userInput = input("What setting do you want to change? (type \"done\" to finish, \"reset\" to reset to defaults, or \"quit\" to exit the program) ")
         if userInput == "done":
             print("Switching to main window...")
             time.sleep(0.5)
             print()
             time.sleep(0.1)
             break
+
+        elif userInput == "quit":
+            print("Thank you for using my program! See you next time!!")
+            sys.exit(0)
 
         elif userInput == "reset":
             funcs.resetSettings(settings, SETTINGSSCHEMA, settings_file)

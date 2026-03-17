@@ -1,6 +1,15 @@
 CHANGELOG
 
-03/17/2026: Refactor settings management by implementing a schema, enhancing input validation, and migrating settings storage to a variable. Remove settings.json and update related functions for improved handling.
+03/17/2026 #3: Add welcome message, exit option, and update input prompts in main.py; update CHANGELOG and README.md
+- Added todo: "What the heck does this mean and should I do something with regards to it? if __name__ == '__main__': sys.exit(main())"
+- Added welcome greeting and exit sendoff.
+- Added the ablity to exit the program from the settings window by typing "quit".
+- Completed todo: "Quit program, save or no save"
+- Note: the program autosaves throughout so I did not implement an option to save/not save on quitting.
+
+
+
+03/17/2026 #2: Refactor settings management by implementing a schema, enhancing input validation, and migrating settings storage to a variable. Remove settings.json and update related functions for improved handling.
 - Added a settings schema in main.py to contain the settings, their default values, and allowed values.
 - settings.json now only stores settings values.
 - Modified main.py and resetSettings, fixSettingsFile, and printSettings in trackerFunctions.py to reflect these changes.
