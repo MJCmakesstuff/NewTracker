@@ -172,6 +172,9 @@ while True:
         if setting in settings:
             newValue = input("What would you like to change " + str(setting) + " to? ")
             if funcs.checkSetting(newValue, settings[setting]["type"], settings[setting]["rules"]):
+                if settings[setting]["rules"] == ["boolean"]:
+                    newValue = funcs.convertToBool(newValue)
+                    print(newValue, type(newValue))
                 settings[setting]["value"] = newValue
                 funcs.saveData(settings, "settings.json")
                 print("Changed " + str(setting) + " to " + str(newValue) + ".")

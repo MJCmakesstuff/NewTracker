@@ -1,10 +1,9 @@
 {
     "settingsPersist": {
         "value": true,
-        "type": "set",
+        "type": "rules",
         "rules": [
-            true,
-            false
+            "boolean"
         ],
         "default": true
     },

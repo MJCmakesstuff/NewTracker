@@ -1,5 +1,12 @@
 CHANGELOG
 
+03/17/2026: Enhance settings management by adding boolean input validation and conversion
+- Added a rule to ruleChecker to check if input is a boolean (ex. 1, yes, true all = True).
+- User can now change settingsPersist from the settings window.
+- Completed todo: "Make it possible to change settingsPersist from settings window."
+
+
+
 03/16/2026: Enhance input validation and settings management with new rules and checks
 - Added todo: "Input validation for files (important): what do I do if the settings file doesn't exist?"
 - Added todo: "Classes (object-oriented design): I don't know what this means yet but someone said I should do it."

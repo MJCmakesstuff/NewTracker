@@ -105,7 +105,7 @@ def checkSetting(setting, validType, validValues):
         return ruleChecker(setting, validValues)
 
 # Checks if a value follows certain rules (given function input)
-def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True}):
+def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True, "convertToBool": True}):
     #print(f"Checking {value} against rules: {rules}...")
     for rule in rules:
         if rule == "integer":
@@ -222,7 +222,6 @@ def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True}):
                         print(f" - {rule}")
                         time.sleep(0.1)
                     errorMessage()
-                
                 return False
 
         elif rule == "titleCase":
@@ -242,6 +241,21 @@ def ruleChecker(value, rules, params={"convertToInt": True, "verbose": True}):
             else:
                 #print(f"{value} is in title case.")
                 pass
+
+        elif rule == "boolean":
+            if convertToBool(value) == "not bool":
+                if params["verbose"]:
+                    print("This must be a boolean (true/false).")
+                    time.sleep(0.5)
+                    print("This must be:")
+                    for rule in rules:
+                        print(f" - {rule}")
+                        time.sleep(0.1)
+                    errorMessage()
+                return False
+            else:
+                if params["convertToBool"]:
+                    value = convertToBool(value)
 
     return True
 
@@ -275,7 +289,14 @@ def resetSettings(settings):
     print()
     time.sleep(0.5)
 
-
+# Tries to convert input to a boolean. If failed, retunrns "not bool".
+def convertToBool(value):
+    if str(value).strip().lower() in ["true", "yes", "1", "y", "t"]:
+        return True
+    elif str(value).strip().lower() in ["false", "no", "0", "n", "f"]:
+        return False
+    else:
+        return "not bool"
 
 
 
