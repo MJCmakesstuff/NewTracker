@@ -1,11 +1,21 @@
 CHANGELOG
 
+03/18/2026 #2: Implement TrackList class for improved track management; update README and CHANGELOG with new features and todos
+- Created a class for tracks. It's a dictionary. It can load from a file, save to a file, validate the data in itself, generate ids for the keys in its data, print itself along with the ids, increase and decrease tracked items, as well as create and delete tracked items.
+- Changed instances in initalizeData() where any of the above were done for the variable "tracks" to use the class instead for "my_list" subject to change.
+- Added todo: implement class changes for tracks to main().
+- NOTE: despite main remaing unchanged, the program still works (I think).
+- Added todo: "Ability to have multiple lists of tracks using the new class"
+- Added todo: "Make settings into a class as well"
+
+
+
 03/18/2026: Enhance main.py with structured error handling, debug mode, and improved function organization; update CHANGELOG and README.md
 - Put everthing in main.py into a main() functions, then added if __name__ == "__main__": sys.exit(main()) at the end.
 - Created a separate function within main.py for initializing data. This function is later called in main() and all the variables are set to what they were in the initialize function.
 - Completed todo: "What the heck does this mean and should I do something with regards to it? if __name__ == '__main__': sys.exit(main())"
 - Added a DEBUG variable. If true, main() runs as usual. Otherwise, main() runs inside a try block, and a traceback gets printed and runs sys.exit(1).
-- Changed the symbol for trackerFunctions from funcs to tf for simplicity. (I was how easy VSCode makes this!)
+- Changed the symbol for trackerFunctions from funcs to tf for simplicity. (I was amazed at how easy VSCode makes this!)
 
 
 

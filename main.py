@@ -6,6 +6,61 @@ from pathlib import Path
 
 DEBUG = True
 
+class TrackList:
+    def __init__(self):
+        self.data = {}
+        self.ids = []
+    
+    def load(self, source):
+        self.data = tf.loadData(source, {})
+        self.generateIDS()
+    
+    def save(self, deposit):
+        tf.saveData(self.data, deposit)
+        self.generateIDS()
+
+    def validate(self):
+        print("Checking data...")
+        while True:
+            delKey = None
+            for key, value in self.data.items():
+                #print(f"Checking {key}: {value}")
+                #print()
+                delKey = None
+                if tf.ruleChecker(key, ["non-empty", "string", "titleCase"], {"verbose": False}) and tf.ruleChecker(value, ["non-empty", "integer", "positive", "strict-non-string"], {"convertToInt": False, "verbose": False}):
+                    pass
+
+                else:
+                    print("Invalid data found in tracks.json. Removing invalid data...")
+                    delKey = key
+                    break
+
+            if delKey is None:
+                break
+
+            else:
+                del self.data[delKey]
+                self.save(Path("data") / "tracks.json")
+
+    def generateIDS(self):
+        self.ids = list(self.data.keys())
+    
+    def print(self):
+        tf.printTracks(self.data, self.ids)
+
+    def increaseTrack(self, track, multiplier):
+        self.data[track] += multiplier
+    
+    def decreaseTrack(self, track, multiplier):
+        self.data[track] -= multiplier
+
+    def removeTrack(self, track):
+        del self.data[track]
+
+    def createTrack(self, track, multiplier):
+        self.data[track] = multiplier
+
+
 SETTINGSSCHEMA = {
         "settingsPersist": {
             "type": "rules",
@@ -33,6 +88,9 @@ SETTINGSSCHEMA = {
     }
 
 def initializeData():
+    
+    my_list = TrackList()
+
     # Creates a "data" directory if it doesn't exist.
     data_dir = Path("data")
     data_dir.mkdir(exist_ok=True)
@@ -42,7 +100,10 @@ def initializeData():
     settings_file = data_dir / "settings.json"
 
     # Loads tracks, tracksIndexes, and settings from JSON files.
-    tracks = tf.loadData(tracks_file, {})
+    #tracks = tf.loadData(tracks_file, {})
+    my_list.load(tracks_file)
+    #tf.saveData(tracks, tracks_file)
+    my_list.save(tracks_file)
 
     # Loads settings
     loaded_settings = tf.loadData(settings_file, {})
@@ -55,14 +116,11 @@ def initializeData():
 
     tf.saveData(settings, settings_file)
 
-
     if settings["settingsPersist"] == False:
         print("Settings persistence is turned off. Resetting settings to defaults...")
         tf.resetSettings(settings, SETTINGSSCHEMA, settings_file)
         tf.saveData(settings, settings_file)
-
-    # Saves the data (to prevent problems reading bad files)
-    tf.saveData(tracks, tracks_file)
+    
 
     # Fixes the settings file if any of the settings are invalid.
     print("Checking settings file...")
@@ -71,42 +129,43 @@ def initializeData():
     tf.printSettings(settings, {"ids": False})
 
     # Checks to make sure the data is valid.
-    print("Checking data...")
-    while True:
-        delKey = None
-        for key, value in tracks.items():
+    #while True:
+        #delKey = None
+        #for key, value in tracks.items():
             #print(f"Checking {key}: {value}")
             #print()
-            delKey = None
-            if tf.ruleChecker(key, ["non-empty", "string", "titleCase"], {"verbose": False}) and tf.ruleChecker(value, ["non-empty", "integer", "positive", "strict-non-string"], {"convertToInt": False, "verbose": False}):
-                pass
+            #delKey = None
+            #if tf.ruleChecker(key, ["non-empty", "string", "titleCase"], {"verbose": False}) and tf.ruleChecker(value, ["non-empty", "integer", "positive", "strict-non-string"], {"convertToInt": False, "verbose": False}):
+                #pass
 
-            else:
-                print("Invalid data found in tracks.json. Removing invalid data...")
-                delKey = key
-                break
+            #else:
+                #print("Invalid data found in tracks.json. Removing invalid data...")
+                #delKey = key
+                #break
 
-        if delKey is None:
-            break
+        #if delKey is None:
+            #break
 
-        else:
-            del tracks[delKey]
-            tf.saveData(tracks, tracks_file)
+        #else:
+            #del tracks[delKey]
+            #tf.saveData(tracks, tracks_file)
+    my_list.validate()
 
-    tracksIndexes = list(tracks.keys())
+    return data_dir, tracks_file, settings_file, my_list.data, settings, my_list.ids
 
-    return data_dir, tracks_file, settings_file, tracks, settings, tracksIndexes
 
 def main():
     #int("freaky") # Traceback
     i = 0
-    while i < 5:
+    while i < 10:
         print()
         i += 1
 
     print("Starting up...")
 
     data_dir, tracks_file, settings_file, tracks, settings, tracksIndexes = initializeData()
+    print("here's the data!")
+    print(data_dir, tracks_file, settings_file, tracks, settings, tracksIndexes)
     
     print("Welcome to NewTracker! Hope you enjoy!!")
 
@@ -145,6 +204,7 @@ def main():
                 # Otherwise, create the track, and add it to the index list.
                 if track in tracks:
                     if settings["mode"] == "add":
+                        #increaseTrack
                         tracks[track] += int(settings["multiplier"])
                         print("Added " + str(settings["multiplier"]) + " to " + str(track) + ". New value: " + str(tracks[track]))
                         time.sleep(0.5)
@@ -152,8 +212,10 @@ def main():
                         time.sleep(0.1)
 
                     elif settings["mode"] == "subtract":
+                        #decreaseTrack
                         tracks[track] -= int(settings["multiplier"])
                         if tracks[track] <= 0:
+                            #deleteTrack
                             del tracks[track]
                             tracksIndexes.remove(track)
                             print("Removed " + str(track) + ".")
@@ -169,6 +231,7 @@ def main():
 
                 else:
                     if settings["mode"] == "add":
+                        # createTrack
                         tracks[track] = int(settings["multiplier"])
                         tracksIndexes.append(track)
                         print("Created " + str(track) + " with value " + str(tracks[track]) + ".")
