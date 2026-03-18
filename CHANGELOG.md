@@ -1,5 +1,14 @@
 CHANGELOG
 
+03/18/2026: Enhance main.py with structured error handling, debug mode, and improved function organization; update CHANGELOG and README.md
+- Put everthing in main.py into a main() functions, then added if __name__ == "__main__": sys.exit(main()) at the end.
+- Created a separate function within main.py for initializing data. This function is later called in main() and all the variables are set to what they were in the initialize function.
+- Completed todo: "What the heck does this mean and should I do something with regards to it? if __name__ == '__main__': sys.exit(main())"
+- Added a DEBUG variable. If true, main() runs as usual. Otherwise, main() runs inside a try block, and a traceback gets printed and runs sys.exit(1).
+- Changed the symbol for trackerFunctions from funcs to tf for simplicity. (I was how easy VSCode makes this!)
+
+
+
 03/17/2026 #3: Add welcome message, exit option, and update input prompts in main.py; update CHANGELOG and README.md
 - Added todo: "What the heck does this mean and should I do something with regards to it? if __name__ == '__main__': sys.exit(main())"
 - Added welcome greeting and exit sendoff.
