@@ -1,5 +1,15 @@
 CHANGELOG
 
+03/19/2026 #2: Refactor track management in main.py by implementing addTrack and subtractTrack methods; update README and CHANGELOG to reflect changes.
+- Renamed some symbols.
+- Moved the logic in main() that differentiates between increasing a track and creating a track into TrackList.add(self, track, multiplier).
+- Did the same for decreasing and removing: combined into TrackList.subtract(self, track, multiplier).
+- TrackList.add() and .subtract() now return True or False (in case .subtract() tries to delete a track that doesn't exist).
+- Removed all the now obsolete logic and replaced with my_list.add() and .subtract().
+- Completed todo: "Move delete track logic into subtract function and create track logic into add function."
+
+
+
 03/19/2026: Update CHANGELOG and README with new todos; refactor main.py to utilize TrackList methods for track management
 - initializeData() no longer returns data_dir (as it was unused in main()).
 - initializeData() now returns my_list rather than my_list.data and my_list.ids.

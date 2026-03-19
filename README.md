@@ -14,8 +14,6 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-- Move delete track logic into subtract function and create track logic into add function.
-
 - Call save function after add/subtract functions, and generate ids as well.
 
 - Ability to have multiple lists of tracks using the new class

@@ -48,12 +48,46 @@ class TrackList:
     def print(self):
         tf.printTracks(self.data, self.ids)
 
-    def increaseTrack(self, track, multiplier):
-        self.data[track] += multiplier
-    
-    def decreaseTrack(self, track, multiplier):
-        self.data[track] -= multiplier
+    def addTrack(self, track, multiplier):
+        if track in self.data:
+            self.data[track] += multiplier
+            print("Added " + str(multiplier) + " to " + str(track) + ". New value: " + str(self.data[track]))
+            time.sleep(0.5)
+            print()
+            time.sleep(0.1)
+            return True
+        else:
+            self.data[track] = multiplier
+            self.ids.append(track)
+            print("Created " + str(track) + " with value " + str(self.data[track]) + ".")
+            time.sleep(0.5)
+            print()
+            time.sleep(0.1)
+            return True
 
+    def subtractTrack(self, track, multiplier):
+        if track in self.data:
+            self.data[track] -= multiplier
+            if self.data[track] <= 0:
+                del self.data[track]
+                self.ids.remove(track)
+                print("Removed " + str(track) + ".")
+                time.sleep(0.5)
+                print()
+                time.sleep(0.1)
+                return True
+            
+            else:
+                print("Subtracted " + str(multiplier) + " from " + str(track) + ". New value: " + str(self.data[track]))
+                time.sleep(0.5)
+                print()
+                time.sleep(0.1)
+                return True
+        
+        else:
+            tf.errorMessage("That doesn't exist yet.")
+            return False
+            
     def removeTrack(self, track):
         del self.data[track]
 
@@ -173,7 +207,6 @@ def main():
             while True:
                 print()
                 print("Here's what I'm tracking so far: ")
-                #tf.printTracks(tracks, tracksIndexes)
                 my_list.print()
 
                 userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"settings\" to change settings) ")
@@ -199,43 +232,12 @@ def main():
                         tf.errorMessage("That doesn't exist yet.")
                         continue
                 
-                # If the track exists, add 1.
-                # Otherwise, create the track, and add it to the index list.
-                if track in my_list.data:
-                    if settings["mode"] == "add":
-                        my_list.increaseTrack(track, int(settings["multiplier"]))
-                        print("Added " + str(settings["multiplier"]) + " to " + str(track) + ". New value: " + str(my_list.data[track]))
-                        time.sleep(0.5)
-                        print()
-                        time.sleep(0.1)
-
-                    elif settings["mode"] == "subtract":
-                        my_list.decreaseTrack(track, int(settings["multiplier"]))
-                        if my_list.data[track] <= 0:
-                            my_list.removeTrack(track)
-                            my_list.ids.remove(track)
-                            print("Removed " + str(track) + ".")
-                            time.sleep(0.5)
-                            print()
-                            time.sleep(0.1)
-                        
-                        else:
-                            print("Subtracted " + str(settings["multiplier"]) + " from " + str(track) + ". New value: " + str(my_list.data[track]))
-                            time.sleep(0.5)
-                            print()
-                            time.sleep(0.1)
-
-                else:
-                    if settings["mode"] == "add":
-                        my_list.createTrack(track, int(settings["multiplier"]))
-                        my_list.ids.append(track)
-                        print("Created " + str(track) + " with value " + str(my_list.data[track]) + ".")
-                        time.sleep(0.5)
-                        print()
-                        time.sleep(0.1)
-
-                    elif settings["mode"] == "subtract":
-                        tf.errorMessage("That doesn't exist yet.")
+                # Adds or subtracts the track depending on the mode.
+                if settings["mode"] == "add":
+                    if my_list.addTrack(track, int(settings["multiplier"])) == False:
+                        continue
+                elif settings["mode"] == "subtract":
+                    if my_list.subtractTrack(track, int(settings["multiplier"])) == False:
                         continue
 
                 my_list.save(tracks_file)
