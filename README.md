@@ -14,8 +14,6 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-- Call save function after add/subtract functions, and generate ids as well.
-
 - Ability to have multiple lists of tracks using the new class
 
 - Make settings into a class as well

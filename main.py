@@ -10,6 +10,7 @@ class TrackList:
     def __init__(self):
         self.data = {}
         self.ids = []
+        self.fileLocation = Path("data") / "tracks.json"
     
     def load(self, source):
         self.data = tf.loadData(source, {})
@@ -48,52 +49,47 @@ class TrackList:
     def print(self):
         tf.printTracks(self.data, self.ids)
 
-    def addTrack(self, track, multiplier):
+    def add(self, track, multiplier):
         if track in self.data:
             self.data[track] += multiplier
             print("Added " + str(multiplier) + " to " + str(track) + ". New value: " + str(self.data[track]))
             time.sleep(0.5)
             print()
             time.sleep(0.1)
-            return True
+            toReturn = True
         else:
             self.data[track] = multiplier
-            self.ids.append(track)
             print("Created " + str(track) + " with value " + str(self.data[track]) + ".")
             time.sleep(0.5)
             print()
             time.sleep(0.1)
-            return True
+            toReturn = True
+        self.generateIDS()
+        self.save(self.fileLocation)
+        return toReturn
 
-    def subtractTrack(self, track, multiplier):
+    def subtract(self, track, multiplier):
         if track in self.data:
             self.data[track] -= multiplier
             if self.data[track] <= 0:
                 del self.data[track]
-                self.ids.remove(track)
                 print("Removed " + str(track) + ".")
                 time.sleep(0.5)
                 print()
                 time.sleep(0.1)
-                return True
-            
+                toReturn = True
             else:
                 print("Subtracted " + str(multiplier) + " from " + str(track) + ". New value: " + str(self.data[track]))
                 time.sleep(0.5)
                 print()
                 time.sleep(0.1)
-                return True
-        
+                toReturn = True
         else:
             tf.errorMessage("That doesn't exist yet.")
-            return False
-            
-    def removeTrack(self, track):
-        del self.data[track]
-
-    def createTrack(self, track, multiplier):
-        self.data[track] = multiplier
-
+            toReturn = False
+        self.generateIDS()
+        self.save(self.fileLocation)
+        return toReturn
 
 SETTINGSSCHEMA = {
         "settingsPersist": {
@@ -234,15 +230,13 @@ def main():
                 
                 # Adds or subtracts the track depending on the mode.
                 if settings["mode"] == "add":
-                    if my_list.addTrack(track, int(settings["multiplier"])) == False:
+                    if my_list.add(track, int(settings["multiplier"])) == False:
                         continue
                 elif settings["mode"] == "subtract":
-                    if my_list.subtractTrack(track, int(settings["multiplier"])) == False:
+                    if my_list.subtract(track, int(settings["multiplier"])) == False:
                         continue
 
                 my_list.save(tracks_file)
-
-
 
         else:
             tf.errorMessage("That doesn't exist yet.")

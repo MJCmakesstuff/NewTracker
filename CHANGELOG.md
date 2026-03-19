@@ -1,5 +1,16 @@
 CHANGELOG
 
+03/19/2026 #3: Refactor TrackList methods to improve functionality; rename addTrack and subtractTrack to add and subtract, incorporate saving and ID generation, and update CHANGELOG and README accordingly.
+- Removed TrackList.removeTrack() and .createTrack() as their logic (1 line) is now incorporated into .addTrack() and .subtractTrack().
+- Renamed TrackList.addTrack() to .add and .subtractTrack() to .subtract.
+- TrackList now sets self.fileLocation = Path("data") / "tracks.json" so it can save from inside itself. Maybe this will be more useful when I begin having multiple lists.
+- TrackList.add() and .subtract() now call self.save() and .generateIDS() at the end.
+- Instead of immediately returning True/False, .add() and .subtract() set the bool to a var which is returned after saving.
+- Removed instances of changing the track IDs manually. It is all done with TrackList.generateIDS() now.
+- Completed todo: "Call save function after add/subtract functions, and generate ids as well."
+
+
+
 03/19/2026 #2: Refactor track management in main.py by implementing addTrack and subtractTrack methods; update README and CHANGELOG to reflect changes.
 - Renamed some symbols.
 - Moved the logic in main() that differentiates between increasing a track and creating a track into TrackList.add(self, track, multiplier).
@@ -19,6 +30,7 @@ CHANGELOG
 - Added todo: "Move delete track logic into subtract function and create track logic into add function."
 - Added todo: "Call save function after add/subtract functions, and generate ids as well."
 - Completed todo: "implement class changes for tracks to main()."
+
 
 
 03/18/2026 #2: Implement TrackList class for improved track management; update README and CHANGELOG with new features and todos
