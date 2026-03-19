@@ -1,5 +1,13 @@
 CHANGELOG
 
+03/19/2026 #4: Implement ListManager for enhanced list management; update TrackList to support naming and refactor main.py for integration; revise README and CHANGELOG to reflect new features and todos.
+- TrackList class now has a name that can be set with TrackList(name).
+- Created a ListManager class that can create lists and return existing ones.
+- Data initializer and main now utilize the new ListManager class. 
+- NOTE: This is a smaller commmit because I realize I need to make a better "window" management system in order to do anything meaningful. How can proceed developing the ability to have multiple lists if the user can't manage them yet?
+
+
+
 03/19/2026 #3: Refactor TrackList methods to improve functionality; rename addTrack and subtractTrack to add and subtract, incorporate saving and ID generation, and update CHANGELOG and README accordingly.
 - Removed TrackList.removeTrack() and .createTrack() as their logic (1 line) is now incorporated into .addTrack() and .subtractTrack().
 - Renamed TrackList.addTrack() to .add and .subtractTrack() to .subtract.

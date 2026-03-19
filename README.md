@@ -15,6 +15,11 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 Todo:
 
 - Ability to have multiple lists of tracks using the new class
+-- dictionary containing all the TrackLists
+-- name attribute stored in class?
+-- Implement to main()
+-- track changing window
+-- window changing window (like a pause menu)
 
 - Make settings into a class as well
 
