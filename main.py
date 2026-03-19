@@ -181,9 +181,9 @@ def track_editor(manager, settings, tracks_file, settings_file):
         print("Here's what I'm tracking so far: ")
         manager.lists["my list"].print()
 
-        userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"settings\" to change settings) ")
-        if userInput == "settings":
-            print("Switching to settings window...")
+        userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"menu\" to go to the menu): ")
+        if userInput == "menu":
+            print("Switching to main menu...")
             time.sleep(0.5)
             print()
             time.sleep(0.1)
@@ -218,17 +218,13 @@ def settings_editor(manager, settings, tracks_file, settings_file):
     while True:
         print()
         tf.printSettings(settings)
-        userInput = input("What setting do you want to change? (type \"done\" to finish, \"reset\" to reset to defaults, or \"quit\" to exit the program) ")
-        if userInput == "done":
-            print("Switching to main window...")
+        userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"menu\" to go to the menu): ")
+        if userInput == "menu":
+            print("Switching to main menu...")
             time.sleep(0.5)
             print()
             time.sleep(0.1)
             break
-
-        elif userInput == "quit":
-            print("Thank you for using my program! See you next time!!")
-            return 0
 
         elif userInput == "reset":
             tf.resetSettings(settings, SETTINGSSCHEMA, settings_file)
@@ -293,12 +289,17 @@ def main():
         for key, (name, function) in windows.items():
             print(f"[{key}] {name}")
             time.sleep(0.1)
-        window_choice = input("Please type your option (type \"quit\" to quit): ")
+        print()
+        window_choice = input("Which item would you like? (type \"quit\" to quit): ")
         if window_choice == "quit":
+            print("Thank you so much for using NewTracker! Come again!!")
+            time.sleep(1)
             return 0
         elif window_choice in windows:
             name, function = windows[window_choice]
-        function(manager, settings, tracks_file, settings_file)
+            function(manager, settings, tracks_file, settings_file)
+        else:
+            tf.errorMessage("That doesn't exist yet.")
 
 if __name__ == "__main__":
     if DEBUG:
@@ -310,4 +311,5 @@ if __name__ == "__main__":
             print(f"Fatal error: {e}")
             sys.exit(1)
 
-
+def leppard():
+    print("I don't wanna touch you too much, baby")

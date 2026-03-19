@@ -1,6 +1,13 @@
 CHANGELOG
 NOTE TO SELF: Change DEBUG to False before committing.
 
+03/19/2026 #6: Update CHANGELOG with recent changes; modify user prompts in main.py for improved clarity and navigation.
+- Improved user ability to switch between windows.
+- Removed the ability to quit from the settings window.
+- Yeah I can't lie this is not a huge commit.
+
+
+
 03/19/2026 #5: Update CHANGELOG and README with new todos; set DEBUG to False in main.py and refactor main function for improved structure and clarity.
 - Added todo: "Make an "app" class so I don't have to pass everything everywhere."
 - Turned the settings window and track window into their own functions, which are called within a loop in main.
