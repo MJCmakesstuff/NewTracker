@@ -1,4 +1,14 @@
 CHANGELOG
+NOTE TO SELF: Change DEBUG to False before committing.
+
+03/19/2026 #5: Update CHANGELOG and README with new todos; set DEBUG to False in main.py and refactor main function for improved structure and clarity.
+- Added todo: "Make an "app" class so I don't have to pass everything everywhere."
+- Turned the settings window and track window into their own functions, which are called within a loop in main.
+- Added the ability for the user to switch between windows via a third, "main menu" window.
+- Added the ability for the user to quit the program from the main menu.
+- Added todo: "Clean up quitting and switching between windows for clarity."
+
+
 
 03/19/2026 #4: Implement ListManager for enhanced list management; update TrackList to support naming and refactor main.py for integration; revise README and CHANGELOG to reflect new features and todos.
 - TrackList class now has a name that can be set with TrackList(name).

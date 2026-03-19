@@ -21,6 +21,10 @@ Todo:
 -- track changing window
 -- window changing window (like a pause menu)
 
+- Clean up quitting and switching between windows for clarity.
+
+- Make an "app" class so I don't have to pass everything everywhere.
+
 - Make settings into a class as well
 
 Classes (object-oriented design): I don't know what this means yet but someone said I should do it.
