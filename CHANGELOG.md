@@ -1,5 +1,16 @@
 CHANGELOG
 
+03/19/2026: Update CHANGELOG and README with new todos; refactor main.py to utilize TrackList methods for track management
+- initializeData() no longer returns data_dir (as it was unused in main()).
+- initializeData() now returns my_list rather than my_list.data and my_list.ids.
+- Replaced all instances of tracks with my_list.data and tracksIndexes with my_list.ids.
+- Replaced all instances of adding, subtracting, creating, or deleting a track with the my_list functions.
+- Instances of saving tracks now use my_list.save(tracks_file).
+- Added todo: "Move delete track logic into subtract function and create track logic into add function."
+- Added todo: "Call save function after add/subtract functions, and generate ids as well."
+- Completed todo: "implement class changes for tracks to main()."
+
+
 03/18/2026 #2: Implement TrackList class for improved track management; update README and CHANGELOG with new features and todos
 - Created a class for tracks. It's a dictionary. It can load from a file, save to a file, validate the data in itself, generate ids for the keys in its data, print itself along with the ids, increase and decrease tracked items, as well as create and delete tracked items.
 - Changed instances in initalizeData() where any of the above were done for the variable "tracks" to use the class instead for "my_list" subject to change.

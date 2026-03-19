@@ -151,7 +151,7 @@ def initializeData():
             #tf.saveData(tracks, tracks_file)
     my_list.validate()
 
-    return data_dir, tracks_file, settings_file, my_list.data, settings, my_list.ids
+    return tracks_file, settings_file, settings, my_list
 
 
 def main():
@@ -163,9 +163,7 @@ def main():
 
     print("Starting up...")
 
-    data_dir, tracks_file, settings_file, tracks, settings, tracksIndexes = initializeData()
-    print("here's the data!")
-    print(data_dir, tracks_file, settings_file, tracks, settings, tracksIndexes)
+    tracks_file, settings_file, settings, my_list = initializeData()
     
     print("Welcome to NewTracker! Hope you enjoy!!")
 
@@ -175,7 +173,8 @@ def main():
             while True:
                 print()
                 print("Here's what I'm tracking so far: ")
-                tf.printTracks(tracks, tracksIndexes)
+                #tf.printTracks(tracks, tracksIndexes)
+                my_list.print()
 
                 userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"settings\" to change settings) ")
                 if userInput == "settings":
@@ -195,46 +194,42 @@ def main():
                 # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
                 if type(track) == int:
                     try:
-                        track = tracksIndexes[track]
+                        track = my_list.ids[track]
                     except:
                         tf.errorMessage("That doesn't exist yet.")
                         continue
                 
                 # If the track exists, add 1.
                 # Otherwise, create the track, and add it to the index list.
-                if track in tracks:
+                if track in my_list.data:
                     if settings["mode"] == "add":
-                        #increaseTrack
-                        tracks[track] += int(settings["multiplier"])
-                        print("Added " + str(settings["multiplier"]) + " to " + str(track) + ". New value: " + str(tracks[track]))
+                        my_list.increaseTrack(track, int(settings["multiplier"]))
+                        print("Added " + str(settings["multiplier"]) + " to " + str(track) + ". New value: " + str(my_list.data[track]))
                         time.sleep(0.5)
                         print()
                         time.sleep(0.1)
 
                     elif settings["mode"] == "subtract":
-                        #decreaseTrack
-                        tracks[track] -= int(settings["multiplier"])
-                        if tracks[track] <= 0:
-                            #deleteTrack
-                            del tracks[track]
-                            tracksIndexes.remove(track)
+                        my_list.decreaseTrack(track, int(settings["multiplier"]))
+                        if my_list.data[track] <= 0:
+                            my_list.removeTrack(track)
+                            my_list.ids.remove(track)
                             print("Removed " + str(track) + ".")
                             time.sleep(0.5)
                             print()
                             time.sleep(0.1)
                         
                         else:
-                            print("Subtracted " + str(settings["multiplier"]) + " from " + str(track) + ". New value: " + str(tracks[track]))
+                            print("Subtracted " + str(settings["multiplier"]) + " from " + str(track) + ". New value: " + str(my_list.data[track]))
                             time.sleep(0.5)
                             print()
                             time.sleep(0.1)
 
                 else:
                     if settings["mode"] == "add":
-                        # createTrack
-                        tracks[track] = int(settings["multiplier"])
-                        tracksIndexes.append(track)
-                        print("Created " + str(track) + " with value " + str(tracks[track]) + ".")
+                        my_list.createTrack(track, int(settings["multiplier"]))
+                        my_list.ids.append(track)
+                        print("Created " + str(track) + " with value " + str(my_list.data[track]) + ".")
                         time.sleep(0.5)
                         print()
                         time.sleep(0.1)
@@ -243,8 +238,7 @@ def main():
                         tf.errorMessage("That doesn't exist yet.")
                         continue
 
-                # Saves the data back to the JSON files.
-                tf.saveData(tracks, tracks_file)
+                my_list.save(tracks_file)
 
 
 
