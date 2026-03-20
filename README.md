@@ -15,13 +15,11 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 Todo:
 
 - Ability to have multiple lists of tracks using the new class
--- dictionary containing all the TrackLists
+-- dictionary containing all the TrackLists (put this in tracks.json)
 -- name attribute stored in class?
 -- Implement to main()
 -- track changing window
 -- window changing window (like a pause menu)
-
-- Clean up quitting and switching between windows for clarity.
 
 - Make an "app" class so I don't have to pass everything everywhere.
 

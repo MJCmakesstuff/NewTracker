@@ -4,31 +4,61 @@ import time
 import trackerFunctions as tf
 from pathlib import Path
 
-DEBUG = False
+DEBUG = True
 
 class ListManager:
     def __init__(self):
         self.lists = {}
+        self.ids = []
+        self.fileLocation = Path("data") / "tracks.json"
+        #self.schema = {"list name": {"item name": "integer"}}
 
-    def createList(self, name):
-        self.lists[name] = TrackList(name)
+    def createList(self, name, data={}):
+        self.lists[name] = TrackList(name, data)
+        self.save()
+
+    def deleteList(self, name):
+        del self.lists[name]
+        self.save()
 
     def getList(self, name):
         return self.lists.get(name)
+    
+    def save(self):
+        toSave = {}
+        for key, value in self.lists.items():
+            toSave[key] = value.data
+        tf.saveData(toSave, self.fileLocation)
+        self.generateIDS()
+
+    def load(self):
+        listData = tf.loadData(self.fileLocation, {})
+        for key, value in listData.items():
+            self.lists[key] = TrackList(str(key), value)
+
+
+        self.generateIDS()
+
+    def generateIDS(self):
+        self.ids = list(self.lists.keys())
+
+    def print(self):
+        for name in self.lists.keys():
+            print(f"[{self.ids.index(name)}]: {name}")
 
 class TrackList:
-    def __init__(self, name):
-        self.data = {}
-        self.ids = []
-        self.fileLocation = Path("data") / "tracks.json"
+    def __init__(self, name, data={}):
+        self.data = data
+        self.generateIDS()
+        self.fileLocation = Path("data") / "oldTracks.json"
         self.name = name
     
-    def load(self, source):
-        self.data = tf.loadData(source, {})
+    def load(self):
+        self.data = tf.loadData(self.fileLocation, {})
         self.generateIDS()
     
-    def save(self, deposit):
-        tf.saveData(self.data, deposit)
+    def save(self):
+        tf.saveData(self.data, self.fileLocation)
         self.generateIDS()
 
     def validate(self):
@@ -52,7 +82,7 @@ class TrackList:
 
             else:
                 del self.data[delKey]
-                self.save(Path("data") / "tracks.json")
+                self.save()
 
     def generateIDS(self):
         self.ids = list(self.data.keys())
@@ -76,7 +106,7 @@ class TrackList:
             time.sleep(0.1)
             toReturn = True
         self.generateIDS()
-        self.save(self.fileLocation)
+        #self.save()
         return toReturn
 
     def subtract(self, track, multiplier):
@@ -99,7 +129,7 @@ class TrackList:
             tf.errorMessage("That doesn't exist yet.")
             toReturn = False
         self.generateIDS()
-        self.save(self.fileLocation)
+        #self.save()
         return toReturn
 
 SETTINGSSCHEMA = {
@@ -131,21 +161,14 @@ SETTINGSSCHEMA = {
 def initializeData():
     
     manager = ListManager()
-    manager.createList("my list")
 
     # Creates a "data" directory if it doesn't exist.
     data_dir = Path("data")
     data_dir.mkdir(exist_ok=True)
 
     # Sets data files to vars
-    tracks_file = data_dir / "tracks.json"
+    manager.load()
     settings_file = data_dir / "settings.json"
-
-    # Loads tracks, tracksIndexes, and settings from JSON files.
-    #tracks = tf.loadData(tracks_file, {})
-    manager.lists["my list"].load(tracks_file)
-    #tf.saveData(tracks, tracks_file)
-    manager.lists["my list"].save(tracks_file)
 
     # Loads settings
     loaded_settings = tf.loadData(settings_file, {})
@@ -171,15 +194,15 @@ def initializeData():
     tf.printSettings(settings, {"ids": False})
 
     # Checks to make sure the data is valid.
-    manager.lists["my list"].validate()
+    manager.lists["My List"].validate()
 
-    return tracks_file, settings_file, settings, manager
+    return settings_file, settings, manager
 
-def track_editor(manager, settings, tracks_file, settings_file):
+def track_editor(manager, settings, settings_file):
     while True:
         print()
         print("Here's what I'm tracking so far: ")
-        manager.lists["my list"].print()
+        manager.lists["My List"].print()
 
         userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"menu\" to go to the menu): ")
         if userInput == "menu":
@@ -199,22 +222,21 @@ def track_editor(manager, settings, tracks_file, settings_file):
         # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
         if type(track) == int:
             try:
-                track = manager.lists["my list"].ids[track]
+                track = manager.lists["My List"].ids[track]
             except:
                 tf.errorMessage("That doesn't exist yet.")
                 continue
         
         # Adds or subtracts the track depending on the mode.
         if settings["mode"] == "add":
-            if manager.lists["my list"].add(track, int(settings["multiplier"])) == False:
+            if manager.lists["My List"].add(track, int(settings["multiplier"])) == False:
                 continue
         elif settings["mode"] == "subtract":
-            if manager.lists["my list"].subtract(track, int(settings["multiplier"])) == False:
+            if manager.lists["My List"].subtract(track, int(settings["multiplier"])) == False:
                 continue
+        manager.save()
 
-        manager.lists["my list"].save(tracks_file)
-
-def settings_editor(manager, settings, tracks_file, settings_file):
+def settings_editor(manager, settings, settings_file):
     while True:
         print()
         tf.printSettings(settings)
@@ -272,8 +294,8 @@ def main():
 
     print("Starting up...")
 
-    tracks_file, settings_file, settings, manager = initializeData()
-    
+    settings_file, settings, manager = initializeData()
+
     print("Welcome to NewTracker! Hope you enjoy!!")
     time.sleep(1)
     print()
@@ -297,7 +319,7 @@ def main():
             return 0
         elif window_choice in windows:
             name, function = windows[window_choice]
-            function(manager, settings, tracks_file, settings_file)
+            function(manager, settings, settings_file)
         else:
             tf.errorMessage("That doesn't exist yet.")
 

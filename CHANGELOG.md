@@ -1,5 +1,16 @@
 CHANGELOG
-NOTE TO SELF: Change DEBUG to False before committing.
+
+03/20/2026: Update CHANGELOG and README for recent ListManager enhancements; refactor main.py to improve list management and data handling.
+- Completed todo: "Clean up quitting and switching between windows for clarity."
+- - This was actually accomplished in the previous commit, but I forgot to delete the todo.
+- Removed TrackList.save() save location parameter. It now just saves to whatever location is specified as self.fileLocation.
+- ListManager class now has a built in save location so I don't have to pass it.
+- ListManager class now has functions to load, save, generate IDs, and print itself.
+- ListManager now saves only the names of lists and their contents, but loads that data and creates a TrackList for each named list.
+- The list of tracked items "My List" is now managed through "manager", an instance of the ListManager class. 
+- "manager" stores instances of the TrackList class inside of itself.
+
+
 
 03/19/2026 #6: Update CHANGELOG with recent changes; modify user prompts in main.py for improved clarity and navigation.
 - Improved user ability to switch between windows.
