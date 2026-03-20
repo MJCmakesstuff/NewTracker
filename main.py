@@ -46,6 +46,25 @@ class ListManager:
         for name in self.lists.keys():
             print(f"[{self.ids.index(name)}]: {name}")
 
+    def openList(self, settings):
+        while True:
+            print("Here are the lists: ")
+            time.sleep(0.1)
+            options = {}
+            i = 0
+            for key, value in self.lists.items():
+                options[str(i)] = key
+                print(f"[{i}] {key}")
+                time.sleep(0.1)
+            print()
+            choice = input("Which one would you like to open? ")
+            if choice in options:
+                break
+            else:
+                tf.errorMessage("That doesn't exist yet.")
+        track_editor(self, settings, options[choice])
+        
+
 class TrackList:
     def __init__(self, name, data={}):
         self.data = data
@@ -198,15 +217,39 @@ def initializeData():
 
     return settings_file, settings, manager
 
-def track_editor(manager, settings, settings_file):
+def list_manager(manager, settings, settings_file):
+    while True:
+        print()
+        print("Welcome to the list manager!")
+        time.sleep(0.1)
+        print()
+        options = {
+            "1": ("Open List", manager.openList(settings))
+        }
+        for key, (name, function) in options.items():
+            print(f"[{key}] {name}")
+            time.sleep(0.1)
+        print()
+        choice = input("What would you like to do? (type \"back\" to go to back): ")
+        if choice == "back":
+            print("Switching to main menu...")
+            time.sleep(0.5)
+            print()
+            time.sleep(0.1)
+            break
+        elif choice in options:
+            name, function = options[choice]
+
+
+def track_editor(manager, settings, currentList="My List"):
     while True:
         print()
         print("Here's what I'm tracking so far: ")
-        manager.lists["My List"].print()
+        manager.lists[currentList].print()
 
-        userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"menu\" to go to the menu): ")
-        if userInput == "menu":
-            print("Switching to main menu...")
+        userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"back\" to go back): ")
+        if userInput == "back":
+            print("Switching to list manager...")
             time.sleep(0.5)
             print()
             time.sleep(0.1)
@@ -222,17 +265,17 @@ def track_editor(manager, settings, settings_file):
         # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
         if type(track) == int:
             try:
-                track = manager.lists["My List"].ids[track]
+                track = manager.lists[currentList].ids[track]
             except:
                 tf.errorMessage("That doesn't exist yet.")
                 continue
         
         # Adds or subtracts the track depending on the mode.
         if settings["mode"] == "add":
-            if manager.lists["My List"].add(track, int(settings["multiplier"])) == False:
+            if manager.lists[currentList].add(track, int(settings["multiplier"])) == False:
                 continue
         elif settings["mode"] == "subtract":
-            if manager.lists["My List"].subtract(track, int(settings["multiplier"])) == False:
+            if manager.lists[currentList].subtract(track, int(settings["multiplier"])) == False:
                 continue
         manager.save()
 
@@ -240,8 +283,8 @@ def settings_editor(manager, settings, settings_file):
     while True:
         print()
         tf.printSettings(settings)
-        userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"menu\" to go to the menu): ")
-        if userInput == "menu":
+        userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"back\" to go to back): ")
+        if userInput == "back":
             print("Switching to main menu...")
             time.sleep(0.5)
             print()
@@ -301,7 +344,7 @@ def main():
     print()
 
     windows = {
-        "1": ("Track Editor", track_editor),
+        "1": ("List Manager", list_manager),
         "2": ("Settings Editor", settings_editor)
     }
 

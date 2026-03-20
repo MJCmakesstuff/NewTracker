@@ -1,5 +1,13 @@
 CHANGELOG
 
+03/20/2026: Update CHANGELOG with new list management features; implement openList function in ListManager and refactor main.py for improved user navigation.
+- Track editor now references an inputted variable "currentList" and passes that into whatever it's doing rather than using "My List" which I had put in temporarily.
+- Created a window for managing lists.
+- User can now open lists from the list managing window. They can no longer open lists from the main window and must go through the list managing window.
+- Created a function in the ListManager class to open a list by printing the existing lists, asking the user which they'd like, and calling the track editing function.
+
+
+
 03/20/2026: Update CHANGELOG and README for recent ListManager enhancements; refactor main.py to improve list management and data handling.
 - Completed todo: "Clean up quitting and switching between windows for clarity."
 - - This was actually accomplished in the previous commit, but I forgot to delete the todo.
