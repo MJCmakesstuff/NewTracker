@@ -13,12 +13,41 @@ class ListManager:
         self.fileLocation = Path("data") / "tracks.json"
         #self.schema = {"list name": {"item name": "integer"}}
 
-    def createList(self, name, data={}):
+    def createList(self, settings, name=None, data=None):
+        if data == None:
+            data = {}
+        if name == None:
+            name = str(input("What would you like to name the list? ")).title()
         self.lists[name] = TrackList(name, data)
+        print(f"Created list {name}")
+        time.sleep(0.1)
+        print()
         self.save()
 
-    def deleteList(self, name):
-        del self.lists[name]
+    def deleteList(self, settings, name=None):
+        if name == None:
+            while True:
+                print("Here are the lists: ")
+                time.sleep(0.1)
+                options = {}
+                i = 0
+                for key, value in self.lists.items():
+                    options[str(i)] = key
+                    print(f"[{i}] {key}")
+                    time.sleep(0.1)
+                    i += 1
+                
+                print()
+                choice = input("Which one would you like to delete? ")
+                if choice in options:
+                    toDelete = True
+                    break
+                else:
+                    tf.errorMessage("That doesn't exist yet.")
+                    toDelete = False
+                    break
+            if toDelete:
+                del self.lists[options[choice]]
         self.save()
 
     def getList(self, name):
@@ -42,9 +71,15 @@ class ListManager:
     def generateIDS(self):
         self.ids = list(self.lists.keys())
 
-    def print(self):
-        for name in self.lists.keys():
-            print(f"[{self.ids.index(name)}]: {name}")
+    def print(self, IDbool):
+        if IDbool:
+            for name in self.lists.keys():
+                print(f"[{self.ids.index(name)}] {name}")
+                time.sleep(0.1)
+        else:
+            for name in self.lists.keys():
+                print(f"{name}")
+                time.sleep(0.1)
 
     def openList(self, settings):
         while True:
@@ -56,17 +91,24 @@ class ListManager:
                 options[str(i)] = key
                 print(f"[{i}] {key}")
                 time.sleep(0.1)
+                i += 1
             print()
             choice = input("Which one would you like to open? ")
             if choice in options:
+                toOpen = True
                 break
             else:
+                toOpen = False
                 tf.errorMessage("That doesn't exist yet.")
-        track_editor(self, settings, options[choice])
-        
+                break
 
+        if toOpen: 
+            track_editor(self, settings, options[choice])
+        
 class TrackList:
-    def __init__(self, name, data={}):
+    def __init__(self, name, data=None):
+        if data == None:
+            data = {}
         self.data = data
         self.generateIDS()
         self.fileLocation = Path("data") / "oldTracks.json"
@@ -213,18 +255,25 @@ def initializeData():
     tf.printSettings(settings, {"ids": False})
 
     # Checks to make sure the data is valid.
-    manager.lists["My List"].validate()
+    #manager.lists["My List"].validate()
 
     return settings_file, settings, manager
 
 def list_manager(manager, settings, settings_file):
+    print()
+    print("Welcome to the list manager!")
     while True:
         print()
-        print("Welcome to the list manager!")
+        print("Here are the lists: ")
         time.sleep(0.1)
+        manager.print(False)
         print()
+        print("Here are the options: ")
+        time.sleep(0.1)
         options = {
-            "1": ("Open List", manager.openList(settings))
+            "1": ("Open List", manager.openList),
+            "2": ("Create List", manager.createList),
+            "3": ("Delete List", manager.deleteList)
         }
         for key, (name, function) in options.items():
             print(f"[{key}] {name}")
@@ -239,6 +288,7 @@ def list_manager(manager, settings, settings_file):
             break
         elif choice in options:
             name, function = options[choice]
+            function(settings)
 
 
 def track_editor(manager, settings, currentList="My List"):
@@ -362,6 +412,11 @@ def main():
             return 0
         elif window_choice in windows:
             name, function = windows[window_choice]
+            i = 0
+            while i < 10:
+                print()
+                i += 1
+                time.sleep(0.05)
             function(manager, settings, settings_file)
         else:
             tf.errorMessage("That doesn't exist yet.")

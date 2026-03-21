@@ -1,6 +1,17 @@
 CHANGELOG
 
-03/20/2026: Update CHANGELOG with new list management features; implement openList function in ListManager and refactor main.py for improved user navigation.
+03/21/2026: Update CHANGELOG and README for recent list management enhancements; refactor ListManager methods for improved list creation and deletion functionality in main.py.
+- This was a super chaotic session. Everything was super disjointed and all over the place, and I'm just now trying to remember what I just did. So apologies if I can not recall everything.
+- User can now create and delete lists from the list management window. 
+- Modified the functions to delete and create lists in the ListManger class. Now they can ask the user which list they would like to create/delete and then proceed to do it.
+- - The logic would have worked just as well elsewhere, but this way simplified the option choosing process and may end up being better down the line.
+- Fixed an error that has been the bane of my existence. When creating a new TrackList, I used the parameter (data={}). I had no idea that this would use the same dictionary for any track lists created in a session. Now I used (data=None) and create a new dictionary inside the actual function if data == None. Shoutout to ChatGPT for helping me solve this issue, I would have never figured this out otherwise.
+- Completed todo: "Ability to have multiple lists of tracks using the new class"
+- Added todo: "Make self.ids obsolete in favor of the new "options" thing I've been using recently."
+
+
+
+03/20/2026 #2: Update CHANGELOG with new list management features; implement openList function in ListManager and refactor main.py for improved user navigation.
 - Track editor now references an inputted variable "currentList" and passes that into whatever it's doing rather than using "My List" which I had put in temporarily.
 - Created a window for managing lists.
 - User can now open lists from the list managing window. They can no longer open lists from the main window and must go through the list managing window.
