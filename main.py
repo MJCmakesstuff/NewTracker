@@ -172,7 +172,9 @@ class TrackList:
             toReturn = False
         return toReturn
 
-SETTINGSSCHEMA = {
+class SettingsManager:
+    def __init__(self):
+        self.schema ={
         "settingsPersist": {
             "type": "rules",
             "rules": [
@@ -197,10 +199,41 @@ SETTINGSSCHEMA = {
             "default": 1
         }
     }
+        self.data = {}
+        self.fileLocation = Path("data") / "settings.json"
 
+    def load(self):
+        loaded_data = tf.loadData(self.fileLocation, {})
+        self.data = {}
+        for key, value in self.schema.items():
+            if key in loaded_data:
+                self.data[key] = loaded_data[key]
+            else:
+                self.data[key] = value["default"]
+        if self.data["settingsPersist"] == False:
+            print("Settings persistence is turned off. Resetting settings to defaults...")
+            self.reset()
+        self.save()
+
+    def save(self):
+        tf.saveData(self.data, self.fileLocation)
+
+    def reset(self):
+        tf.resetSettings(self.data, self.schema, self.fileLocation)
+        self.save()
+    
+    def fix(self):
+        tf.fixSettingsFile(self.data, self.schema, self.fileLocation)
+        print()
+        tf.printSettings(self.data, {"ids": False})
+
+    def print(self):
+        tf.printSettings(self.data)
+    
 def initializeData():
     
     manager = ListManager()
+    settings = SettingsManager()
 
     # Creates a "data" directory if it doesn't exist.
     data_dir = Path("data")
@@ -208,37 +241,17 @@ def initializeData():
 
     # Sets data files to vars
     manager.load()
-    settings_file = data_dir / "settings.json"
 
     # Loads settings
-    loaded_settings = tf.loadData(settings_file, {})
-    settings = {}
-    for key, value in SETTINGSSCHEMA.items():
-        if key in loaded_settings:
-            settings[key] = loaded_settings[key]
-        else:
-            settings[key] = value["default"]
-
-    tf.saveData(settings, settings_file)
-
-    if settings["settingsPersist"] == False:
-        print("Settings persistence is turned off. Resetting settings to defaults...")
-        tf.resetSettings(settings, SETTINGSSCHEMA, settings_file)
-        tf.saveData(settings, settings_file)
-    
+    settings.load()
 
     # Fixes the settings file if any of the settings are invalid.
-    print("Checking settings file...")
-    tf.fixSettingsFile(settings, SETTINGSSCHEMA, settings_file)
-    print()
-    tf.printSettings(settings, {"ids": False})
+    print("Checking settings file...") # KEEP
+    settings.fix()
 
-    # Checks to make sure the data is valid.
-    #manager.lists["My List"].validate()
+    return settings, manager
 
-    return settings_file, settings, manager
-
-def list_manager(manager, settings, settings_file):
+def list_manager(manager, settings):
     print()
     print("Welcome to the list manager!")
     while True:
@@ -275,7 +288,7 @@ def track_editor(manager, settings, currentList="My List"):
         print("Here's what I'm tracking so far: ")
         manager.lists[currentList].print()
 
-        userInput = input("What do you want to " + str(settings["mode"]) + " by " + str(settings["multiplier"]) + "? (type \"back\" to go back): ")
+        userInput = input("What do you want to " + str(settings.data["mode"]) + " by " + str(settings.data["multiplier"]) + "? (type \"back\" to go back): ")
         if userInput == "back":
             print("Switching to list manager...")
             time.sleep(0.5)
@@ -302,18 +315,18 @@ def track_editor(manager, settings, currentList="My List"):
                 continue
         
         # Adds or subtracts the track depending on the mode.
-        if settings["mode"] == "add":
-            if manager.lists[currentList].add(track, int(settings["multiplier"])) == False:
+        if settings.data["mode"] == "add":
+            if manager.lists[currentList].add(track, int(settings.data["multiplier"])) == False:
                 continue
-        elif settings["mode"] == "subtract":
-            if manager.lists[currentList].subtract(track, int(settings["multiplier"])) == False:
+        elif settings.data["mode"] == "subtract":
+            if manager.lists[currentList].subtract(track, int(settings.data["multiplier"])) == False:
                 continue
         manager.save()
 
-def settings_editor(manager, settings, settings_file):
+def settings_editor(manager, settings):
     while True:
         print()
-        tf.printSettings(settings)
+        settings.print()
         userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"back\" to go to back): ")
         if userInput == "back":
             print("Switching to main menu...")
@@ -323,7 +336,7 @@ def settings_editor(manager, settings, settings_file):
             break
 
         elif userInput == "reset":
-            tf.resetSettings(settings, SETTINGSSCHEMA, settings_file)
+            settings.reset()
             continue
 
         else:
@@ -334,7 +347,7 @@ def settings_editor(manager, settings, settings_file):
         
         if type(setting) == int:
                 try:
-                    keys = list(settings.keys())
+                    keys = list(settings.data.keys())
                     setting -= 1
                     setting = keys[setting]
                 except:
@@ -342,14 +355,14 @@ def settings_editor(manager, settings, settings_file):
                     continue
 
         # What to change to?
-        if setting in settings:
+        if setting in settings.data:
             newValue = input("What would you like to change " + str(setting) + " to? ")
-            if tf.checkSetting(newValue, SETTINGSSCHEMA[setting]["type"], SETTINGSSCHEMA[setting]["rules"]):
-                if SETTINGSSCHEMA[setting]["rules"] == ["boolean"]:
+            if tf.checkSetting(newValue, settings.schema[setting]["type"], settings.schema[setting]["rules"]):
+                if settings.schema[setting]["rules"] == ["boolean"]:
                     newValue = tf.convertToBool(newValue)
                     #print(newValue, type(newValue))
-                settings[setting] = newValue
-                tf.saveData(settings, settings_file)
+                settings.data[setting] = newValue
+                settings.save()
                 print("Changed " + str(setting) + " to " + str(newValue) + ".")
                 time.sleep(0.5)
                 print()
@@ -370,7 +383,7 @@ def main():
 
     print("Starting up...")
 
-    settings_file, settings, manager = initializeData()
+    settings, manager = initializeData()
 
     print("Welcome to NewTracker! Hope you enjoy!!")
     time.sleep(1)
@@ -400,7 +413,7 @@ def main():
                 print()
                 i += 1
                 time.sleep(0.05)
-            function(manager, settings, settings_file)
+            function(manager, settings)
         else:
             tf.errorMessage("That doesn't exist yet.")
 

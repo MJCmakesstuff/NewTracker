@@ -113,7 +113,7 @@ def checkSetting(setting, validType, validValues, inParams=None):
                 errorMessage()
             return False
     if validType == "rules":
-        return ruleChecker(setting, validValues, {"verbose": False})
+        return ruleChecker(setting, validValues, {"verbose": params["verbose"]})
 
 # Checks if a value follows certain rules (given function input)
 def ruleChecker(value, rules, inParams=None):

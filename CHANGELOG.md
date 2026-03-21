@@ -1,5 +1,11 @@
 CHANGELOG
 
+03/21/2026 #3: Add SettingsManager class for improved settings management and refactor related functions
+- Created a SettingsManager class. It can load and save itself, reset to default, fix broken settings, and print itself.
+- Changed some related functions accordingly.
+
+
+
 03/21/2026 #3: Refactor printTracks and list display for consistent ID printing and improved user experience. 
 - Any time a list of choices is printed out, with the shortcut number in brackets, it now starts at one.
 - It used to be inconsistent from place to place, somteimes starting at 1, other times at 0.
