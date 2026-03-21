@@ -1,5 +1,12 @@
 CHANGELOG
 
+03/21/2026: Update CHANGELOG and README for recent refactoring; eliminate self.ids in ListManager and update printTracks function for improved data handling.
+- Eliminated self.ids list for both the TrackList and ListManager class. self.generateIDS is also no longer needed.
+- Changed tf.printTracks() to accomodate. It now only accepts one input (data rather than data, ids), and uses enumerate(data) to find index.
+- Instances where self.ids is needed now use a similar structure using enumerate().
+
+
+
 03/21/2026: Update CHANGELOG and README for recent list management enhancements; refactor ListManager methods for improved list creation and deletion functionality in main.py.
 - This was a super chaotic session. Everything was super disjointed and all over the place, and I'm just now trying to remember what I just did. So apologies if I can not recall everything.
 - User can now create and delete lists from the list management window. 

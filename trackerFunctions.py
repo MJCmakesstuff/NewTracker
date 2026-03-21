@@ -4,10 +4,10 @@ import time
 ### FUNCTIONS ### 
 
 # Prints the current data.
-def printTracks(trackData, IDs):
-    for key, value in trackData.items():
+def printTracks(trackData):
+    for index, (key, value) in enumerate(trackData.items()):
         time.sleep(0.1)
-        print("[" + str(IDs.index(key)) + "] " + str(key) + ": " + str(int(value)))
+        print(f"[{index}] {key}: {value}")
     time.sleep(0.1)
     print()
 

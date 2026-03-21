@@ -9,7 +9,7 @@ DEBUG = True
 class ListManager:
     def __init__(self):
         self.lists = {}
-        self.ids = []
+        #self.ids = []
         self.fileLocation = Path("data") / "tracks.json"
         #self.schema = {"list name": {"item name": "integer"}}
 
@@ -58,23 +58,16 @@ class ListManager:
         for key, value in self.lists.items():
             toSave[key] = value.data
         tf.saveData(toSave, self.fileLocation)
-        self.generateIDS()
 
     def load(self):
         listData = tf.loadData(self.fileLocation, {})
         for key, value in listData.items():
             self.lists[key] = TrackList(str(key), value)
 
-
-        self.generateIDS()
-
-    def generateIDS(self):
-        self.ids = list(self.lists.keys())
-
     def print(self, IDbool):
         if IDbool:
-            for name in self.lists.keys():
-                print(f"[{self.ids.index(name)}] {name}")
+            for index, name in enumerate(self.lists.keys()):
+                print(f"[{index}] {name}")
                 time.sleep(0.1)
         else:
             for name in self.lists.keys():
@@ -110,17 +103,14 @@ class TrackList:
         if data == None:
             data = {}
         self.data = data
-        self.generateIDS()
         self.fileLocation = Path("data") / "oldTracks.json"
         self.name = name
     
     def load(self):
         self.data = tf.loadData(self.fileLocation, {})
-        self.generateIDS()
     
     def save(self):
         tf.saveData(self.data, self.fileLocation)
-        self.generateIDS()
 
     def validate(self):
         print("Checking data...")
@@ -144,12 +134,9 @@ class TrackList:
             else:
                 del self.data[delKey]
                 self.save()
-
-    def generateIDS(self):
-        self.ids = list(self.data.keys())
     
     def print(self):
-        tf.printTracks(self.data, self.ids)
+        tf.printTracks(self.data)
 
     def add(self, track, multiplier):
         if track in self.data:
@@ -166,8 +153,6 @@ class TrackList:
             print()
             time.sleep(0.1)
             toReturn = True
-        self.generateIDS()
-        #self.save()
         return toReturn
 
     def subtract(self, track, multiplier):
@@ -189,8 +174,6 @@ class TrackList:
         else:
             tf.errorMessage("That doesn't exist yet.")
             toReturn = False
-        self.generateIDS()
-        #self.save()
         return toReturn
 
 SETTINGSSCHEMA = {
@@ -315,7 +298,8 @@ def track_editor(manager, settings, currentList="My List"):
         # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
         if type(track) == int:
             try:
-                track = manager.lists[currentList].ids[track]
+                indecies = list(manager.lists[currentList].data.keys())
+                track = indecies[track]
             except:
                 tf.errorMessage("That doesn't exist yet.")
                 continue
