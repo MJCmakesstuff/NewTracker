@@ -5,7 +5,7 @@ import time
 
 # Prints the current data.
 def printTracks(trackData):
-    for index, (key, value) in enumerate(trackData.items()):
+    for index, (key, value) in enumerate(trackData.items(), start=1):
         time.sleep(0.1)
         print(f"[{index}] {key}: {value}")
     time.sleep(0.1)
@@ -290,10 +290,10 @@ def fixSettingsFile(settings, schema, save_location):
 # Prints the current settings.
 def printSettings(settings, options={"ids": True}):
     print("Here are the current settings: ")
-    for key, value in settings.items():
+    for index, (key, value) in enumerate(settings.items(), start=1):
         time.sleep(0.1)
         if options["ids"]:
-            print(f"[{list(settings.keys()).index(key)}] {key}: {value}")
+            print(f"[{index}] {key}: {value}")
         else:
             print(f"{key}: {value}")
     time.sleep(0.1)

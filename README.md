@@ -14,8 +14,6 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 
 Todo:
 
-- Make self.ids obsolete in favor of the new "options" thing I've been using recently.
-
 - Make an "app" class so I don't have to pass everything everywhere.
 
 - Make settings into a class as well

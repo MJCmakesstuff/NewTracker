@@ -30,12 +30,10 @@ class ListManager:
                 print("Here are the lists: ")
                 time.sleep(0.1)
                 options = {}
-                i = 0
-                for key, value in self.lists.items():
-                    options[str(i)] = key
-                    print(f"[{i}] {key}")
+                for index, (key, value) in enumerate(self.lists.items(), start=1):
+                    options[str(index)] = key
+                    print(f"[{index}] {key}")
                     time.sleep(0.1)
-                    i += 1
                 
                 print()
                 choice = input("Which one would you like to delete? ")
@@ -79,12 +77,10 @@ class ListManager:
             print("Here are the lists: ")
             time.sleep(0.1)
             options = {}
-            i = 0
-            for key, value in self.lists.items():
-                options[str(i)] = key
-                print(f"[{i}] {key}")
+            for index, (key, value) in enumerate(self.lists.items(), start=1):
+                options[str(index)] = key
+                print(f"[{index}] {key}")
                 time.sleep(0.1)
-                i += 1
             print()
             choice = input("Which one would you like to open? ")
             if choice in options:
@@ -273,7 +269,6 @@ def list_manager(manager, settings, settings_file):
             name, function = options[choice]
             function(settings)
 
-
 def track_editor(manager, settings, currentList="My List"):
     while True:
         print()
@@ -297,9 +292,11 @@ def track_editor(manager, settings, currentList="My List"):
         # If input is integer, tries to pull the corresponding item from tracksIndexes and set it as track.
         # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
         if type(track) == int:
+            print("Track is integer, trying to match it to the correct key...")
             try:
-                indecies = list(manager.lists[currentList].data.keys())
-                track = indecies[track]
+                track -= 1
+                keyList = list(manager.lists[currentList].data.keys())
+                track = keyList[track]
             except:
                 tf.errorMessage("That doesn't exist yet.")
                 continue
@@ -337,7 +334,9 @@ def settings_editor(manager, settings, settings_file):
         
         if type(setting) == int:
                 try:
-                    setting = list(settings.keys())[setting]
+                    keys = list(settings.keys())
+                    setting -= 1
+                    setting = keys[setting]
                 except:
                     tf.errorMessage("That doesn't exist yet.")
                     continue

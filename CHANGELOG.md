@@ -1,9 +1,16 @@
 CHANGELOG
 
-03/21/2026: Update CHANGELOG and README for recent refactoring; eliminate self.ids in ListManager and update printTracks function for improved data handling.
+03/21/2026 #3: Refactor printTracks and list display for consistent ID printing and improved user experience. 
+- Any time a list of choices is printed out, with the shortcut number in brackets, it now starts at one.
+- It used to be inconsistent from place to place, somteimes starting at 1, other times at 0.
+
+
+
+03/21/2026 #2: Update CHANGELOG and README for recent refactoring; eliminate self.ids in ListManager and update printTracks function for improved data handling.
 - Eliminated self.ids list for both the TrackList and ListManager class. self.generateIDS is also no longer needed.
 - Changed tf.printTracks() to accomodate. It now only accepts one input (data rather than data, ids), and uses enumerate(data) to find index.
 - Instances where self.ids is needed now use a similar structure using enumerate().
+- Completed todo: "Make self.ids obsolete in favor of the new "options" thing I've been using recently."
 
 
 
