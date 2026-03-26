@@ -13,14 +13,3 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 Todo:
-
-- Make an "app" class so I don't have to pass everything everywhere.
-
-- Make settings into a class as well
-
-Classes (object-oriented design): I don't know what this means yet but someone said I should do it.
-- Allow the user to create multiple lists of tracks.
-
-Eventually add unit tests. Again, whatever that means...
-
-GUI

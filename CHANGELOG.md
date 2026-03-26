@@ -1,8 +1,18 @@
 CHANGELOG
 
-03/21/2026 #3: Add SettingsManager class for improved settings management and refactor related functions
+03/25/2026: Refactor main application structure by introducing App class; consolidate ListManager and SettingsManager, and enhance settings handling.
+- Created an app class that contains what was previously "manager" and "settings" objects. Now I can pass app rather than both of those.
+- Moved the list manager window and settings manager window inside of the new app class. They now refer to self rather than app.
+- Moved the track editor window into the ListManager class.
+- Moved initializeData to __init__ in App and main into App.
+
+
+
+03/21/2026 #4: Add SettingsManager class for improved settings management and refactor related functions
 - Created a SettingsManager class. It can load and save itself, reset to default, fix broken settings, and print itself.
 - Changed some related functions accordingly.
+- Completed todo: "Make settings into a class as well"
+- Completed todo: "Classes (object-oriented design): I don't know what this means yet but someone said I should do it."
 
 
 

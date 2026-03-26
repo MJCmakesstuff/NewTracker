@@ -6,6 +6,151 @@ from pathlib import Path
 
 DEBUG = True
 
+class App:
+    def __init__(self):
+        i = 0
+        while i < 10:
+            print()
+            i += 1
+
+        print("Starting up...")
+        
+        self.manager = ListManager()
+        self.settings = SettingsManager()
+
+        # Creates a "data" directory if it doesn't exist.
+        self.data_dir = Path("data")
+        self.data_dir.mkdir(exist_ok=True)
+
+        # Sets data files to vars
+        self.manager.load()
+
+        # Loads settings
+        self.settings.load()
+
+        # Fixes the settings file if any of the settings are invalid.
+        print("Checking settings file...") # KEEP
+        self.settings.fix()
+
+        #return self
+
+    def main(self):
+        print("Welcome to NewTracker! Hope you enjoy!!")
+        time.sleep(1)
+        print()
+
+        windows = {
+            "1": ("List Manager", self.list_manager),
+            "2": ("Settings Editor", self.settings_editor)
+        }
+
+        while True:
+            print("\nMain Menu")
+            time.sleep(0.1)
+            for key, (name, function) in windows.items():
+                print(f"[{key}] {name}")
+                time.sleep(0.1)
+            print()
+            window_choice = input("Which item would you like? (type \"quit\" to quit): ")
+            if window_choice == "quit":
+                print("Thank you so much for using NewTracker! Come again!!")
+                time.sleep(1)
+                return 0
+            elif window_choice in windows:
+                name, function = windows[window_choice]
+                i = 0
+                while i < 10:
+                    print()
+                    i += 1
+                    time.sleep(0.05)
+                function()
+            else:
+                tf.errorMessage("That doesn't exist yet.")
+
+
+    def list_manager(self):
+        print()
+        print("Welcome to the list manager!")
+        while True:
+            print()
+            print("Here are the lists: ")
+            time.sleep(0.1)
+            self.manager.print(False)
+            print()
+            print("Here are the options: ")
+            time.sleep(0.1)
+            options = {
+                "1": ("Open List", self.manager.openList),
+                "2": ("Create List", self.manager.createList),
+                "3": ("Delete List", self.manager.deleteList)
+            }
+            for key, (name, function) in options.items():
+                print(f"[{key}] {name}")
+                time.sleep(0.1)
+            print()
+            choice = input("What would you like to do? (type \"back\" to go to back): ")
+            if choice == "back":
+                print("Switching to main menu...")
+                time.sleep(0.5)
+                print()
+                time.sleep(0.1)
+                break
+            elif choice in options:
+                name, function = options[choice]
+                function(self)
+
+    def settings_editor(self):
+        while True:
+            print()
+            self.settings.print()
+            userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"back\" to go to back): ")
+            if userInput == "back":
+                print("Switching to main menu...")
+                time.sleep(0.5)
+                print()
+                time.sleep(0.1)
+                break
+
+            elif userInput == "reset":
+                self.settings.reset()
+                continue
+
+            else:
+                setting = tf.checkInput(userInput, "lower")
+                if tf.errorHandler(setting) != "all clear":
+                    tf.errorMessage(tf.errorHandler(setting))
+                    continue
+            
+            if type(setting) == int:
+                    try:
+                        keys = list(self.settings.data.keys())
+                        setting -= 1
+                        setting = keys[setting]
+                    except:
+                        tf.errorMessage("That doesn't exist yet.")
+                        continue
+
+            # What to change to?
+            if setting in self.settings.data:
+                newValue = input("What would you like to change " + str(setting) + " to? ")
+                if tf.checkSetting(newValue, self.settings.schema[setting]["type"], self.settings.schema[setting]["rules"]):
+                    if self.settings.schema[setting]["rules"] == ["boolean"]:
+                        newValue = tf.convertToBool(newValue)
+                        #print(newValue, type(newValue))
+                    self.settings.data[setting] = newValue
+                    self.settings.save()
+                    print("Changed " + str(setting) + " to " + str(newValue) + ".")
+                    time.sleep(0.5)
+                    print()
+                    time.sleep(0.1)
+
+                else:
+                    continue
+                # HERE
+            else:
+                tf.errorMessage("That doesn't exist yet.")
+                continue
+
 class ListManager:
     def __init__(self):
         self.lists = {}
@@ -13,7 +158,7 @@ class ListManager:
         self.fileLocation = Path("data") / "tracks.json"
         #self.schema = {"list name": {"item name": "integer"}}
 
-    def createList(self, settings, name=None, data=None):
+    def createList(self, app, name=None, data=None):
         if data == None:
             data = {}
         if name == None:
@@ -24,7 +169,7 @@ class ListManager:
         print()
         self.save()
 
-    def deleteList(self, settings, name=None):
+    def deleteList(self, app, name=None):
         if name == None:
             while True:
                 print("Here are the lists: ")
@@ -72,7 +217,7 @@ class ListManager:
                 print(f"{name}")
                 time.sleep(0.1)
 
-    def openList(self, settings):
+    def openList(self, app):
         while True:
             print("Here are the lists: ")
             time.sleep(0.1)
@@ -91,9 +236,48 @@ class ListManager:
                 tf.errorMessage("That doesn't exist yet.")
                 break
 
-        if toOpen: 
-            track_editor(self, settings, options[choice])
-        
+        if toOpen:
+            currentList = options[choice]
+            while True:
+                print()
+                print("Here's what I'm tracking so far: ")
+                app.manager.lists[currentList].print()
+
+                userInput = input("What do you want to " + str(app.settings.data["mode"]) + " by " + str(app.settings.data["multiplier"]) + "? (type \"back\" to go back): ")
+                if userInput == "back":
+                    print("Switching to list manager...")
+                    time.sleep(0.5)
+                    print()
+                    time.sleep(0.1)
+                    break
+                else:
+                    track = tf.checkInput(userInput)
+
+                if tf.errorHandler(track) != "all clear":
+                    tf.errorMessage(tf.errorHandler(track))
+                    continue
+                
+                # If input is integer, tries to pull the corresponding item from tracksIndexes and set it as track.
+                # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
+                if type(track) == int:
+                    print("Track is integer, trying to match it to the correct key...")
+                    try:
+                        track -= 1
+                        keyList = list(app.manager.lists[currentList].data.keys())
+                        track = keyList[track]
+                    except:
+                        tf.errorMessage("That doesn't exist yet.")
+                        continue
+                
+                # Adds or subtracts the track depending on the mode.
+                if app.settings.data["mode"] == "add":
+                    if app.manager.lists[currentList].add(track, int(app.settings.data["multiplier"])) == False:
+                        continue
+                elif app.settings.data["mode"] == "subtract":
+                    if app.manager.lists[currentList].subtract(track, int(app.settings.data["multiplier"])) == False:
+                        continue
+                app.manager.save()
+    
 class TrackList:
     def __init__(self, name, data=None):
         if data == None:
@@ -228,204 +412,22 @@ class SettingsManager:
         tf.printSettings(self.data, {"ids": False})
 
     def print(self):
-        tf.printSettings(self.data)
-    
-def initializeData():
-    
-    manager = ListManager()
-    settings = SettingsManager()
-
-    # Creates a "data" directory if it doesn't exist.
-    data_dir = Path("data")
-    data_dir.mkdir(exist_ok=True)
-
-    # Sets data files to vars
-    manager.load()
-
-    # Loads settings
-    settings.load()
-
-    # Fixes the settings file if any of the settings are invalid.
-    print("Checking settings file...") # KEEP
-    settings.fix()
-
-    return settings, manager
-
-def list_manager(manager, settings):
-    print()
-    print("Welcome to the list manager!")
-    while True:
-        print()
-        print("Here are the lists: ")
-        time.sleep(0.1)
-        manager.print(False)
-        print()
-        print("Here are the options: ")
-        time.sleep(0.1)
-        options = {
-            "1": ("Open List", manager.openList),
-            "2": ("Create List", manager.createList),
-            "3": ("Delete List", manager.deleteList)
-        }
-        for key, (name, function) in options.items():
-            print(f"[{key}] {name}")
-            time.sleep(0.1)
-        print()
-        choice = input("What would you like to do? (type \"back\" to go to back): ")
-        if choice == "back":
-            print("Switching to main menu...")
-            time.sleep(0.5)
-            print()
-            time.sleep(0.1)
-            break
-        elif choice in options:
-            name, function = options[choice]
-            function(settings)
-
-def track_editor(manager, settings, currentList="My List"):
-    while True:
-        print()
-        print("Here's what I'm tracking so far: ")
-        manager.lists[currentList].print()
-
-        userInput = input("What do you want to " + str(settings.data["mode"]) + " by " + str(settings.data["multiplier"]) + "? (type \"back\" to go back): ")
-        if userInput == "back":
-            print("Switching to list manager...")
-            time.sleep(0.5)
-            print()
-            time.sleep(0.1)
-            break
-        else:
-            track = tf.checkInput(userInput)
-
-        if tf.errorHandler(track) != "all clear":
-            tf.errorMessage(tf.errorHandler(track))
-            continue
-        
-        # If input is integer, tries to pull the corresponding item from tracksIndexes and set it as track.
-        # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
-        if type(track) == int:
-            print("Track is integer, trying to match it to the correct key...")
-            try:
-                track -= 1
-                keyList = list(manager.lists[currentList].data.keys())
-                track = keyList[track]
-            except:
-                tf.errorMessage("That doesn't exist yet.")
-                continue
-        
-        # Adds or subtracts the track depending on the mode.
-        if settings.data["mode"] == "add":
-            if manager.lists[currentList].add(track, int(settings.data["multiplier"])) == False:
-                continue
-        elif settings.data["mode"] == "subtract":
-            if manager.lists[currentList].subtract(track, int(settings.data["multiplier"])) == False:
-                continue
-        manager.save()
-
-def settings_editor(manager, settings):
-    while True:
-        print()
-        settings.print()
-        userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"back\" to go to back): ")
-        if userInput == "back":
-            print("Switching to main menu...")
-            time.sleep(0.5)
-            print()
-            time.sleep(0.1)
-            break
-
-        elif userInput == "reset":
-            settings.reset()
-            continue
-
-        else:
-            setting = tf.checkInput(userInput, "lower")
-            if tf.errorHandler(setting) != "all clear":
-                tf.errorMessage(tf.errorHandler(setting))
-                continue
-        
-        if type(setting) == int:
-                try:
-                    keys = list(settings.data.keys())
-                    setting -= 1
-                    setting = keys[setting]
-                except:
-                    tf.errorMessage("That doesn't exist yet.")
-                    continue
-
-        # What to change to?
-        if setting in settings.data:
-            newValue = input("What would you like to change " + str(setting) + " to? ")
-            if tf.checkSetting(newValue, settings.schema[setting]["type"], settings.schema[setting]["rules"]):
-                if settings.schema[setting]["rules"] == ["boolean"]:
-                    newValue = tf.convertToBool(newValue)
-                    #print(newValue, type(newValue))
-                settings.data[setting] = newValue
-                settings.save()
-                print("Changed " + str(setting) + " to " + str(newValue) + ".")
-                time.sleep(0.5)
-                print()
-                time.sleep(0.1)
-
-            else:
-                continue
-            # HERE
-        else:
-            tf.errorMessage("That doesn't exist yet.")
-            continue
-
-def main():
-    i = 0
-    while i < 10:
-        print()
-        i += 1
-
-    print("Starting up...")
-
-    settings, manager = initializeData()
-
-    print("Welcome to NewTracker! Hope you enjoy!!")
-    time.sleep(1)
-    print()
-
-    windows = {
-        "1": ("List Manager", list_manager),
-        "2": ("Settings Editor", settings_editor)
-    }
-
-    while True:
-        print("\nMain Menu")
-        time.sleep(0.1)
-        for key, (name, function) in windows.items():
-            print(f"[{key}] {name}")
-            time.sleep(0.1)
-        print()
-        window_choice = input("Which item would you like? (type \"quit\" to quit): ")
-        if window_choice == "quit":
-            print("Thank you so much for using NewTracker! Come again!!")
-            time.sleep(1)
-            return 0
-        elif window_choice in windows:
-            name, function = windows[window_choice]
-            i = 0
-            while i < 10:
-                print()
-                i += 1
-                time.sleep(0.05)
-            function(manager, settings)
-        else:
-            tf.errorMessage("That doesn't exist yet.")
+        tf.printSettings(self.data)   
 
 if __name__ == "__main__":
     if DEBUG:
-        sys.exit(main())
+        app = App()
+        sys.exit(app.main())
     else:
         try:
-            sys.exit(main())
+            app = App()
+            sys.exit(app.main())
         except Exception as e:
             print(f"Fatal error: {e}")
             sys.exit(1)
 
 def leppard():
-    print("I don't wanna touch you too much, baby")
+    lyrics = ["Love bites, love bleeds", "It's bringing me to my knees", "Love lives, love dies", "It's no surprise", "Love begs, love pleads", "It's what I need"]
+    for lyric in lyrics:
+        print(lyric)
+    sys.exit(1)
