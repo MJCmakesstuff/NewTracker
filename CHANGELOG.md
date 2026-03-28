@@ -1,5 +1,11 @@
 CHANGELOG
 
+03/28/2026: Remove debug prints; eliminate self.fileLocation from TrackList class for cleaner code.
+- Removed some debug prints.
+- Removed the self.fileLocation from the TrackList class.
+
+
+
 03/25/2026: Refactor main application structure by introducing App class; consolidate ListManager and SettingsManager, and enhance settings handling.
 - Created an app class that contains what was previously "manager" and "settings" objects. Now I can pass app rather than both of those.
 - Moved the list manager window and settings manager window inside of the new app class. They now refer to self rather than app.

@@ -260,7 +260,7 @@ class ListManager:
                 # If input is integer, tries to pull the corresponding item from tracksIndexes and set it as track.
                 # If failed, that trackIndex doesn't exist, so print error and skip to next iteration.
                 if type(track) == int:
-                    print("Track is integer, trying to match it to the correct key...")
+                    #print("Track is integer, trying to match it to the correct key...")
                     try:
                         track -= 1
                         keyList = list(app.manager.lists[currentList].data.keys())
@@ -283,16 +283,18 @@ class TrackList:
         if data == None:
             data = {}
         self.data = data
-        self.fileLocation = Path("data") / "oldTracks.json"
         self.name = name
     
     def load(self):
+        print("IT HAPPENED")
         self.data = tf.loadData(self.fileLocation, {})
     
     def save(self):
+        print("IT HAPPENED")
         tf.saveData(self.data, self.fileLocation)
 
     def validate(self):
+        print("IT HAPPENEd")
         print("Checking data...")
         while True:
             delKey = None
