@@ -204,8 +204,32 @@ class ListManager:
 
     def load(self):
         listData = tf.loadData(self.fileLocation, {})
+        print("Checking data...")
+        #print(listData)
+        while True:
+            delKey = None
+            for key, value in listData.items():
+                #print(f"Checking {key}: {value}")
+                #print()
+                delKey = None
+                if tf.ruleChecker(key, ["non-empty", "string", "titleCase"], {"verbose": False}) and isinstance(value, dict):
+                    #print("Rules passed")
+                    pass
+
+                else:
+                    print("Invalid data found. Removing...")
+                    delKey = key
+                    #print(delKey)
+                    break
+
+            if delKey is None:
+                break
+
+            else:
+                del listData[delKey] 
         for key, value in listData.items():
             self.lists[key] = TrackList(str(key), value)
+        self.save()
 
     def print(self, IDbool):
         if IDbool:
@@ -284,6 +308,7 @@ class TrackList:
             data = {}
         self.data = data
         self.name = name
+        self.validate()
     
     def load(self):
         print("IT HAPPENED")
@@ -294,7 +319,6 @@ class TrackList:
         tf.saveData(self.data, self.fileLocation)
 
     def validate(self):
-        print("IT HAPPENEd")
         print("Checking data...")
         while True:
             delKey = None
@@ -315,7 +339,6 @@ class TrackList:
 
             else:
                 del self.data[delKey]
-                self.save()
     
     def print(self):
         tf.printTracks(self.data)

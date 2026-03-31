@@ -1,5 +1,10 @@
 CHANGELOG
 
+03/31/2026: Implement data validation in ListManager and TrackList; remove invalid entries from loaded data.
+- The program now checks for invalid data in all of tracks.json, rather than just the values in the kv pairs.
+
+
+
 03/28/2026: Remove debug prints; eliminate self.fileLocation from TrackList class for cleaner code.
 - Removed some debug prints.
 - Removed the self.fileLocation from the TrackList class.
