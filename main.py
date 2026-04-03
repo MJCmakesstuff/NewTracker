@@ -36,7 +36,6 @@ class App:
 
     def main(self):
         print("Welcome to NewTracker! Hope you enjoy!!")
-        time.sleep(1)
         print()
 
         windows = {
@@ -46,15 +45,12 @@ class App:
 
         while True:
             print("\nMain Menu")
-            time.sleep(0.1)
             for key, (name, function) in windows.items():
                 print(f"[{key}] {name}")
-                time.sleep(0.1)
             print()
             window_choice = input("Which item would you like? (type \"quit\" to quit): ")
             if window_choice == "quit":
                 print("Thank you so much for using NewTracker! Come again!!")
-                time.sleep(1)
                 return 0
             elif window_choice in windows:
                 name, function = windows[window_choice]
@@ -62,7 +58,6 @@ class App:
                 while i < 10:
                     print()
                     i += 1
-                    time.sleep(0.05)
                 function()
             else:
                 tf.errorMessage("That doesn't exist yet.")
@@ -74,11 +69,9 @@ class App:
         while True:
             print()
             print("Here are the lists: ")
-            time.sleep(0.1)
             self.manager.print(False)
             print()
             print("Here are the options: ")
-            time.sleep(0.1)
             options = {
                 "1": ("Open List", self.manager.openList),
                 "2": ("Create List", self.manager.createList),
@@ -86,14 +79,11 @@ class App:
             }
             for key, (name, function) in options.items():
                 print(f"[{key}] {name}")
-                time.sleep(0.1)
             print()
             choice = input("What would you like to do? (type \"back\" to go to back): ")
             if choice == "back":
                 print("Switching to main menu...")
-                time.sleep(0.5)
                 print()
-                time.sleep(0.1)
                 break
             elif choice in options:
                 name, function = options[choice]
@@ -106,9 +96,7 @@ class App:
             userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"back\" to go to back): ")
             if userInput == "back":
                 print("Switching to main menu...")
-                time.sleep(0.5)
                 print()
-                time.sleep(0.1)
                 break
 
             elif userInput == "reset":
@@ -140,9 +128,7 @@ class App:
                     self.settings.data[setting] = newValue
                     self.settings.save()
                     print("Changed " + str(setting) + " to " + str(newValue) + ".")
-                    time.sleep(0.5)
                     print()
-                    time.sleep(0.1)
 
                 else:
                     continue
@@ -165,7 +151,6 @@ class ListManager:
             name = str(input("What would you like to name the list? ")).title()
         self.lists[name] = TrackList(name, data)
         print(f"Created list {name}")
-        time.sleep(0.1)
         print()
         self.save()
 
@@ -173,12 +158,10 @@ class ListManager:
         if name == None:
             while True:
                 print("Here are the lists: ")
-                time.sleep(0.1)
                 options = {}
                 for index, (key, value) in enumerate(self.lists.items(), start=1):
                     options[str(index)] = key
                     print(f"[{index}] {key}")
-                    time.sleep(0.1)
                 
                 print()
                 choice = input("Which one would you like to delete? ")
@@ -235,21 +218,17 @@ class ListManager:
         if IDbool:
             for index, name in enumerate(self.lists.keys()):
                 print(f"[{index}] {name}")
-                time.sleep(0.1)
         else:
             for name in self.lists.keys():
                 print(f"{name}")
-                time.sleep(0.1)
 
     def openList(self, app):
         while True:
             print("Here are the lists: ")
-            time.sleep(0.1)
             options = {}
             for index, (key, value) in enumerate(self.lists.items(), start=1):
                 options[str(index)] = key
                 print(f"[{index}] {key}")
-                time.sleep(0.1)
             print()
             choice = input("Which one would you like to open? ")
             if choice in options:
@@ -270,9 +249,7 @@ class ListManager:
                 userInput = input("What do you want to " + str(app.settings.data["mode"]) + " by " + str(app.settings.data["multiplier"]) + "? (type \"back\" to go back): ")
                 if userInput == "back":
                     print("Switching to list manager...")
-                    time.sleep(0.5)
                     print()
-                    time.sleep(0.1)
                     break
                 else:
                     track = tf.checkInput(userInput)
@@ -347,16 +324,12 @@ class TrackList:
         if track in self.data:
             self.data[track] += multiplier
             print("Added " + str(multiplier) + " to " + str(track) + ". New value: " + str(self.data[track]))
-            time.sleep(0.5)
             print()
-            time.sleep(0.1)
             toReturn = True
         else:
             self.data[track] = multiplier
             print("Created " + str(track) + " with value " + str(self.data[track]) + ".")
-            time.sleep(0.5)
             print()
-            time.sleep(0.1)
             toReturn = True
         return toReturn
 
@@ -366,15 +339,11 @@ class TrackList:
             if self.data[track] <= 0:
                 del self.data[track]
                 print("Removed " + str(track) + ".")
-                time.sleep(0.5)
                 print()
-                time.sleep(0.1)
                 toReturn = True
             else:
                 print("Subtracted " + str(multiplier) + " from " + str(track) + ". New value: " + str(self.data[track]))
-                time.sleep(0.5)
                 print()
-                time.sleep(0.1)
                 toReturn = True
         else:
             tf.errorMessage("That doesn't exist yet.")

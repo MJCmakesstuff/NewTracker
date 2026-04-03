@@ -1,5 +1,10 @@
 CHANGELOG
 
+04/03/2026: Remove time.sleep() calls for improved user experience and responsiveness.
+- Removed time.sleep() calls for better experience.
+
+
+
 03/31/2026: Implement data validation in ListManager and TrackList; remove invalid entries from loaded data.
 - The program now checks for invalid data in all of tracks.json, rather than just the values in the kv pairs.
 

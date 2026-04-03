@@ -6,9 +6,7 @@ import time
 # Prints the current data.
 def printTracks(trackData):
     for index, (key, value) in enumerate(trackData.items(), start=1):
-        time.sleep(0.1)
         print(f"[{index}] {key}: {value}")
-    time.sleep(0.1)
     print()
 
 # Deals with poor user input.
@@ -64,7 +62,6 @@ def errorHandler(returnValue):
 def errorMessage(message=""):
     if message != "":
         print(message)
-    time.sleep(1)
     input("Press Enter to continue...")
     print()
 
@@ -104,12 +101,9 @@ def checkSetting(setting, validType, validValues, inParams=None):
                 #print("I AM RUNNING INSIDE CHECKSETTING")
                 #print(params["verbose"])
                 print("That isn't a valid option for that setting.")
-                time.sleep(0.5)
                 print("Valid options are: ")
-                time.sleep(0.5)
                 for value in validValues:
                     print(value)
-                    time.sleep(0.1)
                 errorMessage()
             return False
     if validType == "rules":
@@ -141,11 +135,9 @@ def ruleChecker(value, rules, inParams=None):
                     #print(f"{value} is not equal as integer and float.")
                     if params["verbose"]:
                         print("This must be an integer.")
-                        time.sleep(0.5)
                         print("This must be:")
                         for rule in rules:
                             print(f" - {rule}")
-                            time.sleep(0.1)
                         errorMessage()
                     return False
             
@@ -153,11 +145,9 @@ def ruleChecker(value, rules, inParams=None):
                 #print(f"{value} could not be converted to an integer or float.")
                 if params["verbose"]:
                     print("This must be an integer.")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
             
@@ -165,11 +155,9 @@ def ruleChecker(value, rules, inParams=None):
                 #print(f"{value} is not an integer type.")
                 if params["verbose"]:
                     print("This must be an integer.")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                    time.sleep(0.1)
                     errorMessage()
                 return False
         
@@ -177,11 +165,9 @@ def ruleChecker(value, rules, inParams=None):
             if not value > 0:
                 if params["verbose"]:
                     print("This must be a positive number.")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
             
@@ -189,11 +175,9 @@ def ruleChecker(value, rules, inParams=None):
             if value == "":
                 if params["verbose"]:
                     print("This cannot be empty.")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
             
@@ -202,11 +186,9 @@ def ruleChecker(value, rules, inParams=None):
                 value = float(value)
                 if params["verbose"]:
                     print("This must be a string.")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
             except ValueError:
@@ -220,11 +202,9 @@ def ruleChecker(value, rules, inParams=None):
                 except ValueError:
                     if params["verbose"]:
                         print("This must be a string.")
-                        time.sleep(0.5)
                         print("This must be:")
                         for rule in rules:
                             print(f" - {rule}")
-                            time.sleep(0.1)
                         errorMessage()
                     return False
 
@@ -232,11 +212,9 @@ def ruleChecker(value, rules, inParams=None):
             if isinstance(value, str):
                 if params["verbose"]:
                     print("This cannot be a string.")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
 
@@ -247,11 +225,9 @@ def ruleChecker(value, rules, inParams=None):
             if value != value.title():
                 if params["verbose"]:
                     print("This must be in title case (first letter of each word capitalized).")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
             else:
@@ -262,11 +238,9 @@ def ruleChecker(value, rules, inParams=None):
             if convertToBool(value) == "not bool":
                 if params["verbose"]:
                     print("This must be a boolean (true/false).")
-                    time.sleep(0.5)
                     print("This must be:")
                     for rule in rules:
                         print(f" - {rule}")
-                        time.sleep(0.1)
                     errorMessage()
                 return False
             else:
@@ -282,7 +256,6 @@ def fixSettingsFile(settings, schema, save_location):
         if checkSetting(settings[key], value["type"], value["rules"], {"verbose": False}):
             continue
         else:
-            time.sleep(0.1)
             print(f"Invalid value for setting '{key}' found in settings.json. Resetting to default: {value['default']}...")
             settings[key] = value["default"]
     saveData(settings, save_location)
@@ -291,12 +264,10 @@ def fixSettingsFile(settings, schema, save_location):
 def printSettings(settings, options={"ids": True}):
     print("Here are the current settings: ")
     for index, (key, value) in enumerate(settings.items(), start=1):
-        time.sleep(0.1)
         if options["ids"]:
             print(f"[{index}] {key}: {value}")
         else:
             print(f"{key}: {value}")
-    time.sleep(0.1)
     print()
 
 # Resets settings to their default values.
@@ -306,7 +277,6 @@ def resetSettings(settings, schema, save_location):
     saveData(settings, save_location)
     print("Settings reset.")
     print()
-    time.sleep(0.5)
 
 # Tries to convert input to a boolean. If failed, retunrns "not bool".
 def convertToBool(value):
