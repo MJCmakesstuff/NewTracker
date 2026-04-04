@@ -3,6 +3,16 @@ import time
 
 ### FUNCTIONS ### 
 
+#Solution to magic strings
+QUIT = "quit"
+BACK = "back"
+RESET = "reset"
+LOWER_PARAM = "lower"
+ALL_CLEAR = "all clear"
+DOESNT_EXIST = "That doesn't exist yet."
+ADD = "add"
+SUBTRACT = "subtract"
+
 def _print_validation_error(rules):
     print("This must be:")
     for rule in rules:

@@ -6,6 +6,17 @@ from pathlib import Path
 
 DEBUG = True
 
+#Solution to magic strings
+QUIT = "quit"
+BACK = "back"
+RESET = "reset"
+LOWER_PARAM = "lower"
+ALL_CLEAR = "all clear"
+DOESNT_EXIST = "That doesn't exist yet."
+ADD = "add"
+SUBTRACT = "subtract"
+
+
 class App:
     def __init__(self):
         i = 0
@@ -48,8 +59,8 @@ class App:
             for key, (name, function) in windows.items():
                 print(f"[{key}] {name}")
             print()
-            window_choice = input("Which item would you like? (type \"quit\" to quit): ")
-            if window_choice == "quit":
+            window_choice = input(f"Which item would you like? (type \"{QUIT}\" to quit): ")
+            if window_choice == QUIT:
                 print("Thank you so much for using NewTracker! Come again!!")
                 return 0
             elif window_choice in windows:
@@ -60,7 +71,7 @@ class App:
                     i += 1
                 function()
             else:
-                tf.errorMessage("That doesn't exist yet.")
+                tf.errorMessage(DOESNT_EXIST)
 
 
     def list_manager(self):
@@ -80,32 +91,34 @@ class App:
             for key, (name, function) in options.items():
                 print(f"[{key}] {name}")
             print()
-            choice = input("What would you like to do? (type \"back\" to go to back): ")
-            if choice == "back":
+            choice = input(f"What would you like to do? (type \"{BACK}\" to go to back): ")
+            if choice == BACK:
                 print("Switching to main menu...")
                 print()
                 break
             elif choice in options:
                 name, function = options[choice]
                 function(self)
+            else:
+                tf.errorMessage(DOESNT_EXIST)
 
     def settings_editor(self):
         while True:
             print()
             self.settings.print()
-            userInput = input("What setting do you want to change? (type \"reset\" to reset to defaults, or \"back\" to go to back): ")
-            if userInput == "back":
+            userInput = input(f"What setting do you want to change? (type \"{RESET}\" to reset to defaults, or \"{BACK}\" to go to back): ")
+            if userInput == BACK:
                 print("Switching to main menu...")
                 print()
                 break
 
-            elif userInput == "reset":
+            elif userInput == RESET:
                 self.settings.reset()
                 continue
 
             else:
-                setting = tf.checkInput(userInput, "lower")
-                if tf.errorHandler(setting) != "all clear":
+                setting = tf.checkInput(userInput, LOWER_PARAM)
+                if tf.errorHandler(setting) != ALL_CLEAR:
                     tf.errorMessage(tf.errorHandler(setting))
                     continue
             
@@ -115,7 +128,7 @@ class App:
                         setting -= 1
                         setting = keys[setting]
                     except:
-                        tf.errorMessage("That doesn't exist yet.")
+                        tf.errorMessage(DOESNT_EXIST)
                         continue
 
             # What to change to?
@@ -134,7 +147,7 @@ class App:
                     continue
                 # HERE
             else:
-                tf.errorMessage("That doesn't exist yet.")
+                tf.errorMessage(DOESNT_EXIST)
                 continue
 
 class ListManager:
@@ -169,7 +182,7 @@ class ListManager:
                     toDelete = True
                     break
                 else:
-                    tf.errorMessage("That doesn't exist yet.")
+                    tf.errorMessage(DOESNT_EXIST)
                     toDelete = False
                     break
             if toDelete:
@@ -236,7 +249,7 @@ class ListManager:
                 break
             else:
                 toOpen = False
-                tf.errorMessage("That doesn't exist yet.")
+                tf.errorMessage(DOESNT_EXIST)
                 break
 
         if toOpen:
@@ -246,15 +259,15 @@ class ListManager:
                 print("Here's what I'm tracking so far: ")
                 app.manager.lists[currentList].print()
 
-                userInput = input("What do you want to " + str(app.settings.data["mode"]) + " by " + str(app.settings.data["multiplier"]) + "? (type \"back\" to go back): ")
-                if userInput == "back":
+                userInput = input(f"What do you want to {app.settings.data['mode']} by {app.settings.data['multiplier']}? (type \"{BACK}\" to go back): ")
+                if userInput == BACK:
                     print("Switching to list manager...")
                     print()
                     break
                 else:
                     track = tf.checkInput(userInput)
 
-                if tf.errorHandler(track) != "all clear":
+                if tf.errorHandler(track) != ALL_CLEAR:
                     tf.errorMessage(tf.errorHandler(track))
                     continue
                 
@@ -267,14 +280,14 @@ class ListManager:
                         keyList = list(app.manager.lists[currentList].data.keys())
                         track = keyList[track]
                     except:
-                        tf.errorMessage("That doesn't exist yet.")
+                        tf.errorMessage(DOESNT_EXIST)
                         continue
                 
-                # Adds or subtracts the track depending on the mode.
-                if app.settings.data["mode"] == "add":
+                # Adds or subtracts the track depending on the mode. 
+                if app.settings.data["mode"] == ADD:
                     if app.manager.lists[currentList].add(track, int(app.settings.data["multiplier"])) == False:
                         continue
-                elif app.settings.data["mode"] == "subtract":
+                elif app.settings.data["mode"] == SUBTRACT:
                     if app.manager.lists[currentList].subtract(track, int(app.settings.data["multiplier"])) == False:
                         continue
                 app.manager.save()
@@ -288,11 +301,9 @@ class TrackList:
         self.validate()
     
     def load(self):
-        print("IT HAPPENED")
         self.data = tf.loadData(self.fileLocation, {})
     
     def save(self):
-        print("IT HAPPENED")
         tf.saveData(self.data, self.fileLocation)
 
     def validate(self):
@@ -346,7 +357,7 @@ class TrackList:
                 print()
                 toReturn = True
         else:
-            tf.errorMessage("That doesn't exist yet.")
+            tf.errorMessage(DOESNT_EXIST)
             toReturn = False
         return toReturn
 

@@ -1,5 +1,12 @@
 CHANGELOG
 
+04/03/2026 #3: Refactor magic strings into constants for improved code clarity and maintainability
+- Removed some debug prints.
+- Added an error message that I thought already existed.
+- Removed some "magic strings." I don't really understand why this is better yet, but I was told to try it. I'll probably be better about these "magic strings" when I start something new or change a bunch more stuff.
+
+
+
 04/03/2026 #2: Add _print_validation_error function for improved user feedback on validation rules
 - Created _print_validation_error(rules) helper function which iterates through the rules and states them so the user knows what they are allowed to put.
 
