@@ -13,5 +13,4 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 Todo:
-- Creating a list that already exists causes it to be cleared. This is bad.
 - Use Enum to make the magic string problem even better (worse?)

@@ -162,6 +162,9 @@ class ListManager:
             data = {}
         if name == None:
             name = str(input("What would you like to name the list? ")).title()
+        if name in self.lists.keys():
+            tf.errorMessage("A list with that name already exists.")
+            return
         self.lists[name] = TrackList(name, data)
         print(f"Created list {name}")
         print()
@@ -243,9 +246,13 @@ class ListManager:
                 options[str(index)] = key
                 print(f"[{index}] {key}")
             print()
-            choice = input("Which one would you like to open? ")
+            choice = input(f"Which one would you like to open? (type \"{BACK}\" to go back): ")
             if choice in options:
                 toOpen = True
+                break
+            elif choice == BACK:
+                print()
+                toOpen = False
                 break
             else:
                 toOpen = False

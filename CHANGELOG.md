@@ -1,5 +1,11 @@
 CHANGELOG
 
+04/04/2026: Add functionality to prevent duplicate list creation and allow users to back out of opening a list
+- User can now back out of opening a list. Say, if they accidentaly try to open a list, but decide they would rather create or delete one.
+- User can no longer create a list if a list with that name already exists.
+
+
+
 04/03/2026 #3: Refactor magic strings into constants for improved code clarity and maintainability
 - Removed some debug prints.
 - Added an error message that I thought already existed.
