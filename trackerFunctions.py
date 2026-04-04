@@ -3,6 +3,12 @@ import time
 
 ### FUNCTIONS ### 
 
+def _print_validation_error(rules):
+    print("This must be:")
+    for rule in rules:
+        print(f" - {rule}")
+    errorMessage()
+
 # Prints the current data.
 def printTracks(trackData):
     for index, (key, value) in enumerate(trackData.items(), start=1):
@@ -135,50 +141,35 @@ def ruleChecker(value, rules, inParams=None):
                     #print(f"{value} is not equal as integer and float.")
                     if params["verbose"]:
                         print("This must be an integer.")
-                        print("This must be:")
-                        for rule in rules:
-                            print(f" - {rule}")
-                        errorMessage()
+                        _print_validation_error(rules)
                     return False
             
             except ValueError:
                 #print(f"{value} could not be converted to an integer or float.")
                 if params["verbose"]:
                     print("This must be an integer.")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
             
             if not isinstance(value, int):
                 #print(f"{value} is not an integer type.")
                 if params["verbose"]:
                     print("This must be an integer.")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
         
         elif rule == "positive":
             if not value > 0:
                 if params["verbose"]:
                     print("This must be a positive number.")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
             
         elif rule == "non-empty":
             if value == "":
                 if params["verbose"]:
                     print("This cannot be empty.")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
             
         elif rule == "string":
@@ -186,10 +177,7 @@ def ruleChecker(value, rules, inParams=None):
                 value = float(value)
                 if params["verbose"]:
                     print("This must be a string.")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
             except ValueError:
                 try:
@@ -202,20 +190,14 @@ def ruleChecker(value, rules, inParams=None):
                 except ValueError:
                     if params["verbose"]:
                         print("This must be a string.")
-                        print("This must be:")
-                        for rule in rules:
-                            print(f" - {rule}")
-                        errorMessage()
+                        _print_validation_error(rules)
                     return False
 
         elif rule == "strict-non-string":
             if isinstance(value, str):
                 if params["verbose"]:
                     print("This cannot be a string.")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
 
         elif rule == "titleCase":
@@ -225,10 +207,7 @@ def ruleChecker(value, rules, inParams=None):
             if value != value.title():
                 if params["verbose"]:
                     print("This must be in title case (first letter of each word capitalized).")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
             else:
                 #print(f"{value} is in title case.")
@@ -238,10 +217,7 @@ def ruleChecker(value, rules, inParams=None):
             if convertToBool(value) == "not bool":
                 if params["verbose"]:
                     print("This must be a boolean (true/false).")
-                    print("This must be:")
-                    for rule in rules:
-                        print(f" - {rule}")
-                    errorMessage()
+                    _print_validation_error(rules)
                 return False
             else:
                 if params["convertToBool"]:

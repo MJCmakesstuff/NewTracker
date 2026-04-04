@@ -1,5 +1,10 @@
 CHANGELOG
 
+04/03/2026 #2: Add _print_validation_error function for improved user feedback on validation rules
+- Created _print_validation_error(rules) helper function which iterates through the rules and states them so the user knows what they are allowed to put.
+
+
+
 04/03/2026: Remove time.sleep() calls for improved user experience and responsiveness.
 - Removed time.sleep() calls for better experience.
 
