@@ -13,4 +13,3 @@ I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, 
 \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
 
 Todo:
-- Use Enum to make the magic string problem even better (worse?)

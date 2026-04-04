@@ -1,5 +1,10 @@
 CHANGELOG
 
+04/04/2026 #2: Fix zero bug
+- Fix bug. User can no longer add to the last item in the list by entering "0." Previously I accounted for this by not allowing negative numbers, but then I changed the indexing to start at 1 so 0 was still allowed but became effectively negative.
+
+
+
 04/04/2026: Add functionality to prevent duplicate list creation and allow users to back out of opening a list
 - User can now back out of opening a list. Say, if they accidentaly try to open a list, but decide they would rather create or delete one.
 - User can no longer create a list if a list with that name already exists.

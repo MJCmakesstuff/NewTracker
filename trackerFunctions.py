@@ -3,16 +3,6 @@ import time
 
 ### FUNCTIONS ### 
 
-#Solution to magic strings
-QUIT = "quit"
-BACK = "back"
-RESET = "reset"
-LOWER_PARAM = "lower"
-ALL_CLEAR = "all clear"
-DOESNT_EXIST = "That doesn't exist yet."
-ADD = "add"
-SUBTRACT = "subtract"
-
 def _print_validation_error(rules):
     print("This must be:")
     for rule in rules:
@@ -45,7 +35,7 @@ def checkInput(userInput, case=None):
 
     try:
         # If input is negative, print error and skip to next iteration.
-        if float(userInput) < 0:
+        if float(userInput) <= 0:
             return "negative"
     except:
         pass 
@@ -70,7 +60,7 @@ def errorHandler(returnValue):
     elif returnValue == "decimal":
         return "You cannot enter a decimal."
     elif returnValue == "negative":
-        return "You cannot enter a negative number."
+        return "You cannot enter a negative/zero number."
     else:
         return "all clear"
 
