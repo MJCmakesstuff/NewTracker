@@ -157,7 +157,7 @@ class ListManager:
         self.fileLocation = Path("data") / "tracks.json"
         #self.schema = {"list name": {"item name": "integer"}}
 
-    def createList(self, app, name=None, data=None):
+    def createList(self, app, name: str = None, data: dict = None) -> None:
         if data == None:
             data = {}
         if name == None:
@@ -170,7 +170,7 @@ class ListManager:
         print()
         self.save()
 
-    def deleteList(self, app, name=None):
+    def deleteList(self, app, name: str = None) -> None:
         if name == None:
             while True:
                 print("Here are the lists: ")
@@ -192,7 +192,7 @@ class ListManager:
                 del self.lists[options[choice]]
         self.save()
 
-    def getList(self, name):
+    def getList(self, name: str) -> TrackList:
         return self.lists.get(name)
     
     def save(self):
@@ -230,7 +230,7 @@ class ListManager:
             self.lists[key] = TrackList(str(key), value)
         self.save()
 
-    def print(self, IDbool):
+    def print(self, IDbool: bool) -> None:
         if IDbool:
             for index, name in enumerate(self.lists.keys()):
                 print(f"[{index}] {name}")
@@ -238,7 +238,7 @@ class ListManager:
             for name in self.lists.keys():
                 print(f"{name}")
 
-    def openList(self, app):
+    def openList(self, app: App) -> None:
         while True:
             print("Here are the lists: ")
             options = {}
@@ -300,7 +300,7 @@ class ListManager:
                 app.manager.save()
     
 class TrackList:
-    def __init__(self, name, data=None):
+    def __init__(self, name: str, data: dict = None):
         if data == None:
             data = {}
         self.data = data
@@ -338,7 +338,7 @@ class TrackList:
     def print(self):
         tf.printTracks(self.data)
 
-    def add(self, track, multiplier):
+    def add(self, track: str, multiplier: int) -> bool:
         if track in self.data:
             self.data[track] += multiplier
             print("Added " + str(multiplier) + " to " + str(track) + ". New value: " + str(self.data[track]))
@@ -351,7 +351,7 @@ class TrackList:
             toReturn = True
         return toReturn
 
-    def subtract(self, track, multiplier):
+    def subtract(self, track: str, multiplier: int) -> bool:
         if track in self.data:
             self.data[track] -= multiplier
             if self.data[track] <= 0:

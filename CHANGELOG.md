@@ -1,5 +1,10 @@
 CHANGELOG
 
+04/04/2026 #3: Add type annotations
+- Added type annotations for most of the functions. Might not ever be complete, but I'll keep them in mind going forward.
+
+
+
 04/04/2026 #2: Fix zero bug
 - Fix bug. User can no longer add to the last item in the list by entering "0." Previously I accounted for this by not allowing negative numbers, but then I changed the indexing to start at 1 so 0 was still allowed but became effectively negative.
 

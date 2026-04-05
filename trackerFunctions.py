@@ -3,20 +3,20 @@ import time
 
 ### FUNCTIONS ### 
 
-def _print_validation_error(rules):
+def _print_validation_error(rules: list):
     print("This must be:")
     for rule in rules:
         print(f" - {rule}")
     errorMessage()
 
 # Prints the current data.
-def printTracks(trackData):
+def printTracks(trackData: dict):
     for index, (key, value) in enumerate(trackData.items(), start=1):
         print(f"[{index}] {key}: {value}")
     print()
 
 # Deals with poor user input.
-def checkInput(userInput, case=None):
+def checkInput(userInput: str, case: str = None) -> int | str:
     # If input is empty, skip to next iteration.
     if userInput == "":
         return "empty"
@@ -54,7 +54,7 @@ def checkInput(userInput, case=None):
         #print("Input could not be converted into integer, here's what we've got: " + str(track))
 
 # Deals with errors.
-def errorHandler(returnValue):
+def errorHandler(returnValue: str) -> str:
     if returnValue == "empty":
         return "You cannot enter an empty string."
     elif returnValue == "decimal":
@@ -65,7 +65,7 @@ def errorHandler(returnValue):
         return "all clear"
 
 # Error message thing
-def errorMessage(message=""):
+def errorMessage(message: str = ""):
     if message != "":
         print(message)
     input("Press Enter to continue...")
@@ -90,7 +90,7 @@ def saveData(data, fileName):
         json.dump(data, file, indent=4)
 
 # Checks if settings are valid
-def checkSetting(setting, validType, validValues, inParams=None):
+def checkSetting(setting: str, validType: str, validValues: list, inParams: dict = None) -> bool:
     defaultParams = {"verbose": True}
     if inParams is None:
         inParams = {}
@@ -116,7 +116,7 @@ def checkSetting(setting, validType, validValues, inParams=None):
         return ruleChecker(setting, validValues, {"verbose": params["verbose"]})
 
 # Checks if a value follows certain rules (given function input)
-def ruleChecker(value, rules, inParams=None):
+def ruleChecker(value: str, rules: list, inParams: dict = None) -> bool:
     defaultParams = {"convertToInt": True, "verbose": True, "convertToBool": True}
     if inParams is None:
         inParams = {}
@@ -226,7 +226,7 @@ def ruleChecker(value, rules, inParams=None):
     return True
 
 # Fixes the settings file if any of the settings are invalid (and saves!)        
-def fixSettingsFile(settings, schema, save_location):
+def fixSettingsFile(settings: dict, schema: dict, save_location):
     for key, value in schema.items():
         #print(f"Checking setting '{key}' with value '{settings[key]}' against rules: {value['rules']}...")
         if checkSetting(settings[key], value["type"], value["rules"], {"verbose": False}):
@@ -237,7 +237,7 @@ def fixSettingsFile(settings, schema, save_location):
     saveData(settings, save_location)
 
 # Prints the current settings.
-def printSettings(settings, options={"ids": True}):
+def printSettings(settings: dict, options: dict = {"ids": True}):
     print("Here are the current settings: ")
     for index, (key, value) in enumerate(settings.items(), start=1):
         if options["ids"]:
@@ -247,7 +247,7 @@ def printSettings(settings, options={"ids": True}):
     print()
 
 # Resets settings to their default values.
-def resetSettings(settings, schema, save_location):
+def resetSettings(settings: dict, schema: dict, save_location):
     for key, value in schema.items():
         settings[key] = schema[key]["default"]
     saveData(settings, save_location)
@@ -255,7 +255,7 @@ def resetSettings(settings, schema, save_location):
     print()
 
 # Tries to convert input to a boolean. If failed, retunrns "not bool".
-def convertToBool(value):
+def convertToBool(value: str) -> bool | str:
     if str(value).strip().lower() in ["true", "yes", "1", "y", "t"]:
         return True
     elif str(value).strip().lower() in ["false", "no", "0", "n", "f"]:
