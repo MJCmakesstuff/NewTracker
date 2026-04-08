@@ -80,14 +80,18 @@ def loadData(fileName, fallback):
                 return data
             else:
                 return fallback
-    except (FileNotFoundError, json.JSONDecodeError):
+    except Exception as e:
         print(f"{fileName} doesn't exist or is corrupted. Creating a new one...")
+        print(f"Error details: {e}")
         return fallback
 
 # Saves data to a JSON file.
 def saveData(data, fileName):
-    with open(fileName, "w") as file:
-        json.dump(data, file, indent=4)
+    try:
+        with open(fileName, "w") as file:
+            json.dump(data, file, indent=4)
+    except Exception as e:
+        print(f"Error occurred while saving data to {fileName}: {e}")
 
 # Checks if settings are valid
 def checkSetting(setting: str, validType: str, validValues: list, inParams: dict = None) -> bool:

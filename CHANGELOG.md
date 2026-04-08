@@ -1,5 +1,10 @@
 CHANGELOG
 
+04/07/2026: Improve file read/write error handing
+- Added/modified try/except blocks around saving/loading files to account for other errors. 
+
+
+
 04/04/2026 #3: Add type annotations
 - Added type annotations for most of the functions. Might not ever be complete, but I'll keep them in mind going forward.
 
