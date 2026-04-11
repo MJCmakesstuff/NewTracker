@@ -92,33 +92,7 @@ def saveData(data, fileName):
             json.dump(data, file, indent=4)
     except Exception as e:
         print(f"Error occurred while saving data to {fileName}: {e}")
-
-# Checks if settings are valid
-def checkSetting(setting: str, validType: str, validValues: list, inParams: dict = None) -> bool:
-    defaultParams = {"verbose": True}
-    if inParams is None:
-        inParams = {}
-    params = {**defaultParams, **inParams}
-    
-    
-    #print(f"{setting} should be of type {validType} and follow these rules: {validValues}, params are: {params}")
-    if validType == "set":
-        if setting in validValues:
-            return True
-        else:
-            #print(f"Verbose is set to {params["verbose"]}.")
-            if params["verbose"]:
-                #print("I AM RUNNING INSIDE CHECKSETTING")
-                #print(params["verbose"])
-                print("That isn't a valid option for that setting.")
-                print("Valid options are: ")
-                for value in validValues:
-                    print(value)
-                errorMessage()
-            return False
-    if validType == "rules":
-        return ruleChecker(setting, validValues, {"verbose": params["verbose"]})
-
+        
 # Checks if a value follows certain rules (given function input)
 def ruleChecker(value: str, rules: list, inParams: dict = None) -> bool:
     defaultParams = {"convertToInt": True, "verbose": True, "convertToBool": True}
@@ -228,17 +202,6 @@ def ruleChecker(value: str, rules: list, inParams: dict = None) -> bool:
                     value = convertToBool(value)
 
     return True
-
-# Fixes the settings file if any of the settings are invalid (and saves!)        
-def fixSettingsFile(settings: dict, schema: dict, save_location):
-    for key, value in schema.items():
-        #print(f"Checking setting '{key}' with value '{settings[key]}' against rules: {value['rules']}...")
-        if checkSetting(settings[key], value["type"], value["rules"], {"verbose": False}):
-            continue
-        else:
-            print(f"Invalid value for setting '{key}' found in settings.json. Resetting to default: {value['default']}...")
-            settings[key] = value["default"]
-    saveData(settings, save_location)
 
 # Prints the current settings.
 def printSettings(settings: dict, options: dict = {"ids": True}):

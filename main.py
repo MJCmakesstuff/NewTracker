@@ -3,6 +3,7 @@ import sys
 import time
 import trackerFunctions as tf
 from pathlib import Path
+from pydantic import BaseModel, Field, field_validator, ValidationError
 
 DEBUG = True
 
@@ -15,7 +16,6 @@ ALL_CLEAR = "all clear"
 DOESNT_EXIST = "That doesn't exist yet."
 ADD = "add"
 SUBTRACT = "subtract"
-
 
 class App:
     def __init__(self):
@@ -38,12 +38,6 @@ class App:
 
         # Loads settings
         self.settings.load()
-
-        # Fixes the settings file if any of the settings are invalid.
-        print("Checking settings file...") # KEEP
-        self.settings.fix()
-
-        #return self
 
     def main(self):
         print("Welcome to NewTracker! Hope you enjoy!!")
@@ -72,7 +66,6 @@ class App:
                 function()
             else:
                 tf.errorMessage(DOESNT_EXIST)
-
 
     def list_manager(self):
         print()
@@ -116,6 +109,7 @@ class App:
                 self.settings.reset()
                 continue
 
+            #Next two blocks see which setting to change
             else:
                 setting = tf.checkInput(userInput, LOWER_PARAM)
                 if tf.errorHandler(setting) != ALL_CLEAR:
@@ -124,7 +118,7 @@ class App:
             
             if type(setting) == int:
                     try:
-                        keys = list(self.settings.data.keys())
+                        keys = list(self.settings.data.model_dump().keys())
                         setting -= 1
                         setting = keys[setting]
                     except:
@@ -132,20 +126,37 @@ class App:
                         continue
 
             # What to change to?
-            if setting in self.settings.data:
-                newValue = input("What would you like to change " + str(setting) + " to? ")
-                if tf.checkSetting(newValue, self.settings.schema[setting]["type"], self.settings.schema[setting]["rules"]):
-                    if self.settings.schema[setting]["rules"] == ["boolean"]:
-                        newValue = tf.convertToBool(newValue)
-                        #print(newValue, type(newValue))
-                    self.settings.data[setting] = newValue
+            if hasattr(self.settings.data, setting):
+                newValue = input(f"What do you want to change {setting} to? ")
+
+                # Converts newValue to the correct type for setting.
+                currentType = type(getattr(self.settings.data, setting))
+                if currentType == bool:
+                    newValue = tf.convertToBool(newValue)
+                    if newValue == "not bool":
+                        tf.errorMessage("This must be a boolean (true/false).")
+                        continue
+                elif currentType == int:
+                    try:
+                        newValue = int(newValue)
+                    except ValueError:
+                        tf.errorMessage("This must be an integer.")
+                        continue
+                    
+                # Tries to update settings with new value.
+                try:
+                    data_dict = self.settings.data.model_dump()
+                    data_dict[setting] = newValue
+                    updated_data = Settings(**data_dict)
+                    self.settings.data = updated_data
                     self.settings.save()
                     print("Changed " + str(setting) + " to " + str(newValue) + ".")
                     print()
+                
+                except ValidationError as e:
+                    messages = [error['msg'] for error in e.errors()]
+                    tf.errorMessage(f"Invalid value: {', '.join(messages)}")
 
-                else:
-                    continue
-                # HERE
             else:
                 tf.errorMessage(DOESNT_EXIST)
                 continue
@@ -266,7 +277,7 @@ class ListManager:
                 print("Here's what I'm tracking so far: ")
                 app.manager.lists[currentList].print()
 
-                userInput = input(f"What do you want to {app.settings.data['mode']} by {app.settings.data['multiplier']}? (type \"{BACK}\" to go back): ")
+                userInput = input(f"What do you want to {app.settings.data.mode} by {app.settings.data.multiplier}? (type \"{BACK}\" to go back): ")
                 if userInput == BACK:
                     print("Switching to list manager...")
                     print()
@@ -291,11 +302,11 @@ class ListManager:
                         continue
                 
                 # Adds or subtracts the track depending on the mode. 
-                if app.settings.data["mode"] == ADD:
-                    if app.manager.lists[currentList].add(track, int(app.settings.data["multiplier"])) == False:
+                if app.settings.data.mode == ADD:
+                    if app.manager.lists[currentList].add(track, int(app.settings.data.multiplier)) == False:
                         continue
-                elif app.settings.data["mode"] == SUBTRACT:
-                    if app.manager.lists[currentList].subtract(track, int(app.settings.data["multiplier"])) == False:
+                elif app.settings.data.mode == SUBTRACT:
+                    if app.manager.lists[currentList].subtract(track, int(app.settings.data.multiplier)) == False:
                         continue
                 app.manager.save()
     
@@ -370,61 +381,46 @@ class TrackList:
 
 class SettingsManager:
     def __init__(self):
-        self.schema ={
-        "settingsPersist": {
-            "type": "rules",
-            "rules": [
-                "boolean"
-            ],
-            "default": True
-        },
-        "mode": {
-            "type": "set",
-            "rules": [
-                "add",
-                "subtract"
-            ],
-            "default": "add"
-        },
-        "multiplier": {
-            "type": "rules",
-            "rules": [
-                "integer",
-                "positive"
-            ],
-            "default": 1
-        }
-    }
-        self.data = {}
+        self.data: Settings = Settings()
         self.fileLocation = Path("data") / "settings.json"
 
     def load(self):
+
         loaded_data = tf.loadData(self.fileLocation, {})
-        self.data = {}
-        for key, value in self.schema.items():
-            if key in loaded_data:
-                self.data[key] = loaded_data[key]
-            else:
-                self.data[key] = value["default"]
-        if self.data["settingsPersist"] == False:
+        try:
+            self.data = Settings(**loaded_data)
+        except Exception as e:
+            print(f"Error loading settings: {e}")
+            print("Resetting settings to defaults...")
+            self.data = Settings()
+
+        if self.data.settingsPersist == False:
             print("Settings persistence is turned off. Resetting settings to defaults...")
-            self.reset()
+            self.data = Settings()
+            
         self.save()
 
     def save(self):
-        tf.saveData(self.data, self.fileLocation)
+        tf.saveData(self.data.model_dump(), self.fileLocation)
 
     def reset(self):
-        tf.resetSettings(self.data, self.schema, self.fileLocation)
+        self.data = Settings()
         self.save()
-    
-    def fix(self):
-        tf.fixSettingsFile(self.data, self.schema, self.fileLocation)
-        print()
-        tf.printSettings(self.data, {"ids": False})
+        print("Settings reset.")
 
     def print(self):
-        tf.printSettings(self.data)   
+        tf.printSettings(self.data.model_dump())   
+
+class Settings(BaseModel):
+    settingsPersist: bool = Field(default = True)
+    mode: str = Field(default = "add")
+    multiplier: int = Field(default = 1, gt = 0)
+
+    @field_validator("mode")
+    def validate_mode(cls, value):
+        if value not in ["add", "subtract"]:
+            raise ValueError("Mode must be either 'add' or 'subtract'.")
+        return value
 
 if __name__ == "__main__":
     if DEBUG:

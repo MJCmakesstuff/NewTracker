@@ -1,5 +1,20 @@
 CHANGELOG
 
+04/11/2026: Implement Pydantic for settings validation
+- Added Pydantic to validate settings, rather than by using manual validation. This includes the following changes/implementations.
+- Created a new Settings() class which is a Pydantic thing. 
+- It contains the rules for types that the settings are allowed to be as well as a validator for 'mode'. 
+- SettingsManager() now extracts json from storage and unpacks it into Settings() for validation. 
+- Resetting settings is now as simple as self.data = Settings()
+- settings.fix() is no longer needed and was removed.
+- tf.checkSetting() is no longer needed and was removed.
+- tf.fixSettingsFile() is no longer needed and was removed.
+- Rather than checking the new setting value against the rules in the settings schema, the program extracts the data from the settings class, changes the value, and then creates a "new" instance of Settings() to validate. 
+- Updated some error messages to work with pydantic errors.
+- More stuff I probably forgot.
+
+
+
 04/07/2026: Improve file read/write error handing
 - Added/modified try/except blocks around saving/loading files to account for other errors. 
 
