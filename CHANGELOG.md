@@ -1,7 +1,18 @@
 CHANGELOG
 
+04/18/2026: Add "Other Actions" window
+- Added a new window "Other Actions" to the main window.
+- User can now reset settings and quit the program from this window.
+- User can no longer reset settings from the settings window or quit from the main window. These actions must now be done from the other actions window.
+
+NOTE TO MYSELF:
+- Trying to add CSV export.
+- Problem: what do we print? ListManager.data is {"name": TrackList()} and printing a Tracklist doesn't really work. TrackList.data is {"name": int} so maybe extract that data, create headings based on ListManager.data.keys() and then under that print out TrackList.data.items()?
+
+
+
 04/11/2026: Implement Pydantic for settings validation
-- Added Pydantic to validate settings, rather than by using manual validation. This includes the following changes/implementations.
+- Added Pydantic to validate settings, rather than by using manual validation. This includes the following changes/implementations:
 - Created a new Settings() class which is a Pydantic thing. 
 - It contains the rules for types that the settings are allowed to be as well as a validator for 'mode'. 
 - SettingsManager() now extracts json from storage and unpacks it into Settings() for validation. 

@@ -26,6 +26,8 @@ class App:
 
         print("Starting up...")
         
+        self.exit_value = 1
+
         self.manager = ListManager()
         self.settings = SettingsManager()
 
@@ -45,19 +47,21 @@ class App:
 
         windows = {
             "1": ("List Manager", self.list_manager),
-            "2": ("Settings Editor", self.settings_editor)
+            "2": ("Settings Editor", self.settings_editor),
+            "3": ("Other Actions", self.other_actions)
         }
 
         while True:
+            if self.exit_value == 0:
+                print("Thank you so much for using NewTracker! Come again!!")
+                return 0
+            
             print("\nMain Menu")
             for key, (name, function) in windows.items():
                 print(f"[{key}] {name}")
             print()
-            window_choice = input(f"Which item would you like? (type \"{QUIT}\" to quit): ")
-            if window_choice == QUIT:
-                print("Thank you so much for using NewTracker! Come again!!")
-                return 0
-            elif window_choice in windows:
+            window_choice = input(f"Which item would you like? ")
+            if window_choice in windows:
                 name, function = windows[window_choice]
                 i = 0
                 while i < 10:
@@ -99,15 +103,11 @@ class App:
         while True:
             print()
             self.settings.print()
-            userInput = input(f"What setting do you want to change? (type \"{RESET}\" to reset to defaults, or \"{BACK}\" to go to back): ")
+            userInput = input(f"What setting do you want to change? (type \"{BACK}\" to go to back): ")
             if userInput == BACK:
                 print("Switching to main menu...")
                 print()
                 break
-
-            elif userInput == RESET:
-                self.settings.reset()
-                continue
 
             #Next two blocks see which setting to change
             else:
@@ -161,9 +161,40 @@ class App:
                 tf.errorMessage(DOESNT_EXIST)
                 continue
 
+    def other_actions(self):
+        print()
+        options = {
+            "1": ("Reset Settings", self.settings.reset),
+            "2": ("Quit Program", self.exit_program)
+        }
+
+        while True:
+            if self.exit_value == 0:
+                return
+            
+            print("\nOther Actions")
+            for key, (name, function) in options.items():
+                print(f"[{key}] {name}")
+            print()
+            window_choice = input(f"Which item would you like? (type \"{BACK}\" to go back): ")
+            if window_choice == BACK:
+                break
+            elif window_choice in options:
+                name, function = options[window_choice]
+                i = 0
+                while i < 10:
+                    print()
+                    i += 1
+                function()
+            else:
+                tf.errorMessage(DOESNT_EXIST)
+
+    def exit_program(self):
+        self.exit_value = 0
+
 class ListManager:
     def __init__(self):
-        self.lists = {}
+        self.lists = {} # {list name: TrackList object}
         #self.ids = []
         self.fileLocation = Path("data") / "tracks.json"
         #self.schema = {"list name": {"item name": "integer"}}
@@ -314,7 +345,7 @@ class TrackList:
     def __init__(self, name: str, data: dict = None):
         if data == None:
             data = {}
-        self.data = data
+        self.data = data # {item name: integer}
         self.name = name
         self.validate()
     
