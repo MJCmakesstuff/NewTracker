@@ -167,7 +167,8 @@ class App:
         options = {
             "1": ("Reset Settings", self.settings.reset),
             "2": ("Quit Program", self.exit_program),
-            "3": ("Export to CSV", self.export_csv)
+            "3": ("Export to CSV", self.export_csv),
+            "4": ("Import from CSV", self.import_csv)
         }
 
         while True:
@@ -202,6 +203,22 @@ class App:
                 for item_name, value in track_list.data.items():
                     writer.writerow([list_name, item_name, value])
         print(f"Data exported to {self.export_csv_location}")
+
+    def import_csv(self):
+        data = {}
+        with open(self.export_csv_location, mode='r', newline='') as csv_file:
+            reader = csv.DictReader(csv_file)
+            for row in reader:
+                list_name = row["list_name"]
+                item_name = row["item_name"]
+                value = int(row["value"])
+                if list_name not in data:
+                    data[list_name] = {}
+                data[list_name][item_name] = value
+        self.manager.load(data)
+        print(data)
+        print(f"Data imported from {self.export_csv_location}")
+            
 
 class ListManager:
     def __init__(self):
@@ -254,8 +271,11 @@ class ListManager:
             toSave[key] = value.data
         tf.saveData(toSave, self.fileLocation)
 
-    def load(self):
-        listData = tf.loadData(self.fileLocation, {})
+    def load(self, listData=None): # listData -> {"list name": {"item name": int}}
+        self.lists = {}
+        if listData == None:
+            listData = tf.loadData(self.fileLocation, {})
+        print(listData)
         print("Checking data...")
         #print(listData)
         while True:

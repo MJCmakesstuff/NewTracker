@@ -1,11 +1,13 @@
 CHANGELOG
 
+04/27/2026 #2: Add import from csv
+- Added the ability to import data from a csv file.
+- Loading the ListManager now clears its data (previously expected to only load once, changes account for loading during imports).
+
+
 04/27/2026: Add export to csv
 - Removed some modules no longer in use.
 - Added the ability to export data to a csv file.
-
-NOTE TO MYSELF:
-- Add import as well
 
 
 
