@@ -1,6 +1,5 @@
-import json
+import csv
 import sys
-import time
 import trackerFunctions as tf
 from pathlib import Path
 from pydantic import BaseModel, Field, field_validator, ValidationError
@@ -30,6 +29,8 @@ class App:
 
         self.manager = ListManager()
         self.settings = SettingsManager()
+
+        self.export_csv_location = Path("data") / "data.csv"
 
         # Creates a "data" directory if it doesn't exist.
         self.data_dir = Path("data")
@@ -165,7 +166,8 @@ class App:
         print()
         options = {
             "1": ("Reset Settings", self.settings.reset),
-            "2": ("Quit Program", self.exit_program)
+            "2": ("Quit Program", self.exit_program),
+            "3": ("Export to CSV", self.export_csv)
         }
 
         while True:
@@ -191,6 +193,15 @@ class App:
 
     def exit_program(self):
         self.exit_value = 0
+
+    def export_csv(self):
+        with open(self.export_csv_location, mode='w', newline='') as csv_file:
+            writer = csv.writer(csv_file)
+            writer.writerow(["list_name", "item_name", "value"])
+            for list_name, track_list in self.manager.lists.items():
+                for item_name, value in track_list.data.items():
+                    writer.writerow([list_name, item_name, value])
+        print(f"Data exported to {self.export_csv_location}")
 
 class ListManager:
     def __init__(self):
