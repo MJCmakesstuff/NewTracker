@@ -206,20 +206,22 @@ class App:
 
     def import_csv(self):
         data = {}
-        with open(self.export_csv_location, mode='r', newline='') as csv_file:
-            reader = csv.DictReader(csv_file)
-            for row in reader:
-                list_name = row["list_name"]
-                item_name = row["item_name"]
-                value = int(row["value"])
+        try:
+            with open(self.export_csv_location, mode='r', newline='') as csv_file:
+                reader = csv.DictReader(csv_file)
+                for row in reader:
+                    list_name = row["list_name"]
+                    item_name = row["item_name"]
+                    value = int(row["value"])
                 if list_name not in data:
                     data[list_name] = {}
                 data[list_name][item_name] = value
+        except FileNotFoundError:
+            print(f"No CSV file found at {self.export_csv_location}. Try exporting data to CSV first.")
+            return
         self.manager.load(data)
-        print(data)
         print(f"Data imported from {self.export_csv_location}")
             
-
 class ListManager:
     def __init__(self):
         self.lists = {} # {list name: TrackList object}
@@ -275,7 +277,6 @@ class ListManager:
         self.lists = {}
         if listData == None:
             listData = tf.loadData(self.fileLocation, {})
-        print(listData)
         print("Checking data...")
         #print(listData)
         while True:

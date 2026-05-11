@@ -1,5 +1,15 @@
 CHANGELOG
 
+05/11/2026: Fix bug importing from csv with csv file
+- Removed some debug prints and obsolete code.
+- Added a try/except block for importing from CSV when no CSV file exists.
+
+NOTES:
+- What happens if data.csv does not exist during import/export?
+- What if it's corrupt?
+
+
+
 04/27/2026 #2: Add import from csv
 - Added the ability to import data from a csv file.
 - Loading the ListManager now clears its data (previously expected to only load once, changes account for loading during imports).
