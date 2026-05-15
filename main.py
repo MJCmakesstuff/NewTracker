@@ -196,7 +196,9 @@ class App:
         self.exit_value = 0
 
     def export_csv(self):
-        
+        userInput = tf.convertToBool(input(f"Exporting to CSV will overwrite any existing CSV file. Are you sure? (y/n) "))
+        if userInput == "not bool" or not userInput:
+            return
         with open(self.export_csv_location, mode='w', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(["list_name", "item_name", "value"])
@@ -206,6 +208,9 @@ class App:
         print(f"Data exported to {self.export_csv_location}")
 
     def import_csv(self):
+        userInput = tf.convertToBool(input(f"Importing from CSV will overwrite any existing data. Are you sure? (y/n) "))
+        if userInput == "not bool" or not userInput:
+            return
         data = {}
         try:
             with open(self.export_csv_location, mode='r', newline='') as csv_file:
@@ -256,7 +261,10 @@ class ListManager:
                     print(f"[{index}] {key}")
                 
                 print()
-                choice = input("Which one would you like to delete? ")
+                choice = input(f"Which one would you like to delete? (type \"{BACK}\" to go back): ")
+                if choice == BACK:
+                    print()
+                    return
                 if choice in options:
                     toDelete = True
                     break
@@ -265,7 +273,10 @@ class ListManager:
                     toDelete = False
                     break
             if toDelete:
-                del self.lists[options[choice]]
+                userInput = tf.convertToBool(input(f"This action cannot be undone. Are you sure? (y/n) "))
+                if userInput == "not bool" or not userInput:
+                    pass
+                else: del self.lists[options[choice]]
         self.save()
 
     def getList(self, name: str) -> TrackList:

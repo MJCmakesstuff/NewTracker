@@ -1,5 +1,11 @@
 CHANGELOG
 
+05/15/2026 #2: Add backout option for importing/exporting/deleting
+- Added the ability for the user to back out of importing/export from CSV and from deleting a list, with warning messages.
+- User can now back out of deleting a list (or rather, choosing a list to delete).
+
+
+
 05/15/2026: Fix more CSV import bugs
 - Fixed a glaringly obvious bug where importing from csv only imports the last item.
 - Fixed another bug that appeard out of nowhere where all imported values were "invalid" because the item values were imported as strings and not converted.
