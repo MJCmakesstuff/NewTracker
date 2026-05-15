@@ -1,12 +1,14 @@
 CHANGELOG
 
+05/15/2026: Fix more CSV import bugs
+- Fixed a glaringly obvious bug where importing from csv only imports the last item.
+- Fixed another bug that appeard out of nowhere where all imported values were "invalid" because the item values were imported as strings and not converted.
+
+
+
 05/11/2026: Fix bug importing from csv with csv file
 - Removed some debug prints and obsolete code.
 - Added a try/except block for importing from CSV when no CSV file exists.
-
-NOTES:
-- What happens if data.csv does not exist during import/export?
-- What if it's corrupt?
 
 
 

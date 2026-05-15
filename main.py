@@ -43,7 +43,7 @@ class App:
         self.settings.load()
 
     def main(self):
-        print("Welcome to NewTracker! Hope you enjoy!!")
+        print("\nWelcome to NewTracker! Hope you enjoy!!")
         print()
 
         windows = {
@@ -196,6 +196,7 @@ class App:
         self.exit_value = 0
 
     def export_csv(self):
+        
         with open(self.export_csv_location, mode='w', newline='') as csv_file:
             writer = csv.writer(csv_file)
             writer.writerow(["list_name", "item_name", "value"])
@@ -208,14 +209,17 @@ class App:
         data = {}
         try:
             with open(self.export_csv_location, mode='r', newline='') as csv_file:
-                reader = csv.DictReader(csv_file)
+                reader = csv.DictReader(csv_file) # Creates list of rows (dicts) with keys from header row
                 for row in reader:
-                    list_name = row["list_name"]
-                    item_name = row["item_name"]
-                    value = int(row["value"])
-                if list_name not in data:
-                    data[list_name] = {}
-                data[list_name][item_name] = value
+                    try:
+                        list_name = row["list_name"]
+                        item_name = row["item_name"]
+                        value = int(row["value"])
+                        if list_name not in data:
+                            data[list_name] = {}
+                        data[list_name][item_name] = value
+                    except (ValueError, KeyError):
+                        print(f"Invalid data found, skipping row...")
         except FileNotFoundError:
             print(f"No CSV file found at {self.export_csv_location}. Try exporting data to CSV first.")
             return
@@ -277,8 +281,7 @@ class ListManager:
         self.lists = {}
         if listData == None:
             listData = tf.loadData(self.fileLocation, {})
-        print("Checking data...")
-        #print(listData)
+        print("Checking data...") ## Checks storage of lists
         while True:
             delKey = None
             for key, value in listData.items():
@@ -300,8 +303,9 @@ class ListManager:
 
             else:
                 del listData[delKey] 
+        
         for key, value in listData.items():
-            self.lists[key] = TrackList(str(key), value)
+            self.lists[key] = TrackList(str(key), value) #####
         self.save()
 
     def print(self, IDbool: bool) -> None:
@@ -387,13 +391,13 @@ class TrackList:
     def save(self):
         tf.saveData(self.data, self.fileLocation)
 
-    def validate(self):
-        print("Checking data...")
+    def validate(self): #### Heres the problem
+        print("Checking list data...") # Checks lists themselves
         while True:
             delKey = None
             for key, value in self.data.items():
                 #print(f"Checking {key}: {value}")
-                #print()
+                #print(f"of types {type(key)} and {type(value)}")
                 delKey = None
                 if tf.ruleChecker(key, ["non-empty", "string", "titleCase"], {"verbose": False}) and tf.ruleChecker(value, ["non-empty", "integer", "positive", "strict-non-string"], {"convertToInt": False, "verbose": False}):
                     pass
