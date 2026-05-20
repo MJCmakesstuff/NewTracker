@@ -1,5 +1,13 @@
 CHANGELOG
 
+05/20/2026: Create Statistics class and implement basic functions
+- Created a Statistics class. 
+- Statistics can now be loaded and saved from json.
+- When a new list is created, a dictionary is created and stored for that list. This dictionary currently remembers the time the list was created.
+- When a list is deleted, this dictionary is also deleted.
+
+
+
 05/15/2026 #2: Add backout option for importing/exporting/deleting
 - Added the ability for the user to back out of importing/export from CSV and from deleting a list, with warning messages.
 - User can now back out of deleting a list (or rather, choosing a list to delete).

@@ -3,6 +3,7 @@ import sys
 import trackerFunctions as tf
 from pathlib import Path
 from pydantic import BaseModel, Field, field_validator, ValidationError
+from datetime import datetime
 
 DEBUG = True
 
@@ -29,6 +30,8 @@ class App:
 
         self.manager = ListManager()
         self.settings = SettingsManager()
+        self.statistics = Statistics()
+        
 
         self.export_csv_location = Path("data") / "data.csv"
 
@@ -250,6 +253,7 @@ class ListManager:
         print(f"Created list {name}")
         print()
         self.save()
+        app.statistics.addList(name)
 
     def deleteList(self, app, name: str = None) -> None:
         if name == None:
@@ -278,6 +282,7 @@ class ListManager:
                     pass
                 else: del self.lists[options[choice]]
         self.save()
+        app.statistics.deleteList(options[choice])
 
     def getList(self, name: str) -> TrackList:
         return self.lists.get(name)
@@ -488,6 +493,30 @@ class SettingsManager:
 
     def print(self):
         tf.printSettings(self.data.model_dump())   
+
+class Statistics:
+    def __init__(self):
+        self.fileLocation = Path("data") / "statistics.json"
+        self.load()
+
+    def load(self):
+        self.data = tf.loadData(self.fileLocation, {})
+
+    def save(self):
+        tf.saveData(self.data, self.fileLocation)
+
+    def addList(self, listName: str):
+        if listName not in self.data:
+            self.data[listName] = {
+                "container": [datetime.now().timestamp(), datetime.now().timestamp()],
+                "contents": {}
+                } 
+            self.save()
+
+    def deleteList(self, listName: str):
+        if listName in self.data:
+            del self.data[listName]
+            self.save()
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

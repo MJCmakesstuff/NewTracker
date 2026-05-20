@@ -1,5 +1,7 @@
 data/*
 !data/.gitkeep
+sandbox/*
+!sandbox/.gitkeep
 
 __pycache__/
 *.pyc
