@@ -52,7 +52,8 @@ class App:
         windows = {
             "1": ("List Manager", self.list_manager),
             "2": ("Settings Editor", self.settings_editor),
-            "3": ("Other Actions", self.other_actions)
+            "3": ("Statistics Viewer", self.statistics_viewer),
+            "4": ("Other Actions", self.other_actions)
         }
 
         while True:
@@ -164,6 +165,28 @@ class App:
             else:
                 tf.errorMessage(DOESNT_EXIST)
                 continue
+
+    def statistics_viewer(self):
+        while True:
+            print()
+            print("Here are the options: ")
+            options = {
+                "1": ("View Statistics", self.statistics.view_stats),
+                "2": ("Change Time Settings", self.statistics.change_time_settings)
+            }
+            for key, (name, function) in options.items():
+                print(f"[{key}] {name}")
+            print()
+            choice = input(f"What would you like to do? (type \"{BACK}\" to go back): ")
+            if choice == BACK:
+                break
+            elif choice in options:
+                name, function = options[choice]
+                function(self)
+            else:
+                tf.errorMessage(DOESNT_EXIST)
+        return
+
 
     def other_actions(self):
         print()
@@ -522,16 +545,69 @@ class Statistics:
             else: # if this item is not already in the list
                 self.data[listName]["contents"][item] = [[datetime.now().timestamp(), value]] # create a new list for this item with the first timestamp and value
             self.save()
-                
+
+    def view_stats(self, app):
+        print()
+        print("Here are the lists: ")
+        options = {}
+        for index, (key, value) in enumerate(self.data.items(), start=1):
+            options[str(index)] = key
+            print(f"[{index}] {key}")
+        print()
+        choice = input(f"Which list would you like to view statistics for? (type \"{BACK}\" to go back): ")
+        if choice == BACK:
+            return
+        elif choice in options:
+            print()
+            earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
+            list_name = options[choice]
+            print(f"Statistics for list: {list_name}")
+            print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+            print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+            print()
+            print(f"Showing modifications since {datetime.fromtimestamp(earliest_timestamp)}")
+            for item, modifications in self.data[list_name]["contents"].items():
+                print(f"Item: {item}")
+                running_total = 0
+                for modification in modifications:
+                    timestamp, value = modification
+                    running_total += value
+                    if timestamp >= earliest_timestamp:
+                        if app.settings.data.statTimeDisplay == "human":
+                            print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
+                        elif app.settings.data.statTimeDisplay == "timestamp":
+                            print(f"  - Timestamp: {timestamp}, Change: {value}")
+                print()
+                print(f"Total change for {item} since {datetime.fromtimestamp(earliest_timestamp)}: {running_total}")
+                print()
+        else:
+            tf.errorMessage(DOESNT_EXIST)
+            return
+
+            
+
+
+    def change_time_settings(self, app):
+        print("Hello, there's nothing here yet...")
+        return
+
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
     mode: str = Field(default = "add")
     multiplier: int = Field(default = 1, gt = 0)
+    statTimeDisplay: str = Field(default = "human")
+    statTimeWindow: float = Field(default = 604800, gt = 0)
 
     @field_validator("mode")
     def validate_mode(cls, value):
         if value not in ["add", "subtract"]:
             raise ValueError("Mode must be either 'add' or 'subtract'.")
+        return value
+    
+    @field_validator("statTimeDisplay")
+    def validate_statTimeDisplay(cls, value):
+        if value not in ["human", "timestamp"]:
+            raise ValueError("statTimeDisplay must be either 'human' or 'timestamp'.")
         return value
 
 if __name__ == "__main__":

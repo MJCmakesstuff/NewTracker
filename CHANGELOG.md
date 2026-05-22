@@ -1,5 +1,17 @@
 CHANGELOG
 
+05/22/2026 #2: Add basic statistics viewing
+- Added a Statistics window
+- Added two settings: one to control how far statistics searches, another for whether to display timestamps or human-readable times.
+- Added the ability to see stats for a list. Displays all changes in a list since in within the timespan specified by statTimeWindow.
+- - Displays list time first modified and
+- - last modified,
+- - items times modified and
+- - change at that time, and
+- - total change over timespan for item.
+- NOTE: rush commit. Not super thoroughly tested, and more features are on the way.
+
+
 05/22/2026: Implement statistics for individual tracks
 - Lists are no longer deleted from statistics.
 - Lists in statistics are no longer created when their counterparts are created. Instead, the program simply checks and creates if necessary whenever a list is edited.
