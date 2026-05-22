@@ -1,5 +1,12 @@
 CHANGELOG
 
+05/22/2026: Implement statistics for individual tracks
+- Lists are no longer deleted from statistics.
+- Lists in statistics are no longer created when their counterparts are created. Instead, the program simply checks and creates if necessary whenever a list is edited.
+- Tracked items are now tracked (how else do I say this???) in statistics. Stats remembers each modification to an item, recording the time it happened and the amount changed by. For deleting items this change is the negative previous value. So adding all these changes should (I think) result in the item's current value.
+
+
+
 05/20/2026: Create Statistics class and implement basic functions
 - Created a Statistics class. 
 - Statistics can now be loaded and saved from json.

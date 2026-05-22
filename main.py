@@ -253,7 +253,6 @@ class ListManager:
         print(f"Created list {name}")
         print()
         self.save()
-        app.statistics.addList(name)
 
     def deleteList(self, app, name: str = None) -> None:
         if name == None:
@@ -282,7 +281,6 @@ class ListManager:
                     pass
                 else: del self.lists[options[choice]]
         self.save()
-        app.statistics.deleteList(options[choice])
 
     def getList(self, name: str) -> TrackList:
         return self.lists.get(name)
@@ -437,25 +435,30 @@ class TrackList:
             self.data[track] += multiplier
             print("Added " + str(multiplier) + " to " + str(track) + ". New value: " + str(self.data[track]))
             print()
+            app.statistics.updateList(self.name, track, multiplier)
             toReturn = True
         else:
             self.data[track] = multiplier
             print("Created " + str(track) + " with value " + str(self.data[track]) + ".")
             print()
+            app.statistics.updateList(self.name, track, multiplier)
             toReturn = True
         return toReturn
 
     def subtract(self, track: str, multiplier: int) -> bool:
         if track in self.data:
+            original_value = self.data[track]
             self.data[track] -= multiplier
             if self.data[track] <= 0:
                 del self.data[track]
                 print("Removed " + str(track) + ".")
                 print()
+                app.statistics.updateList(self.name, track, -original_value)
                 toReturn = True
             else:
                 print("Subtracted " + str(multiplier) + " from " + str(track) + ". New value: " + str(self.data[track]))
                 print()
+                app.statistics.updateList(self.name, track, -multiplier)
                 toReturn = True
         else:
             tf.errorMessage(DOESNT_EXIST)
@@ -505,19 +508,21 @@ class Statistics:
     def save(self):
         tf.saveData(self.data, self.fileLocation)
 
-    def addList(self, listName: str):
+    def updateList(self, listName: str, item: str, value: int):
         if listName not in self.data:
             self.data[listName] = {
                 "container": [datetime.now().timestamp(), datetime.now().timestamp()],
                 "contents": {}
                 } 
             self.save()
-
-    def deleteList(self, listName: str):
         if listName in self.data:
-            del self.data[listName]
+            self.data[listName]["container"][1] = datetime.now().timestamp()
+            if item in self.data[listName]["contents"]: # if this item is already in the list
+                self.data[listName]["contents"][item].append([datetime.now().timestamp(), value]) # add new timestamp and value to the list of this item
+            else: # if this item is not already in the list
+                self.data[listName]["contents"][item] = [[datetime.now().timestamp(), value]] # create a new list for this item with the first timestamp and value
             self.save()
-
+                
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
     mode: str = Field(default = "add")
