@@ -1,5 +1,12 @@
 CHANGELOG
 
+05/25/2026 #3: Add ability to change stat settings within stat window, with assistance and explanations; Refactor stat magic strings
+- Added the ability to change statTimeDisplay within the Statistics window, with explanations for each item.
+- Added the ability to change statTimeWindow within the Statistics window. The user can pick a unit of measurement (days, months, years, etc.), and input the number of those they would like statTimeWindow to be. Then it multiplies by predetermined values to convert to seconds and stores in statTimeWindow.
+- Changed "human", "timestamp", and "relative" into variables defined at the beginning of the program, to avoid the magic string problem. These variables represent the statTimeDisplay setting, and are used throughout the Statistics class.
+
+
+
 05/25/2026 #2: Change statistics time display to accomodate settings
 - Statistics window now displays times differently depending on settings:
 - - "human": displays times as year-month-day hour:minute:second

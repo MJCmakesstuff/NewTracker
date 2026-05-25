@@ -16,6 +16,9 @@ ALL_CLEAR = "all clear"
 DOESNT_EXIST = "That doesn't exist yet."
 ADD = "add"
 SUBTRACT = "subtract"
+STATTIMEHUMAN = "human"
+STATTIMETIMESTAMP = "timestamp"
+STATTIMERELATIVE = "relative"
 
 class App:
     def __init__(self):
@@ -52,7 +55,7 @@ class App:
         windows = {
             "1": ("List Manager", self.list_manager),
             "2": ("Settings Editor", self.settings_editor),
-            "3": ("Statistics Viewer", self.statistics_viewer),
+            "3": ("Statistics", self.statistics_viewer),
             "4": ("Other Actions", self.other_actions)
         }
 
@@ -563,21 +566,21 @@ class Statistics:
                 earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
                 list_name = options[choice]
                 print(f"Statistics for list: {list_name}")
-                if app.settings.data.statTimeDisplay == "human":
+                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                     print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
                     print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
-                elif app.settings.data.statTimeDisplay == "timestamp":
+                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                     print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
                     print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
-                elif app.settings.data.statTimeDisplay == "relative":
+                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                     print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
                     print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
                 print()
-                if app.settings.data.statTimeDisplay == "human":
+                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                     print(f"Showing modifications since {datetime.fromtimestamp(earliest_timestamp)}:")
-                elif app.settings.data.statTimeDisplay == "timestamp":
+                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                     print(f"Showing modifications since timestamp {earliest_timestamp}:")
-                elif app.settings.data.statTimeDisplay == "relative":
+                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                     print(f"Showing modifications in the past {(app.settings.data.statTimeWindow / 86400):.2f} days:")
                 print()
                 for item, modifications in self.data[list_name]["contents"].items():
@@ -587,18 +590,18 @@ class Statistics:
                         timestamp, value = modification
                         running_total += value
                         if timestamp >= earliest_timestamp:
-                            if app.settings.data.statTimeDisplay == "human":
+                            if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                                 print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
-                            elif app.settings.data.statTimeDisplay == "timestamp":
+                            elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                                 print(f"  - Timestamp: {timestamp}, Change: {value}")
-                            elif app.settings.data.statTimeDisplay == "relative":
+                            elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                                 print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
                     print()
-                    if app.settings.data.statTimeDisplay == "human":
+                    if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                         print(f"Total change for {item} since {datetime.fromtimestamp(earliest_timestamp)}: {running_total}")
-                    elif app.settings.data.statTimeDisplay == "timestamp":
+                    elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                         print(f"Total change for {item} since timestamp {earliest_timestamp}: {running_total}")
-                    elif app.settings.data.statTimeDisplay == "relative":
+                    elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                         print(f"Total change for {item} in the past {(app.settings.data.statTimeWindow / 86400):.2f} days: {running_total}")
                     print()
                 input("Press Enter to continue...")
@@ -606,13 +609,13 @@ class Statistics:
             elif app.settings.data.statTimeWindow == 0:
                 list_name = options[choice]
                 print(f"Statistics for list: {list_name}")
-                if app.settings.data.statTimeDisplay == "human":
+                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                     print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
                     print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
-                elif app.settings.data.statTimeDisplay == "timestamp":
+                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                     print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
                     print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
-                elif app.settings.data.statTimeDisplay == "relative":
+                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                     print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
                     print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
                 print()
@@ -624,11 +627,11 @@ class Statistics:
                     for modification in modifications:
                         timestamp, value = modification
                         running_total += value
-                        if app.settings.data.statTimeDisplay == "human":
+                        if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                             print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
-                        elif app.settings.data.statTimeDisplay == "timestamp":
+                        elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                             print(f"  - Timestamp: {timestamp}, Change: {value}")
-                        elif app.settings.data.statTimeDisplay == "relative":
+                        elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                             print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
                     print()
                     print(f"Total change for {item}: {running_total}")
@@ -641,18 +644,102 @@ class Statistics:
             tf.errorMessage(DOESNT_EXIST)
             return
 
-            
-
-
     def change_time_settings(self, app):
-        print("Hello, there's nothing here yet...")
+        print()
+        options = {
+            "1": "Change statTimeDisplay",
+            "2": "Change statTimeWindow"
+        }
+        print("Here are the options: ")
+        for key, value in options.items():
+            print(f"[{key}] {value}")
+        print()
+        choice = input(f"What would you like to change? (type \"{BACK}\" to go back): ")
+        if choice == BACK:
+            return
+        elif choice in options:
+            if choice == "1":
+                print()
+                options = {
+                    "1": STATTIMEHUMAN,
+                    "2": STATTIMETIMESTAMP,
+                    "3": STATTIMERELATIVE,
+                    "4": "What do these mean?"
+                }
+                print()
+                print("Here are the options: ")
+                for key, value in options.items():
+                    print(f"[{key}] {value}")
+                print()
+                choice = input(f"What would you like to change statTimeDisplay to? (type \"{BACK}\" to go back): ")
+                if choice == BACK:
+                    return
+                elif choice in options:
+                    if choice in ["1", "2", "3"]:
+                        app.settings.data.statTimeDisplay = options[choice]
+                        app.settings.save()
+                        print(f"Changed statTimeDisplay to {options[choice]}.")
+                    elif choice == "4":
+                        print()
+                        print("Here are the explanations for each option:")
+                        print(f"1. {STATTIMEHUMAN}: Displays timestamps in a human-readable format (e.g., YYYY-MM-DD HH:MM:SS).")
+                        print(f"2. {STATTIMETIMESTAMP}: Displays timestamps as Unix timestamps (seconds since epoch).")
+                        print(f"3. {STATTIMERELATIVE}: Displays timestamps as relative time (e.g., X days ago).")
+                        print()
+                        input("Press Enter to continue...")
+                else:
+                    tf.errorMessage(DOESNT_EXIST)
+                    
+            elif choice == "2":
+                print()
+                options = {
+                    "1": ("seconds", 1),
+                    "2": ("minutes", 60),
+                    "3": ("hours", 3600),
+                    "4": ("days", 86400),
+                    "5": ("weeks", 604800),
+                    "6": ("months (30 days)", 2592000),
+                    "7": ("years (365 days)", 31536000),
+                    "8": ("all-time", 0)
+                }
+                for key, (name, multiplier) in options.items():
+                    print(f"[{key}] {name}")
+                print()
+                choice = input(f"Which unit of time would you like to use for statTimeWindow? (type \"{BACK}\" to go back): ")
+                if choice == BACK:
+                    return
+                if choice in options:
+                    if choice == "8":
+                        app.settings.data.statTimeWindow = 0
+                        app.settings.save()
+                        print()
+                        print(f"Changed statTimeWindow to {app.settings.data.statTimeWindow}.")
+                    else:
+                        unit_name, multiplier = options[choice]
+                        while True:
+                            try:
+                                value = float(input(f"Enter the number of {unit_name} for statTimeWindow: "))
+                                if value < 0:
+                                    print("Please enter a non-negative number.")
+                                    continue
+                                app.settings.data.statTimeWindow = value * multiplier
+                                app.settings.save()
+                                print()
+                                print(f"Changed statTimeWindow to {app.settings.data.statTimeWindow}.")
+                                break
+                            except ValueError:
+                                print("Please enter a valid number.")
+
+        else:
+            tf.errorMessage(DOESNT_EXIST)          
         return
+
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
     mode: str = Field(default = "add")
     multiplier: int = Field(default = 1, gt = 0)
-    statTimeDisplay: str = Field(default = "human")
+    statTimeDisplay: str = Field(default = STATTIMERELATIVE)
     statTimeWindow: float = Field(default = 604800, ge = 0)
 
     @field_validator("mode")
@@ -663,8 +750,8 @@ class Settings(BaseModel):
     
     @field_validator("statTimeDisplay")
     def validate_statTimeDisplay(cls, value):
-        if value not in ["human", "timestamp", "relative"]:
-            raise ValueError("statTimeDisplay must be either 'human', 'timestamp', or 'relative'.")
+        if value not in [STATTIMEHUMAN, STATTIMETIMESTAMP, STATTIMERELATIVE]:
+            raise ValueError(f"statTimeDisplay must be either \"{STATTIMEHUMAN}\", \"{STATTIMETIMESTAMP}\", or \"{STATTIMERELATIVE}\".")
         return value
 
 if __name__ == "__main__":
