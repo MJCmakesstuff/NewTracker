@@ -1,5 +1,13 @@
 CHANGELOG
 
+05/25/2026 #2: Change statistics time display to accomodate settings
+- Statistics window now displays times differently depending on settings:
+- - "human": displays times as year-month-day hour:minute:second
+- - "timestamp": displays times as timestamps
+- - "relative": displays times as days since today, rounded to two decimals.
+
+
+
 05/25/2026: Add all-time statistics option
 - User can now see all modifications for a list by setting statTimeWindow to 0.
 - Stats window now specifies how many days the search window is, but still displays the starting date.

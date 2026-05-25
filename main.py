@@ -563,10 +563,22 @@ class Statistics:
                 earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
                 list_name = options[choice]
                 print(f"Statistics for list: {list_name}")
-                print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
-                print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                if app.settings.data.statTimeDisplay == "human":
+                    print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+                    print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                elif app.settings.data.statTimeDisplay == "timestamp":
+                    print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
+                    print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
+                elif app.settings.data.statTimeDisplay == "relative":
+                    print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
+                    print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
                 print()
-                print(f"Showing modifications in the past {(app.settings.data.statTimeWindow / 86400):.2f} days (since {datetime.fromtimestamp(earliest_timestamp)}):")
+                if app.settings.data.statTimeDisplay == "human":
+                    print(f"Showing modifications since {datetime.fromtimestamp(earliest_timestamp)}:")
+                elif app.settings.data.statTimeDisplay == "timestamp":
+                    print(f"Showing modifications since timestamp {earliest_timestamp}:")
+                elif app.settings.data.statTimeDisplay == "relative":
+                    print(f"Showing modifications in the past {(app.settings.data.statTimeWindow / 86400):.2f} days:")
                 print()
                 for item, modifications in self.data[list_name]["contents"].items():
                     print(f"Item: {item}")
@@ -579,16 +591,30 @@ class Statistics:
                                 print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
                             elif app.settings.data.statTimeDisplay == "timestamp":
                                 print(f"  - Timestamp: {timestamp}, Change: {value}")
+                            elif app.settings.data.statTimeDisplay == "relative":
+                                print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
                     print()
-                    print(f"Total change for {item} in the past {(app.settings.data.statTimeWindow / 86400):.2f} days: {running_total}")
+                    if app.settings.data.statTimeDisplay == "human":
+                        print(f"Total change for {item} since {datetime.fromtimestamp(earliest_timestamp)}: {running_total}")
+                    elif app.settings.data.statTimeDisplay == "timestamp":
+                        print(f"Total change for {item} since timestamp {earliest_timestamp}: {running_total}")
+                    elif app.settings.data.statTimeDisplay == "relative":
+                        print(f"Total change for {item} in the past {(app.settings.data.statTimeWindow / 86400):.2f} days: {running_total}")
                     print()
                 input("Press Enter to continue...")
 
             elif app.settings.data.statTimeWindow == 0:
                 list_name = options[choice]
                 print(f"Statistics for list: {list_name}")
-                print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
-                print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                if app.settings.data.statTimeDisplay == "human":
+                    print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+                    print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                elif app.settings.data.statTimeDisplay == "timestamp":
+                    print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
+                    print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
+                elif app.settings.data.statTimeDisplay == "relative":
+                    print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
+                    print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
                 print()
                 print("Showing all modifications")
                 print()
@@ -602,6 +628,8 @@ class Statistics:
                             print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
                         elif app.settings.data.statTimeDisplay == "timestamp":
                             print(f"  - Timestamp: {timestamp}, Change: {value}")
+                        elif app.settings.data.statTimeDisplay == "relative":
+                            print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
                     print()
                     print(f"Total change for {item}: {running_total}")
                     print()
@@ -635,8 +663,8 @@ class Settings(BaseModel):
     
     @field_validator("statTimeDisplay")
     def validate_statTimeDisplay(cls, value):
-        if value not in ["human", "timestamp"]:
-            raise ValueError("statTimeDisplay must be either 'human' or 'timestamp'.")
+        if value not in ["human", "timestamp", "relative"]:
+            raise ValueError("statTimeDisplay must be either 'human', 'timestamp', or 'relative'.")
         return value
 
 if __name__ == "__main__":
