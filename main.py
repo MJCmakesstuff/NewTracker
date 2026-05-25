@@ -559,27 +559,56 @@ class Statistics:
             return
         elif choice in options:
             print()
-            earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
-            list_name = options[choice]
-            print(f"Statistics for list: {list_name}")
-            print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
-            print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
-            print()
-            print(f"Showing modifications since {datetime.fromtimestamp(earliest_timestamp)}")
-            for item, modifications in self.data[list_name]["contents"].items():
-                print(f"Item: {item}")
-                running_total = 0
-                for modification in modifications:
-                    timestamp, value = modification
-                    running_total += value
-                    if timestamp >= earliest_timestamp:
+            if app.settings.data.statTimeWindow > 0:
+                earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
+                list_name = options[choice]
+                print(f"Statistics for list: {list_name}")
+                print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+                print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                print()
+                print(f"Showing modifications in the past {(app.settings.data.statTimeWindow / 86400):.2f} days (since {datetime.fromtimestamp(earliest_timestamp)}):")
+                print()
+                for item, modifications in self.data[list_name]["contents"].items():
+                    print(f"Item: {item}")
+                    running_total = 0
+                    for modification in modifications:
+                        timestamp, value = modification
+                        running_total += value
+                        if timestamp >= earliest_timestamp:
+                            if app.settings.data.statTimeDisplay == "human":
+                                print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
+                            elif app.settings.data.statTimeDisplay == "timestamp":
+                                print(f"  - Timestamp: {timestamp}, Change: {value}")
+                    print()
+                    print(f"Total change for {item} in the past {(app.settings.data.statTimeWindow / 86400):.2f} days: {running_total}")
+                    print()
+                input("Press Enter to continue...")
+
+            elif app.settings.data.statTimeWindow == 0:
+                list_name = options[choice]
+                print(f"Statistics for list: {list_name}")
+                print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+                print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                print()
+                print("Showing all modifications")
+                print()
+                for item, modifications in self.data[list_name]["contents"].items():
+                    print(f"Item: {item}")
+                    running_total = 0
+                    for modification in modifications:
+                        timestamp, value = modification
+                        running_total += value
                         if app.settings.data.statTimeDisplay == "human":
                             print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
                         elif app.settings.data.statTimeDisplay == "timestamp":
                             print(f"  - Timestamp: {timestamp}, Change: {value}")
-                print()
-                print(f"Total change for {item} since {datetime.fromtimestamp(earliest_timestamp)}: {running_total}")
-                print()
+                    print()
+                    print(f"Total change for {item}: {running_total}")
+                    print()
+                input("Press Enter to continue...")
+            else:
+                tf.errorMessage("Invalid statTimeWindow setting. It must be a non-negative number.")
+                return
         else:
             tf.errorMessage(DOESNT_EXIST)
             return
@@ -596,7 +625,7 @@ class Settings(BaseModel):
     mode: str = Field(default = "add")
     multiplier: int = Field(default = 1, gt = 0)
     statTimeDisplay: str = Field(default = "human")
-    statTimeWindow: float = Field(default = 604800, gt = 0)
+    statTimeWindow: float = Field(default = 604800, ge = 0)
 
     @field_validator("mode")
     def validate_mode(cls, value):

@@ -1,5 +1,11 @@
 CHANGELOG
 
+05/25/2026: Add all-time statistics option
+- User can now see all modifications for a list by setting statTimeWindow to 0.
+- Stats window now specifies how many days the search window is, but still displays the starting date.
+
+
+
 05/22/2026 #2: Add basic statistics viewing
 - Added a Statistics window
 - Added two settings: one to control how far statistics searches, another for whether to display timestamps or human-readable times.
