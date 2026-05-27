@@ -1,5 +1,11 @@
 CHANGELOG
 
+05/27/2026: Fix bugs in statistics settings changing window
+- Fixed "back" options in the statistics settings changing window. The program now correct travels back to the correct window when the user wishes.
+- Fixed some scenarios where choices made in sub-windows could unintentionally affect other sub-windows.
+
+
+
 05/25/2026 #3: Add ability to change stat settings within stat window, with assistance and explanations; Refactor stat magic strings
 - Added the ability to change statTimeDisplay within the Statistics window, with explanations for each item.
 - Added the ability to change statTimeWindow within the Statistics window. The user can pick a unit of measurement (days, months, years, etc.), and input the number of those they would like statTimeWindow to be. Then it multiplies by predetermined values to convert to seconds and stores in statTimeWindow.

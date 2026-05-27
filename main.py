@@ -645,95 +645,126 @@ class Statistics:
             return
 
     def change_time_settings(self, app):
-        print()
-        options = {
-            "1": "Change statTimeDisplay",
-            "2": "Change statTimeWindow"
-        }
-        print("Here are the options: ")
-        for key, value in options.items():
-            print(f"[{key}] {value}")
-        print()
-        choice = input(f"What would you like to change? (type \"{BACK}\" to go back): ")
-        if choice == BACK:
-            return
-        elif choice in options:
-            if choice == "1":
-                print()
-                options = {
-                    "1": STATTIMEHUMAN,
-                    "2": STATTIMETIMESTAMP,
-                    "3": STATTIMERELATIVE,
-                    "4": "What do these mean?"
-                }
-                print()
-                print("Here are the options: ")
-                for key, value in options.items():
-                    print(f"[{key}] {value}")
-                print()
-                choice = input(f"What would you like to change statTimeDisplay to? (type \"{BACK}\" to go back): ")
-                if choice == BACK:
-                    return
-                elif choice in options:
-                    if choice in ["1", "2", "3"]:
-                        app.settings.data.statTimeDisplay = options[choice]
-                        app.settings.save()
-                        print(f"Changed statTimeDisplay to {options[choice]}.")
-                    elif choice == "4":
-                        print()
-                        print("Here are the explanations for each option:")
-                        print(f"1. {STATTIMEHUMAN}: Displays timestamps in a human-readable format (e.g., YYYY-MM-DD HH:MM:SS).")
-                        print(f"2. {STATTIMETIMESTAMP}: Displays timestamps as Unix timestamps (seconds since epoch).")
-                        print(f"3. {STATTIMERELATIVE}: Displays timestamps as relative time (e.g., X days ago).")
-                        print()
-                        input("Press Enter to continue...")
-                else:
-                    tf.errorMessage(DOESNT_EXIST)
-                    
-            elif choice == "2":
-                print()
-                options = {
-                    "1": ("seconds", 1),
-                    "2": ("minutes", 60),
-                    "3": ("hours", 3600),
-                    "4": ("days", 86400),
-                    "5": ("weeks", 604800),
-                    "6": ("months (30 days)", 2592000),
-                    "7": ("years (365 days)", 31536000),
-                    "8": ("all-time", 0)
-                }
-                for key, (name, multiplier) in options.items():
-                    print(f"[{key}] {name}")
-                print()
-                choice = input(f"Which unit of time would you like to use for statTimeWindow? (type \"{BACK}\" to go back): ")
-                if choice == BACK:
-                    return
-                if choice in options:
-                    if choice == "8":
-                        app.settings.data.statTimeWindow = 0
-                        app.settings.save()
-                        print()
-                        print(f"Changed statTimeWindow to {app.settings.data.statTimeWindow}.")
-                    else:
-                        unit_name, multiplier = options[choice]
+        while True:
+            setting_choice = None
+            print()
+            options = {
+                "1": "Change statTimeDisplay",
+                "2": "Change statTimeWindow"
+            }
+            print("Here are the options: ")
+            for key, value in options.items():
+                print(f"[{key}] {value}")
+            print()
+            setting_choice = input(f"What would you like to change? (type \"{BACK}\" to go back): ")
+            if setting_choice == BACK:
+                return
+            elif setting_choice in options:
+                break_from_inner_loop = False
+                while True:
+                    if setting_choice == "1":
+                        setting_choice = None
                         while True:
-                            try:
-                                value = float(input(f"Enter the number of {unit_name} for statTimeWindow: "))
-                                if value < 0:
-                                    print("Please enter a non-negative number.")
-                                    continue
-                                app.settings.data.statTimeWindow = value * multiplier
-                                app.settings.save()
-                                print()
-                                print(f"Changed statTimeWindow to {app.settings.data.statTimeWindow}.")
+                            display_choice = None
+                            print()
+                            options = {
+                                "1": STATTIMEHUMAN,
+                                "2": STATTIMETIMESTAMP,
+                                "3": STATTIMERELATIVE,
+                                "4": "What do these mean?"
+                            }
+                            print()
+                            print("Here are the options: ")
+                            for key, value in options.items():
+                                print(f"[{key}] {value}")
+                            print()
+                            display_choice = input(f"What would you like to change statTimeDisplay to? (type \"{BACK}\" to go back): ")
+                            if display_choice == BACK:
+                                display_choice = None
+                                break_from_inner_loop = True
                                 break
-                            except ValueError:
-                                print("Please enter a valid number.")
-
-        else:
-            tf.errorMessage(DOESNT_EXIST)          
-        return
-
+                            elif display_choice in options:
+                                if display_choice in ["1", "2", "3"]:
+                                    app.settings.data.statTimeDisplay = options[display_choice]
+                                    app.settings.save()
+                                    print(f"Changed statTimeDisplay to {options[display_choice]}.")
+                                    break_from_inner_loop = True
+                                    display_choice = None
+                                    break
+                                elif display_choice == "4":
+                                    print()
+                                    print("Here are the explanations for each option:")
+                                    print(f"1. {STATTIMEHUMAN}: Displays timestamps in a human-readable format (e.g., YYYY-MM-DD HH:MM:SS).")
+                                    print(f"2. {STATTIMETIMESTAMP}: Displays timestamps as Unix timestamps (seconds since epoch).")
+                                    print(f"3. {STATTIMERELATIVE}: Displays timestamps as relative time (e.g., X days ago).")
+                                    print()
+                                    display_choice = None
+                                    input("Press Enter to continue...")
+                            else:
+                                tf.errorMessage(DOESNT_EXIST)
+                            
+                    elif setting_choice == "2":
+                        setting_choice = None
+                        break_from_inner_inner_loop = False
+                        while True:
+                            unit_choice = None
+                            print()
+                            options = {
+                                "1": ("seconds", 1),
+                                "2": ("minutes", 60),
+                                "3": ("hours", 3600),
+                                "4": ("days", 86400),
+                                "5": ("weeks", 604800),
+                                "6": ("months (30 days)", 2592000),
+                                "7": ("years (365 days)", 31536000),
+                                "8": ("all-time", 0)
+                            }
+                            for key, (name, multiplier) in options.items():
+                                print(f"[{key}] {name}")
+                            print()
+                            unit_choice = input(f"Which unit of time would you like to use for statTimeWindow? (type \"{BACK}\" to go back): ")
+                            if unit_choice == BACK:
+                                unit_choice = None
+                                break_from_inner_loop = True
+                                break
+                            if unit_choice in options:
+                                if unit_choice == "8":
+                                    app.settings.data.statTimeWindow = 0
+                                    app.settings.save()
+                                    print()
+                                    print(f"Changed statTimeWindow to {app.settings.data.statTimeWindow}.")
+                                    unit_choice = None
+                                    break_from_inner_loop = True
+                                    break
+                                else:
+                                    unit_name, multiplier = options[unit_choice]
+                                    break_from_inner_inner_loop = False
+                                    while True:
+                                        try:
+                                            value = float(input(f"Enter the number of {unit_name} for statTimeWindow: "))
+                                            if value < 0:
+                                                print("Please enter a non-negative number.")
+                                                continue
+                                            app.settings.data.statTimeWindow = value * multiplier
+                                            app.settings.save()
+                                            print()
+                                            print(f"Changed statTimeWindow to {app.settings.data.statTimeWindow}.")
+                                            unit_choice = None
+                                            break_from_inner_loop = True
+                                            break_from_inner_inner_loop = True
+                                            break
+                                        except ValueError:
+                                            print("Please enter a valid number.")
+                                            unit_choice = None
+                            else:
+                                tf.errorMessage(DOESNT_EXIST)
+                            if break_from_inner_inner_loop:
+                                break                
+                    
+                    elif break_from_inner_loop:
+                        break
+            else:
+                tf.errorMessage(DOESNT_EXIST)
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
