@@ -1,5 +1,12 @@
 CHANGELOG
 
+05/27/2026 #2: Fix bugs in statistics viewing window
+- Fixed problems in the statistics viewing window similar to those from the past commit.
+- Fixed a bug in the statistics viewing window where the program would count all changes to an item in the running total, even if those changes occured outside the specified seach window.
+- - The program now only running-totals changes within the specified search window.
+
+
+
 05/27/2026: Fix bugs in statistics settings changing window
 - Fixed "back" options in the statistics settings changing window. The program now correct travels back to the correct window when the user wishes.
 - Fixed some scenarios where choices made in sub-windows could unintentionally affect other sub-windows.

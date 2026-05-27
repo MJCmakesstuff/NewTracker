@@ -550,99 +550,100 @@ class Statistics:
             self.save()
 
     def view_stats(self, app):
-        print()
-        print("Here are the lists: ")
-        options = {}
-        for index, (key, value) in enumerate(self.data.items(), start=1):
-            options[str(index)] = key
-            print(f"[{index}] {key}")
-        print()
-        choice = input(f"Which list would you like to view statistics for? (type \"{BACK}\" to go back): ")
-        if choice == BACK:
-            return
-        elif choice in options:
+        while True:
             print()
-            if app.settings.data.statTimeWindow > 0:
-                earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
-                list_name = options[choice]
-                print(f"Statistics for list: {list_name}")
-                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
-                    print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
-                    print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
-                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
-                    print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
-                    print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
-                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
-                    print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
-                    print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
+            print("Here are the lists: ")
+            options = {}
+            for index, (key, value) in enumerate(self.data.items(), start=1):
+                options[str(index)] = key
+                print(f"[{index}] {key}")
+            print()
+            choice = input(f"Which list would you like to view statistics for? (type \"{BACK}\" to go back): ")
+            if choice == BACK:
+                return
+            elif choice in options:
                 print()
-                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
-                    print(f"Showing modifications since {datetime.fromtimestamp(earliest_timestamp)}:")
-                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
-                    print(f"Showing modifications since timestamp {earliest_timestamp}:")
-                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
-                    print(f"Showing modifications in the past {(app.settings.data.statTimeWindow / 86400):.2f} days:")
-                print()
-                for item, modifications in self.data[list_name]["contents"].items():
-                    print(f"Item: {item}")
-                    running_total = 0
-                    for modification in modifications:
-                        timestamp, value = modification
-                        running_total += value
-                        if timestamp >= earliest_timestamp:
+                if app.settings.data.statTimeWindow > 0:
+                    earliest_timestamp = datetime.now().timestamp() - app.settings.data.statTimeWindow
+                    list_name = options[choice]
+                    print(f"Statistics for list: {list_name}")
+                    if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
+                        print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+                        print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                    elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
+                        print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
+                        print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
+                    elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
+                        print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
+                        print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
+                    print()
+                    if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
+                        print(f"Showing modifications since {datetime.fromtimestamp(earliest_timestamp)}:")
+                    elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
+                        print(f"Showing modifications since timestamp {earliest_timestamp}:")
+                    elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
+                        print(f"Showing modifications in the past {(app.settings.data.statTimeWindow / 86400):.2f} days:")
+                    print()
+                    for item, modifications in self.data[list_name]["contents"].items():
+                        print(f"Item: {item}")
+                        running_total = 0
+                        for modification in modifications:
+                            timestamp, value = modification
+                            if timestamp >= earliest_timestamp:
+                                running_total += value
+                                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
+                                    print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
+                                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
+                                    print(f"  - Timestamp: {timestamp}, Change: {value}")
+                                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
+                                    print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
+                        print()
+                        if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
+                            print(f"Total change for {item} since {datetime.fromtimestamp(earliest_timestamp)}: {running_total}")
+                        elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
+                            print(f"Total change for {item} since timestamp {earliest_timestamp}: {running_total}")
+                        elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
+                            print(f"Total change for {item} in the past {(app.settings.data.statTimeWindow / 86400):.2f} days: {running_total}")
+                        print()
+                    input("Press Enter to continue...")
+
+                elif app.settings.data.statTimeWindow == 0:
+                    list_name = options[choice]
+                    print(f"Statistics for list: {list_name}")
+                    if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
+                        print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
+                        print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
+                    elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
+                        print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
+                        print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
+                    elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
+                        print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
+                        print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
+                    print()
+                    print("Showing all modifications")
+                    print()
+                    for item, modifications in self.data[list_name]["contents"].items():
+                        print(f"Item: {item}")
+                        running_total = 0
+                        for modification in modifications:
+                            timestamp, value = modification
+                            running_total += value
                             if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
                                 print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
                             elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
                                 print(f"  - Timestamp: {timestamp}, Change: {value}")
                             elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
                                 print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
-                    print()
-                    if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
-                        print(f"Total change for {item} since {datetime.fromtimestamp(earliest_timestamp)}: {running_total}")
-                    elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
-                        print(f"Total change for {item} since timestamp {earliest_timestamp}: {running_total}")
-                    elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
-                        print(f"Total change for {item} in the past {(app.settings.data.statTimeWindow / 86400):.2f} days: {running_total}")
-                    print()
-                input("Press Enter to continue...")
-
-            elif app.settings.data.statTimeWindow == 0:
-                list_name = options[choice]
-                print(f"Statistics for list: {list_name}")
-                if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
-                    print(f"Date first modified: {datetime.fromtimestamp(self.data[list_name]['container'][0])}")
-                    print(f"Date last modified: {datetime.fromtimestamp(self.data[list_name]['container'][1])}")
-                elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
-                    print(f"Timestamp first modified: {self.data[list_name]['container'][0]}")
-                    print(f"Timestamp last modified: {self.data[list_name]['container'][1]}")
-                elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
-                    print(f"Relative time first modified: {(datetime.now().timestamp() - self.data[list_name]['container'][0])/86400:.2f} days ago")
-                    print(f"Relative time last modified: {(datetime.now().timestamp() - self.data[list_name]['container'][1])/86400:.2f} days ago")
-                print()
-                print("Showing all modifications")
-                print()
-                for item, modifications in self.data[list_name]["contents"].items():
-                    print(f"Item: {item}")
-                    running_total = 0
-                    for modification in modifications:
-                        timestamp, value = modification
-                        running_total += value
-                        if app.settings.data.statTimeDisplay == STATTIMEHUMAN:
-                            print(f"  - Date: {datetime.fromtimestamp(timestamp)}, Change: {value}")
-                        elif app.settings.data.statTimeDisplay == STATTIMETIMESTAMP:
-                            print(f"  - Timestamp: {timestamp}, Change: {value}")
-                        elif app.settings.data.statTimeDisplay == STATTIMERELATIVE:
-                            print(f"  - Relative time: {(datetime.now().timestamp() - timestamp)/86400:.2f} days ago, Change: {value}")
-                    print()
-                    print(f"Total change for {item}: {running_total}")
-                    print()
-                input("Press Enter to continue...")
+                        print()
+                        print(f"Total change for {item}: {running_total}")
+                        print()
+                    input("Press Enter to continue...")
+                else:
+                    tf.errorMessage("Invalid statTimeWindow setting. It must be a non-negative number.")
+                    return
             else:
-                tf.errorMessage("Invalid statTimeWindow setting. It must be a non-negative number.")
-                return
-        else:
-            tf.errorMessage(DOESNT_EXIST)
-            return
+                tf.errorMessage(DOESNT_EXIST)
+            
 
     def change_time_settings(self, app):
         while True:
