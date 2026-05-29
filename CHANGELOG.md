@@ -1,5 +1,12 @@
 CHANGELOG
 
+05/29/2026 #2: Add deleting goals
+- Changed the add_goal function so that new lists and items are only added to goals.json at the very end. This prevents empty lists or items in goals.json.
+- Added the ability for the user to delete goals.
+- When goals are deleted, the program checks for and deletes empty stuff. If an item has no more goals, it is removed from goals.json. If a list has no more items with goals, it is also removed from goals.json.
+
+
+
 05/29/2026: Add adding goals
 - Added a goals window for the user to view goals, create goals, and delete goals.
 - Added placeholder functions for these three tasks.

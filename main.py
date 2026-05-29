@@ -818,8 +818,6 @@ class Goals:
             if list_choice == BACK:
                 break
             elif list_choice in options:
-                if options[list_choice] not in self.data:
-                    self.data[options[list_choice]] = {}
                 break_from_loop_2 = False
                 while True: #Which item? (loop 2)
                     if break_from_loop_2:
@@ -835,8 +833,6 @@ class Goals:
                     if item_choice == BACK:
                         break
                     elif item_choice in item_options:
-                        if item_options[item_choice] not in self.data[options[list_choice]]:
-                            self.data[options[list_choice]][item_options[item_choice]] = []
                         break_from_loop_3 = False
                         while True: #Goal specs (loop 3)
                             if break_from_loop_3:
@@ -851,6 +847,10 @@ class Goals:
                                     tf.errorMessage("Please enter a positive integer.")
                                     continue
                                 else:
+                                    if options[list_choice] not in self.data:
+                                        self.data[options[list_choice]] = {}
+                                    if item_options[item_choice] not in self.data[options[list_choice]]:
+                                        self.data[options[list_choice]][item_options[item_choice]] = []
                                     self.data[options[list_choice]][item_options[item_choice]].append([datetime.now().timestamp(), "placeholder for end time", goal_value])
                                     self.save()
                                     print(f"Added goal for {item_options[item_choice]} in {options[list_choice]}: {goal_value}")
@@ -870,7 +870,71 @@ class Goals:
                 continue
 
     def delete_goal(self):
-        print("Hello")
+        break_from_loop_1 = False
+        while True: #Which list? (loop)
+            if break_from_loop_1:
+                break
+            print()
+            print("Here are the lists with goals: ")
+            list_options = {}
+            for index, (key, value) in enumerate(self.data.items(), start=1):
+                print(f"[{index}] {key}")
+                list_options[str(index)] = key
+            print()
+            list_choice = input(f"Which list would you like to delete a goal from? (type \"{BACK}\" to go back): ")
+            if list_choice == BACK:
+                break
+            elif list_choice in list_options:
+                break_from_loop_2 = False
+                while True: #Which item? (loop 2)
+                    if break_from_loop_2:
+                        break
+                    print()
+                    print(f"Here are the items with goals in {list_options[list_choice]}: ")
+                    item_options = {}
+                    for index, (key, value) in enumerate(self.data[list_options[list_choice]].items(), start=1):
+                        print(f"[{index}] {key}")
+                        item_options[str(index)] = key
+                    print()
+                    item_choice = input(f"Which item would you like to delete a goal from? (type \"{BACK}\" to go back): ")
+                    if item_choice == BACK:
+                        break
+                    elif item_choice in item_options:
+                        break_from_loop_3 = False
+                        while True: #Which goal? (loop 3)
+                            if break_from_loop_3:
+                                break
+                            print()
+                            print(f"Here are the goals for {item_options[item_choice]} in {list_options[list_choice]}: ")
+                            goal_options = {}
+                            for index, goal in enumerate(self.data[list_options[list_choice]][item_options[item_choice]], start=1):
+                                print(f"[{index}] Goal value: {goal[2]}")
+                                goal_options[str(index)] = index - 1
+                            print()
+                            goal_choice = input(f"Which goal would you like to delete? (type \"{BACK}\" to go back): ")
+                            if goal_choice == BACK:
+                                break
+                            elif goal_choice in goal_options:
+                                del self.data[list_options[list_choice]][item_options[item_choice]][goal_options[goal_choice]]
+                                if len(self.data[list_options[list_choice]][item_options[item_choice]]) == 0:
+                                    del self.data[list_options[list_choice]][item_options[item_choice]]
+                                if len(self.data[list_options[list_choice]]) == 0:
+                                    del self.data[list_options[list_choice]]
+                                self.save()
+                                print(f"Deleted goal for {item_options[item_choice]} in {list_options[list_choice]}.")
+                                break_from_loop_1 = True
+                                break_from_loop_2 = True
+                                tf.errorMessage()
+                                break
+                            else:
+                                tf.errorMessage(DOESNT_EXIST)
+                                continue
+                    else:
+                        tf.errorMessage(DOESNT_EXIST)
+                        continue
+            else:
+                tf.errorMessage(DOESNT_EXIST)
+                continue
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
