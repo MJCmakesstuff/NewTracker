@@ -34,7 +34,7 @@ class App:
         self.manager = ListManager()
         self.settings = SettingsManager()
         self.statistics = Statistics()
-        
+        self.goals = Goals()
 
         self.export_csv_location = Path("data") / "data.csv"
 
@@ -56,7 +56,8 @@ class App:
             "1": ("List Manager", self.list_manager),
             "2": ("Settings Editor", self.settings_editor),
             "3": ("Statistics", self.statistics_viewer),
-            "4": ("Other Actions", self.other_actions)
+            "4": ("Goals", self.goals_viewer),
+            "5": ("Other Actions", self.other_actions)
         }
 
         while True:
@@ -190,6 +191,27 @@ class App:
                 tf.errorMessage(DOESNT_EXIST)
         return
 
+    def goals_viewer(self):
+        while True:
+            print()
+            print("Here are the options: ")
+            options = {
+                "1": ("View Goals", self.goals.view_goals),
+                "2": ("Add Goal", self.goals.add_goal),
+                "3": ("Delete Goal", self.goals.delete_goal)
+            }
+            for key, (name, function) in options.items():
+                print(f"[{key}] {name}")
+            print()
+            choice = input(f"What would you like to do? (type \"{BACK}\" to go back): ")
+            if choice == BACK:
+                break
+            elif choice in options:
+                name, function = options[choice]
+                function()
+            else:
+                tf.errorMessage(DOESNT_EXIST)
+        return
 
     def other_actions(self):
         print()
@@ -644,7 +666,6 @@ class Statistics:
             else:
                 tf.errorMessage(DOESNT_EXIST)
             
-
     def change_time_settings(self, app):
         while True:
             setting_choice = None
@@ -766,6 +787,90 @@ class Statistics:
                         break
             else:
                 tf.errorMessage(DOESNT_EXIST)
+
+class Goals:
+    def __init__(self):
+        self.fileLocation = Path("data") / "goals.json"
+        self.load()
+
+    def load(self):
+        self.data = tf.loadData(self.fileLocation, {})
+
+    def save(self):
+        tf.saveData(self.data, self.fileLocation)
+
+    def view_goals(self):
+        print("Hello")
+
+    def add_goal(self):
+        break_from_loop_1 = False
+        while True: #Which list? (loop)
+            if break_from_loop_1:
+                break
+            print()
+            print("Here are the lists: ")
+            options = {}
+            for index, (key, value) in enumerate(app.manager.lists.items(), start=1):
+                options[str(index)] = key
+                print(f"[{index}] {key}")
+            print()
+            list_choice = input(f"Which list would you like to add a goal to? (type \"{BACK}\" to go back): ")
+            if list_choice == BACK:
+                break
+            elif list_choice in options:
+                if options[list_choice] not in self.data:
+                    self.data[options[list_choice]] = {}
+                break_from_loop_2 = False
+                while True: #Which item? (loop 2)
+                    if break_from_loop_2:
+                        break
+                    print()
+                    print(f"Here are the items in {options[list_choice]}: ")
+                    item_options = {}
+                    for index, (key, value) in enumerate(app.manager.lists[options[list_choice]].data.items(), start=1):
+                        item_options[str(index)] = key
+                        print(f"[{index}] {key}")
+                    print()
+                    item_choice = input(f"Which item would you like to add a goal for? (type \"{BACK}\" to go back): ")
+                    if item_choice == BACK:
+                        break
+                    elif item_choice in item_options:
+                        if item_options[item_choice] not in self.data[options[list_choice]]:
+                            self.data[options[list_choice]][item_options[item_choice]] = []
+                        break_from_loop_3 = False
+                        while True: #Goal specs (loop 3)
+                            if break_from_loop_3:
+                                break
+                            print()
+                            goal_value = input(f"What is the goal value for {item_options[item_choice]}? (type \"{BACK}\" to go back): ")
+                            if goal_value == BACK:
+                                break
+                            try:
+                                goal_value = int(goal_value)
+                                if goal_value <= 0:
+                                    tf.errorMessage("Please enter a positive integer.")
+                                    continue
+                                else:
+                                    self.data[options[list_choice]][item_options[item_choice]].append([datetime.now().timestamp(), "placeholder for end time", goal_value])
+                                    self.save()
+                                    print(f"Added goal for {item_options[item_choice]} in {options[list_choice]}: {goal_value}")
+                                    break_from_loop_1 = True
+                                    break_from_loop_2 = True
+                                    tf.errorMessage()
+                                    break
+                            except Exception as e:
+                                #print(e)
+                                tf.errorMessage("Please enter a valid integer.")
+                                continue
+                    else:
+                        tf.errorMessage(DOESNT_EXIST)
+                        continue
+            else:
+                tf.errorMessage(DOESNT_EXIST)
+                continue
+
+    def delete_goal(self):
+        print("Hello")
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

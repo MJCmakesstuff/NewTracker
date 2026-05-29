@@ -1,5 +1,13 @@
 CHANGELOG
 
+05/29/2026: Add adding goals
+- Added a goals window for the user to view goals, create goals, and delete goals.
+- Added placeholder functions for these three tasks.
+- User can now create goals. The user chooses an item in a list to create the goal for, and the amount the goal is. The program records the date the goal was created, a placeholder for me to implement timed goals, and the value.
+- Multiple goals can be created for items.
+
+
+
 05/27/2026 #2: Fix bugs in statistics viewing window
 - Fixed problems in the statistics viewing window similar to those from the past commit.
 - Fixed a bug in the statistics viewing window where the program would count all changes to an item in the running total, even if those changes occured outside the specified seach window.
