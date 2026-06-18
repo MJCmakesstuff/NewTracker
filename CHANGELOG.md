@@ -1,5 +1,13 @@
 CHANGELOG
 
+Notes for future me: implement adding an end time to goals, then rework the statistics thing to check for goal progress. 
+
+06/18/2026: Add basic goal viewing
+- The user can now view the goals they've set. The program shows the goal value, start time, and end time.
+- - I know this isn't a huge commit; I wanted to get myself going again on this, since I haven't been coding due to vacation and surgery. 
+
+
+
 05/29/2026 #2: Add deleting goals
 - Changed the add_goal function so that new lists and items are only added to goals.json at the very end. This prevents empty lists or items in goals.json.
 - Added the ability for the user to delete goals.

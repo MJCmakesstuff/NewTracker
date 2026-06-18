@@ -800,7 +800,19 @@ class Goals:
         tf.saveData(self.data, self.fileLocation)
 
     def view_goals(self):
-        print("Hello")
+        for list_name, items in self.data.items():
+            print()
+            print(f"List: {list_name}")
+            for item_name, goals in items.items():
+                print()
+                print(f"Item: {item_name}")
+                for goal in goals:
+                    print()
+                    start_time = datetime.fromtimestamp(goal[0])
+                    end_time = goal[1] #### PLACEHOLDER
+                    goal_value = goal[2]
+                    print(f"  - Goal value: {goal_value}, Start time: {start_time}, End time: {end_time}")
+
 
     def add_goal(self):
         break_from_loop_1 = False
