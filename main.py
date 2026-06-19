@@ -781,7 +781,7 @@ class Statistics:
                             else:
                                 tf.errorMessage(DOESNT_EXIST)
                             if break_from_inner_inner_loop:
-                                break                
+                                break   
                     
                     elif break_from_inner_loop:
                         break
@@ -812,7 +812,6 @@ class Goals:
                     end_time = goal[1] #### PLACEHOLDER
                     goal_value = goal[2]
                     print(f"  - Goal value: {goal_value}, Start time: {start_time}, End time: {end_time}")
-
 
     def add_goal(self):
         break_from_loop_1 = False
@@ -859,17 +858,44 @@ class Goals:
                                     tf.errorMessage("Please enter a positive integer.")
                                     continue
                                 else:
-                                    if options[list_choice] not in self.data:
-                                        self.data[options[list_choice]] = {}
-                                    if item_options[item_choice] not in self.data[options[list_choice]]:
-                                        self.data[options[list_choice]][item_options[item_choice]] = []
-                                    self.data[options[list_choice]][item_options[item_choice]].append([datetime.now().timestamp(), "placeholder for end time", goal_value])
-                                    self.save()
-                                    print(f"Added goal for {item_options[item_choice]} in {options[list_choice]}: {goal_value}")
-                                    break_from_loop_1 = True
-                                    break_from_loop_2 = True
-                                    tf.errorMessage()
-                                    break
+                                    break_from_loop_4 = False
+                                    while True: #When does the goal end? (loop 4)
+                                        if break_from_loop_4:
+                                            break
+                                        end_time_input = input(f"How many days from now does this goal end? (type \"{BACK}\" to go back, or \"0\" for no end date): ")
+                                        if end_time_input == BACK:
+                                            break_from_loop_4 = True
+                                            break
+                                        try:
+                                            end_time_input = float(end_time_input)
+                                            if end_time_input < 0:
+                                                tf.errorMessage("Please enter a non-negative number.")
+                                                continue
+                                            else:
+                                                if end_time_input == 0:
+                                                    end_time = None
+                                                else:
+                                                    end_time = datetime.now().timestamp() + (end_time_input * 86400)
+                                                if options[list_choice] not in self.data:
+                                                    self.data[options[list_choice]] = {}
+                                                if item_options[item_choice] not in self.data[options[list_choice]]:
+                                                    self.data[options[list_choice]][item_options[item_choice]] = []
+                                                self.data[options[list_choice]][item_options[item_choice]].append([datetime.now().timestamp(), end_time, goal_value])
+                                                self.save()
+                                                if end_time is None:
+                                                    print(f"Added goal for {item_options[item_choice]} in {options[list_choice]}: {goal_value} with no end date.")
+                                                else:
+                                                    print(f"Added goal for {item_options[item_choice]} in {options[list_choice]}: {goal_value} before {datetime.fromtimestamp(end_time)}.")
+                                                break_from_loop_1 = True
+                                                break_from_loop_2 = True
+                                                break_from_loop_3 = True
+                                                break_from_loop_4 = True
+                                                tf.errorMessage()
+                                                break
+                                        except ValueError:
+                                            tf.errorMessage("Please enter a valid number.")
+                                            continue
+
                             except Exception as e:
                                 #print(e)
                                 tf.errorMessage("Please enter a valid integer.")

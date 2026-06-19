@@ -1,6 +1,10 @@
 CHANGELOG
 
-Notes for future me: implement adding an end time to goals, then rework the statistics thing to check for goal progress. 
+06/19/2026: Add choice for goal end-time
+- User can now specify an end time for a goal. Say, track this item 10 times within 7 days.
+- - This will be used for tracking goal progress (am I on track?) and completion (did I do it in time?).
+
+
 
 06/18/2026: Add basic goal viewing
 - The user can now view the goals they've set. The program shows the goal value, start time, and end time.
