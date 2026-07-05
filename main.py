@@ -3,7 +3,7 @@ import sys
 import trackerFunctions as tf
 from pathlib import Path
 from pydantic import BaseModel, Field, field_validator, ValidationError
-from datetime import datetime
+from datetime import datetime, time
 
 DEBUG = True
 
@@ -476,7 +476,14 @@ class TrackList:
                 del self.data[delKey]
     
     def print(self):
-        tf.printTracks(self.data)
+        if app.settings.data.showGoalProgress:
+            for index, (key, value) in enumerate(self.data.items(), start=1):
+                print(f"[{index}] {key}: {value}")
+                goal_progress_list = app.goals.calculate_goal_progress(self.name, key)
+                for goal_index, progress in enumerate(goal_progress_list):
+                    print(f"  - Goal of value {app.goals.data[self.name][key][goal_index][2]}: {app.goals.construct_progress_bar(progress)}")
+        else: 
+            tf.printTracks(self.data)
 
     def add(self, track: str, multiplier: int) -> bool:
         if track in self.data:
@@ -809,9 +816,14 @@ class Goals:
                 for goal in goals:
                     print()
                     start_time = datetime.fromtimestamp(goal[0])
-                    end_time = goal[1] #### PLACEHOLDER
+                    if goal[1] is not None:
+                        end_time = datetime.fromtimestamp(goal[1])
+                    else:
+                        end_time = "No end time"
                     goal_value = goal[2]
                     print(f"  - Goal value: {goal_value}, Start time: {start_time}, End time: {end_time}")
+        print()
+        tf.errorMessage()
 
     def add_goal(self):
         break_from_loop_1 = False
@@ -974,12 +986,38 @@ class Goals:
                 tf.errorMessage(DOESNT_EXIST)
                 continue
 
+    def calculate_goal_progress(self, list_name: str, item_name: str):
+        return_list = []
+        if list_name not in self.data or item_name not in self.data[list_name]:
+            return return_list
+        for goal in self.data[list_name][item_name]:
+            start_search_time = goal[0]
+            end_search_time = datetime.now().timestamp()
+            running_total = 0
+            for modification in app.statistics.data[list_name]["contents"][item_name]:
+                if start_search_time <= modification[0] <= end_search_time:
+                    running_total += modification[1]
+            amount_complete = running_total / goal[2] if goal[2] > 0 else 0
+            return_list.append(amount_complete)
+        return return_list
+    
+    def construct_progress_bar(self, progress: float, bar_length: int = 20) -> str:
+        if progress < 0:
+            progress = 0
+        elif progress > 1:
+            progress = 1
+        filled_length = int(bar_length * progress)
+        bar = '#' * filled_length + '-' * (bar_length - filled_length)
+        return f"[{bar}] {100 * progress:.2f}%"
+
+
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
     mode: str = Field(default = "add")
     multiplier: int = Field(default = 1, gt = 0)
-    statTimeDisplay: str = Field(default = STATTIMERELATIVE)
+    statTimeDisplay: str = Field(default = STATTIMEHUMAN)
     statTimeWindow: float = Field(default = 604800, ge = 0)
+    showGoalProgress: bool = Field(default = True)
 
     @field_validator("mode")
     def validate_mode(cls, value):

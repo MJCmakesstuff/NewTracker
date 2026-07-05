@@ -1,5 +1,16 @@
 CHANGELOG
 
+07/05/2026: Add progress bar visual for goal progress
+- Fixed the goal viewer so that it displays the goal's end time as a date rather than a timestamp. 
+- Added a setting for whether to show goal progress when viewing track lists.
+- Created a function which calculates goal progress as a decimal.
+- statTimeDisplay now defaults to the "human" setting (YYYY-MM-DD HH:MM:SS.SSSSSS) to be consistent with the parts of the program that do not yet support different statTimeDisplay settings.
+- Created a function which takes a decimal and creates a progress bar visual.
+- User must now press Enter to continue after viewing goals.
+- When viewing a list, items with goals show the goal values with progress bar and percentage.
+
+
+
 06/19/2026: Add choice for goal end-time
 - User can now specify an end time for a goal. Say, track this item 10 times within 7 days.
 - - This will be used for tracking goal progress (am I on track?) and completion (did I do it in time?).

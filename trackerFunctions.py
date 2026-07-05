@@ -9,7 +9,7 @@ def _print_validation_error(rules: list):
     errorMessage()
 
 # Prints the current data.
-def printTracks(trackData: dict):
+def printTracks(trackData: dict, app = None, listName: str = None, params: dict = None):
     for index, (key, value) in enumerate(trackData.items(), start=1):
         print(f"[{index}] {key}: {value}")
     print()
