@@ -479,7 +479,7 @@ class TrackList:
         if app.settings.data.showGoalProgress:
             for index, (key, value) in enumerate(self.data.items(), start=1):
                 print(f"[{index}] {key}: {value}")
-                goal_progress_list = app.goals.calculate_goal_progress(self.name, key)
+                goal_progress_list = app.goals.calculate_goal_progress(self.name, key, {"get_percentage": False})
                 for goal_index, progress in enumerate(goal_progress_list):
                     print(f"  - Goal of value {app.goals.data[self.name][key][goal_index][2]}: {app.goals.construct_progress_bar(progress)}")
         else: 
@@ -986,7 +986,15 @@ class Goals:
                 tf.errorMessage(DOESNT_EXIST)
                 continue
 
-    def calculate_goal_progress(self, list_name: str, item_name: str):
+    def calculate_goal_progress(self, list_name: str, item_name: str, params: dict = None):
+        default_params = {
+            "get_percentage": True,
+        }
+        if params is not None:
+            default_params.update(params)
+            params = default_params
+        else:
+            params = default_params
         return_list = []
         if list_name not in self.data or item_name not in self.data[list_name]:
             return return_list
@@ -997,18 +1005,35 @@ class Goals:
             for modification in app.statistics.data[list_name]["contents"][item_name]:
                 if start_search_time <= modification[0] <= end_search_time:
                     running_total += modification[1]
-            amount_complete = running_total / goal[2] if goal[2] > 0 else 0
+            if params["get_percentage"]:
+                amount_complete = running_total / goal[2] if goal[2] > 0 else 0
+            else:
+                if running_total >= goal[2]:
+                    running_total = goal[2]
+                elif running_total < 0:
+                    running_total = 0
+                amount_complete = [running_total, goal[2]]
             return_list.append(amount_complete)
         return return_list
     
-    def construct_progress_bar(self, progress: float, bar_length: int = 20) -> str:
-        if progress < 0:
-            progress = 0
-        elif progress > 1:
-            progress = 1
-        filled_length = int(bar_length * progress)
+    def construct_progress_bar(self, progress: list | float, bar_length: int = 20) -> str:
+        if isinstance(progress, float | int):
+            if progress < 0:
+                progress = 0
+            elif progress > 1:
+                progress = 1
+            filled_length = int(bar_length * progress)
+        else: ## list [running_total, goal_value]
+            if progress[0] < 0:
+                progress[0] = 0
+            elif progress[0] > progress[1]:
+                progress[0] = progress[1]
+            filled_length = int(bar_length * (progress[0] / progress[1]) if progress[1] > 0 else 0)
         bar = '#' * filled_length + '-' * (bar_length - filled_length)
-        return f"[{bar}] {100 * progress:.2f}%"
+        if isinstance(progress, float | int):
+            return f"[{bar}] {100 * progress:.2f}%"
+        else:
+            return f"[{bar}] {progress[0]}/{progress[1]} ({100 * (progress[0] / progress[1]):.2f}%)"
 
 
 class Settings(BaseModel):

@@ -1,5 +1,11 @@
 CHANGELOG
 
+07/06/2026: Add goal progress fraction display
+- Goal progress also displays as a fraction. For example, 1/50 (2%) rather than just the percentage. 
+- calculate_goal_progress and construct_progress_bar can still work with just a percentage input, but now also can take a list: [running_total, goal_value] in order to display the fraction. 
+
+
+
 07/05/2026: Add progress bar visual for goal progress
 - Fixed the goal viewer so that it displays the goal's end time as a date rather than a timestamp. 
 - Added a setting for whether to show goal progress when viewing track lists.
