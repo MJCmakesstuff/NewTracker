@@ -813,7 +813,8 @@ class Goals:
             for item_name, goals in items.items():
                 print()
                 print(f"Item: {item_name}")
-                for goal in goals:
+                goal_progress_list = app.goals.calculate_goal_progress(list_name, item_name, {"get_percentage": False})
+                for goal, progress in zip(goals, goal_progress_list):
                     print()
                     start_time = datetime.fromtimestamp(goal[0])
                     if goal[1] is not None:
@@ -822,8 +823,10 @@ class Goals:
                         end_time = "No end time"
                     goal_value = goal[2]
                     print(f"  - Goal value: {goal_value}, Start time: {start_time}, End time: {end_time}")
+                    print(f"    {app.goals.construct_progress_bar(progress)}")
+            print()
+            tf.errorMessage()
         print()
-        tf.errorMessage()
 
     def add_goal(self):
         break_from_loop_1 = False
@@ -1000,7 +1003,7 @@ class Goals:
             return return_list
         for goal in self.data[list_name][item_name]:
             start_search_time = goal[0]
-            end_search_time = datetime.now().timestamp()
+            end_search_time = goal[1] if goal[1] is not None else datetime.now().timestamp()
             running_total = 0
             for modification in app.statistics.data[list_name]["contents"][item_name]:
                 if start_search_time <= modification[0] <= end_search_time:
@@ -1034,7 +1037,6 @@ class Goals:
             return f"[{bar}] {100 * progress:.2f}%"
         else:
             return f"[{bar}] {progress[0]}/{progress[1]} ({100 * (progress[0] / progress[1]):.2f}%)"
-
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

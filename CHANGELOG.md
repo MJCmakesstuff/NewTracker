@@ -1,5 +1,12 @@
 CHANGELOG
 
+07/08/2026: Add goal progress display to goal viewing window
+- User must now press enter after each list when viewing goals.
+- Goal progress bar and percentage now also shows in the view goals menu.
+- Goal progress only counts for tracks made between the goal's start time and end time. If additional tracks happen after the goal's end time, they no longer count toward progress.
+
+
+
 07/06/2026: Add goal progress fraction display
 - Goal progress also displays as a fraction. For example, 1/50 (2%) rather than just the percentage. 
 - calculate_goal_progress and construct_progress_bar can still work with just a percentage input, but now also can take a list: [running_total, goal_value] in order to display the fraction. 
