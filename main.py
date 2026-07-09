@@ -480,8 +480,9 @@ class TrackList:
             for index, (key, value) in enumerate(self.data.items(), start=1):
                 print(f"[{index}] {key}: {value}")
                 goal_progress_list = app.goals.calculate_goal_progress(self.name, key, {"get_percentage": False})
+                goal_expected_progress_list = app.goals.calculate_on_track_values(self.name, key)
                 for goal_index, progress in enumerate(goal_progress_list):
-                    print(f"  - Goal of value {app.goals.data[self.name][key][goal_index][2]}: {app.goals.construct_progress_bar(progress)}")
+                    print(f"  - Goal of value {app.goals.data[self.name][key][goal_index][2]}: {app.goals.construct_progress_bar(progress, expected_value=goal_expected_progress_list[goal_index])}")
         else: 
             tf.printTracks(self.data)
 
@@ -814,7 +815,8 @@ class Goals:
                 print()
                 print(f"Item: {item_name}")
                 goal_progress_list = app.goals.calculate_goal_progress(list_name, item_name, {"get_percentage": False})
-                for goal, progress in zip(goals, goal_progress_list):
+                goal_expected_progress_list = app.goals.calculate_on_track_values(list_name, item_name)
+                for goal, progress, expected_value in zip(goals, goal_progress_list, goal_expected_progress_list):
                     print()
                     start_time = datetime.fromtimestamp(goal[0])
                     if goal[1] is not None:
@@ -823,7 +825,7 @@ class Goals:
                         end_time = "No end time"
                     goal_value = goal[2]
                     print(f"  - Goal value: {goal_value}, Start time: {start_time}, End time: {end_time}")
-                    print(f"    {app.goals.construct_progress_bar(progress)}")
+                    print(f"    {app.goals.construct_progress_bar(progress, expected_value=expected_value)}")
             print()
             tf.errorMessage()
         print()
@@ -1019,7 +1021,7 @@ class Goals:
             return_list.append(amount_complete)
         return return_list
     
-    def construct_progress_bar(self, progress: list | float, bar_length: int = 20) -> str:
+    def construct_progress_bar(self, progress: list | float, bar_length: int = 20, expected_value: int = None) -> str:
         if isinstance(progress, float | int):
             if progress < 0:
                 progress = 0
@@ -1036,7 +1038,28 @@ class Goals:
         if isinstance(progress, float | int):
             return f"[{bar}] {100 * progress:.2f}%"
         else:
-            return f"[{bar}] {progress[0]}/{progress[1]} ({100 * (progress[0] / progress[1]):.2f}%)"
+            end_bar = f"[{bar}] {progress[0]}/{progress[1]} ({100 * (progress[0] / progress[1]):.2f}%)."
+            if expected_value is not None:
+                end_bar += f" Expected: {expected_value} ({100 * (expected_value / progress[1]):.2f}%)."
+            return end_bar
+
+    def calculate_on_track_values(self, list_name: str, item_name: str) -> int:
+        on_track_values = []
+        if list_name not in self.data or item_name not in self.data[list_name]:
+            return on_track_values
+        for goal in self.data[list_name][item_name]:
+            if goal[1] is not None:
+                total_timespan = goal[1] - goal[0]
+                current_timespan = datetime.now().timestamp() - goal[0]
+                if current_timespan > total_timespan:
+                    expected_value = goal[2]
+                else:
+                    percent_time_passed = current_timespan / total_timespan if total_timespan > 0 else 1
+                    expected_value = int(goal[2] * percent_time_passed)
+            else:
+                expected_value = None
+            on_track_values.append(expected_value)
+        return on_track_values
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

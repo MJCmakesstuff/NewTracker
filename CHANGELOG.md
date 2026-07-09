@@ -1,5 +1,12 @@
 CHANGELOG
 
+07/09/2026: Add expected progress indicators for viewing goals
+- Created a function which looks at a goal's start time, end time, and value as well as the current time to determine the expected progress on the goal if the user makes constant linear progress. 
+- - Imagine it's 7/5 12 PM, and there was a goal created at 7/4 12 PM with a value of 10 and an end time of 7/6 12 PM. There are two days to complete the goal, and one day has passed. The expected progress is 5 (50%).
+- When viewing goals or a list with items that have goals, the expected progress now displays next to the progress bar. 
+
+
+
 07/08/2026: Add goal progress display to goal viewing window
 - User must now press enter after each list when viewing goals.
 - Goal progress bar and percentage now also shows in the view goals menu.
