@@ -1,5 +1,16 @@
 CHANGELOG
 
+07/10/2026 #2: Add colored progress bars to indicate goal status
+- Created a function to determine whether a goal is finished, expired, ahead of schedule, or behind schedule.
+- Based on the state of the goal, progress bars now display in different colors.
+- - A green bar means the goal is completed; you've reached your goal. Note that a green goal can be active or expired, so subtracting tracks may or may not revert the goal to blue/yellow status depending on the goal's end time.
+- - A red bar means the goal is expired/has ended, and new tracks do not count as progress.
+- - A yellow bar means that the goal is in progress. For goals that have a specified end time, yellow also means you are not on track to meet your goal.
+- - A blue bar means that the goal has a specified end time, is in progress, and you are on track to completing your goal.
+- Clarified the meaning of "expected value" in the changelog for the 07/09/2026 "Add expected progress indicators for viewing goals" because I felt I poorly explained it.
+
+
+
 07/10/2026: Refactor goal printing for track viewing window
 - Refactored the goal printing code for the track viewing window to more closely resemble the code that does something similar for the goal viewing window. 
 - - This will make it easier to implement fancy colors later.
@@ -9,6 +20,7 @@ CHANGELOG
 07/09/2026: Add expected progress indicators for viewing goals
 - Created a function which looks at a goal's start time, end time, and value as well as the current time to determine the expected progress on the goal if the user makes constant linear progress. 
 - - Imagine it's 7/5 12 PM, and there was a goal created at 7/4 12 PM with a value of 10 and an end time of 7/6 12 PM. There are two days to complete the goal, and one day has passed. The expected progress is 5 (50%).
+- - Think of expected values as an indicator of whether or not you're on track to complete your goal.
 - When viewing goals or a list with items that have goals, the expected progress now displays next to the progress bar. 
 
 
