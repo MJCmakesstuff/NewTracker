@@ -479,10 +479,12 @@ class TrackList:
         if app.settings.data.showGoalProgress:
             for index, (key, value) in enumerate(self.data.items(), start=1):
                 print(f"[{index}] {key}: {value}")
-                goal_progress_list = app.goals.calculate_goal_progress(self.name, key, {"get_percentage": False})
-                goal_expected_progress_list = app.goals.calculate_on_track_values(self.name, key)
-                for goal_index, progress in enumerate(goal_progress_list):
-                    print(f"  - Goal of value {app.goals.data[self.name][key][goal_index][2]}: {app.goals.construct_progress_bar(progress, expected_value=goal_expected_progress_list[goal_index])}")
+                if self.name in app.goals.data and key in app.goals.data[self.name]:
+                    goals = app.goals.data[self.name][key]
+                    goal_progress_list = app.goals.calculate_goal_progress(self.name, key, {"get_percentage": False})
+                    goal_expected_progress_list = app.goals.calculate_on_track_values(self.name, key)
+                    for goal, progress, expected_value in zip(goals, goal_progress_list, goal_expected_progress_list):
+                        print(f"  - Goal of value {goal[2]}: {app.goals.construct_progress_bar(progress, expected_value=expected_value)}")
         else: 
             tf.printTracks(self.data)
 
@@ -1021,7 +1023,7 @@ class Goals:
             return_list.append(amount_complete)
         return return_list
     
-    def construct_progress_bar(self, progress: list | float, bar_length: int = 20, expected_value: int = None) -> str:
+    def construct_progress_bar(self, progress: list | float, bar_length: int = 20, expected_value: int = None, goal_state: str = None) -> str:
         if isinstance(progress, float | int):
             if progress < 0:
                 progress = 0
@@ -1038,10 +1040,11 @@ class Goals:
         if isinstance(progress, float | int):
             return f"[{bar}] {100 * progress:.2f}%"
         else:
-            end_bar = f"[{bar}] {progress[0]}/{progress[1]} ({100 * (progress[0] / progress[1]):.2f}%)."
-            if expected_value is not None:
-                end_bar += f" Expected: {expected_value} ({100 * (expected_value / progress[1]):.2f}%)."
-            return end_bar
+            if goal_state is None:
+                end_bar = f"[{bar}] {progress[0]}/{progress[1]} ({100 * (progress[0] / progress[1]):.2f}%)."
+                if expected_value is not None:
+                    end_bar += f" Expected: {expected_value} ({100 * (expected_value / progress[1]):.2f}%)."
+                return end_bar
 
     def calculate_on_track_values(self, list_name: str, item_name: str) -> int:
         on_track_values = []
@@ -1060,6 +1063,8 @@ class Goals:
                 expected_value = None
             on_track_values.append(expected_value)
         return on_track_values
+    
+    
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

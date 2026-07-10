@@ -1,5 +1,11 @@
 CHANGELOG
 
+07/10/2026: Refactor goal printing for track viewing window
+- Refactored the goal printing code for the track viewing window to more closely resemble the code that does something similar for the goal viewing window. 
+- - This will make it easier to implement fancy colors later.
+
+
+
 07/09/2026: Add expected progress indicators for viewing goals
 - Created a function which looks at a goal's start time, end time, and value as well as the current time to determine the expected progress on the goal if the user makes constant linear progress. 
 - - Imagine it's 7/5 12 PM, and there was a goal created at 7/4 12 PM with a value of 10 and an end time of 7/6 12 PM. There are two days to complete the goal, and one day has passed. The expected progress is 5 (50%).
