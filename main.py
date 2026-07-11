@@ -198,7 +198,8 @@ class App:
             options = {
                 "1": ("View Goals", self.goals.view_goals),
                 "2": ("Add Goal", self.goals.add_goal),
-                "3": ("Delete Goal", self.goals.delete_goal)
+                "3": ("Delete Goal", self.goals.delete_goal),
+                "4": ("Delete Completed Goals", self.goals.delete_completed_goals)
             }
             for key, (name, function) in options.items():
                 print(f"[{key}] {name}")
@@ -1059,7 +1060,6 @@ class Goals:
                 return_bar = f"{color_tag}{end_bar}\033[0m"
                 return return_bar
 
-
     def calculate_on_track_values(self, list_name: str, item_name: str) -> int:
         on_track_values = []
         if list_name not in self.data or item_name not in self.data[list_name]:
@@ -1090,6 +1090,31 @@ class Goals:
                 return "behind"
         else:
             return "in progress"
+
+    def delete_completed_goals(self):
+        marked_items = []
+        marked_lists = []
+        for list_name, items in self.data.items():
+            for item_name, goals in items.items():
+                for goal in goals[:]:  # Iterate over a copy of the list
+                    progress = self.calculate_goal_progress(list_name, item_name, {"get_percentage": False})[goals.index(goal)]
+                    if progress[0] >= progress[1]:
+                        goals.remove(goal)
+                        self.save()
+                if len(self.data[list_name][item_name]) == 0:
+                    marked_items.append((list_name, item_name))
+            for list_name, item_name in marked_items:
+                del self.data[list_name][item_name]
+                marked_items.remove((list_name, item_name))
+                self.save()
+            if len(self.data[list_name]) == 0:
+                marked_lists.append(list_name)
+        for list_name in marked_lists:
+            del self.data[list_name]
+            marked_lists.remove(list_name)
+            self.save()
+        
+        print("Deleted all completed goals.")
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

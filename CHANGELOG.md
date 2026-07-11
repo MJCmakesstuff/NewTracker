@@ -1,5 +1,11 @@
 CHANGELOG
 
+07/11/2026: Add ability to remove all completed goals
+- Added a function to delete all completed goals.
+- - This function also removes empty items and lists from the goals file.
+
+
+
 07/10/2026 #2: Add colored progress bars to indicate goal status
 - Created a function to determine whether a goal is finished, expired, ahead of schedule, or behind schedule.
 - Based on the state of the goal, progress bars now display in different colors.

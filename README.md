@@ -11,9 +11,3 @@ It's called "NewTracker" because I super messed up the original one
 I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, it's for my own pleasure so say what you will about my terrible coding)
 
 \#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
-
-Todo:
-- Print message where there are no goals (as opposed to just empty space).
-- Show goal progress when viewing goals.
-- Delete all completed goals.
-- Am I on track? (Ahead or behind schedule with goals)
