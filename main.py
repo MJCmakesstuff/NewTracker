@@ -199,7 +199,7 @@ class App:
                 "1": ("View Goals", self.goals.view_goals),
                 "2": ("Add Goal", self.goals.add_goal),
                 "3": ("Delete Goal", self.goals.delete_goal),
-                "4": ("Delete Completed Goals", self.goals.delete_completed_goals)
+                "4": ("Delete Completed and Expired Goals", self.goals.delete_completed_goals)
             }
             for key, (name, function) in options.items():
                 print(f"[{key}] {name}")
@@ -1101,6 +1101,9 @@ class Goals:
                     if progress[0] >= progress[1]:
                         goals.remove(goal)
                         self.save()
+                    elif goal[1] is not None and datetime.now().timestamp() > goal[1]:
+                        goals.remove(goal)
+                        self.save()
                 if len(self.data[list_name][item_name]) == 0:
                     marked_items.append((list_name, item_name))
             for list_name, item_name in marked_items:
@@ -1114,7 +1117,7 @@ class Goals:
             marked_lists.remove(list_name)
             self.save()
         
-        print("Deleted all completed goals.")
+        print("Deleted all completed and expired goals.")
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)

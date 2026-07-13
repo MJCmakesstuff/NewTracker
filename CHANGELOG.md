@@ -1,5 +1,10 @@
 CHANGELOG
 
+07/13/2026: Add ability to remove all expired goals
+- The function that deletes completed goals now also deletes expired goals.
+
+
+
 07/11/2026: Add ability to remove all completed goals
 - Added a function to delete all completed goals.
 - - This function also removes empty items and lists from the goals file.
