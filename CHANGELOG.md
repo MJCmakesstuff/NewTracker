@@ -1,5 +1,11 @@
 CHANGELOG
 
+07/13/2026 #2: Refactor goal structure cleanup
+- Refactored the code that removes empty lists and dictionaries from goals.json, which happens when goals are deleted, resulting in items in goals.json which have no goals or lists which have no items.
+- - This cleanup is now called with a separate function in goals.
+
+
+
 07/13/2026: Add ability to remove all expired goals
 - The function that deletes completed goals now also deletes expired goals.
 

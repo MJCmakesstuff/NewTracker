@@ -1092,8 +1092,6 @@ class Goals:
             return "in progress"
 
     def delete_completed_goals(self):
-        marked_items = []
-        marked_lists = []
         for list_name, items in self.data.items():
             for item_name, goals in items.items():
                 for goal in goals[:]:  # Iterate over a copy of the list
@@ -1104,7 +1102,16 @@ class Goals:
                     elif goal[1] is not None and datetime.now().timestamp() > goal[1]:
                         goals.remove(goal)
                         self.save()
-                if len(self.data[list_name][item_name]) == 0:
+        self.clear_empty_goal_structures()
+        
+        print("Deleted all completed and expired goals.")
+
+    def clear_empty_goal_structures(self):
+        marked_items = []
+        marked_lists = []
+        for list_name, items in self.data.items():
+            for item_name, goals in items.items():
+                if len(goals) == 0:
                     marked_items.append((list_name, item_name))
             for list_name, item_name in marked_items:
                 del self.data[list_name][item_name]
@@ -1116,8 +1123,6 @@ class Goals:
             del self.data[list_name]
             marked_lists.remove(list_name)
             self.save()
-        
-        print("Deleted all completed and expired goals.")
 
 class Settings(BaseModel):
     settingsPersist: bool = Field(default = True)
