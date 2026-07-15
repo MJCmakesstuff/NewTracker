@@ -1,5 +1,10 @@
 CHANGELOG
 
+07/15/2026: Add simple item search
+- Added a simple search feature for tracked items. You can search for items and figure out which list they're located in and what their current value is.
+
+
+
 07/13/2026 #2: Refactor goal structure cleanup
 - Refactored the code that removes empty lists and dictionaries from goals.json, which happens when goals are deleted, resulting in items in goals.json which have no goals or lists which have no items.
 - - This cleanup is now called with a separate function in goals.

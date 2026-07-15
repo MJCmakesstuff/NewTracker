@@ -92,7 +92,8 @@ class App:
             options = {
                 "1": ("Open List", self.manager.openList),
                 "2": ("Create List", self.manager.createList),
-                "3": ("Delete List", self.manager.deleteList)
+                "3": ("Delete List", self.manager.deleteList),
+                "4": ("Search for Items", self.manager.search_for_items)
             }
             for key, (name, function) in options.items():
                 print(f"[{key}] {name}")
@@ -440,6 +441,28 @@ class ListManager:
                         continue
                 app.manager.save()
     
+    def search_for_items(self, app, search_term: str = None, is_helper: bool = False) -> list:
+        matched_items = []
+        if search_term is None:
+            search_term = input("Enter the search term: ")
+        search_term = search_term.lower()
+        for list_name, list_object in self.lists.items():
+            for track_name, track_value in list_object.data.items():
+                if search_term in track_name.lower() or search_term in list_name.lower():
+                    matched_items.append((list_name, track_name, track_value))
+        if is_helper:
+            return matched_items
+        else:
+            print()
+            if matched_items:
+                print("Matched items:")
+                for list_name, track_name, track_value in matched_items:
+                    print(f"[{list_name}] {track_name}: {track_value}")
+            else:
+                print("No matched items found.")
+            print()
+            tf.errorMessage()
+
 class TrackList:
     def __init__(self, name: str, data: dict = None):
         if data == None:
