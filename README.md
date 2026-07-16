@@ -1,13 +1,20 @@
+VERSION 1.0!!!!!
+
 A simple tool to track things.
 
-Enter a new item and the program will add 1 to its count.
+I started creating this because I was interested in learning Python but also because I had read "Atomic Habits" recently and liked the idea of tracking habits, good and bad. While it doesn't fulfill that very well, this project sort of evolved out of that idea. 
 
-Enter the number next to an existing item to do the same.
+Here's all the stuff it can do:
+- Item tracking: input a string and the program will remember it for you. You can input the string again (or the bracketed number next to it), and the program will add to that items value. So, for example, if you wanted to remember how many times you run, you could create a "run" item, then type "run" again and the program will keep track of how many times you've run.
+- Lists: create separate lists of items. Useful for different categories of items, like "health" or "growth". Each list can have multiple items within it. There is a menu for opening, creating, and deleting lists.
+- Simple item search: you can enter an item to search for and the program will look through each list to see if any items match it. 
+- Mode: this is a setting you can change in order to either add to or subtract from an item's value when you track that item. To create items, mode must be "add", and to delete items, mode must be "subtract" and the multiplier should be greater than the item value.
+- Multiplier: another setting you can change in order to determine how much should be added to or subtracted from an item's value when you track that item. 
+- Settings: a window to change settings such as mode and multiplier. There are other settings in here, and some of them can be edited more easily via other windows.
+- Statistics: view how many times an item was tracked over a period of time. You can see stats for each list, and for each item in the list, you can see each change made including the date it was made and the value the item changed by, as well as the total change for that item. Within Statistics, you can also change related settings. There is a setting for whether to display stat dates as human-readable, timestamps, or days ago. There is another setting that determines how far back the program searches (ex. within the past 3 days), and you can change this setting from the Statistics window more easily as it features a conversion from different units to seconds, which the setting requires.
+- Goals: you can set goals for items. Goals can have no end time, or an end time (ex. track 10 times before 7 days pass). Goal progress is calculated based on tracks made since the goal's creation, not based on total tracks for that item. So even if an item has been tracked 10 times, goal progress starts at zero. Goals can be viewed from the Goals window, or they can be seen in the regular item tracker. They show with a progress bar, fraction complete, and percent complete. For goals with an end date, the program also calculates how far your goal progress should be and determines whether you are ahead of or behind schedule. The progress bar also displays in different colors depending on progress and whether you're on schedule. There is also an option within Goals to delete all completed and expired goals at once.
+- CSV: you can export to and import from CSV. Honestly, this is an older feature that I haven't used in a while, so use it with caution. It will only save/load the lists, the items in them, and the value of those items. CSV will not remember goals, statistics, or settings.
 
+It's called "NewTracker" because I super messed up the original one and wanted to start fresh. I was brand new to Git(Hub) at the time.
 
-It's called "NewTracker" because I super messed up the original one
-
-
-I'm brand new to all this kind of stuff so sorry if it's terrible! (not really, it's for my own pleasure so say what you will about my terrible coding)
-
-\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#\#
+As of now (07/16/2026), I'll be leaving this project behind. Honestly, I've lost motivation. Outside of programming, this isn't a program I actually use, and I don't see a reason to develop except to expand my skills. I'm going to try and build a poker simulator next. Thank you!!

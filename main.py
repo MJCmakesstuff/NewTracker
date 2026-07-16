@@ -5,7 +5,7 @@ from pathlib import Path
 from pydantic import BaseModel, Field, field_validator, ValidationError
 from datetime import datetime, time
 
-DEBUG = True
+DEBUG = False
 
 #Solution to magic strings
 QUIT = "quit"

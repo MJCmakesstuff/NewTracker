@@ -1,5 +1,11 @@
 CHANGELOG
 
+07/16/2026: Finalize for v1.0
+- Updated the README (finally).
+- Changed DEBUG to false.
+
+
+
 07/15/2026: Add simple item search
 - Added a simple search feature for tracked items. You can search for items and figure out which list they're located in and what their current value is.
 
