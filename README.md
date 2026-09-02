@@ -1,4 +1,4 @@
-VERSION 1.0!!!!!
+VERSION 1.0
 
 A simple tool to track things.
 
@@ -16,5 +16,3 @@ Here's all the stuff it can do:
 - CSV: you can export to and import from CSV. Honestly, this is an older feature that I haven't used in a while, so use it with caution. It will only save/load the lists, the items in them, and the value of those items. CSV will not remember goals, statistics, or settings.
 
 It's called "NewTracker" because I super messed up the original one and wanted to start fresh. I was brand new to Git(Hub) at the time.
-
-As of now (07/16/2026), I'll be leaving this project behind. Honestly, I've lost motivation. Outside of programming, this isn't a program I actually use, and I don't see a reason to develop except to expand my skills. I'm going to try and build a poker simulator next. Thank you!!

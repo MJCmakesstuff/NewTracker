@@ -1,5 +1,11 @@
 CHANGELOG
 
+09/01/2026: Polish README
+- Changed the README a little bit so it's more professional.
+- Planning to make this repository public so anyone can see.
+
+
+
 07/16/2026: Finalize for v1.0
 - Updated the README (finally).
 - Changed DEBUG to false.
